@@ -61,7 +61,7 @@ if(PKG_CONFIG_FOUND)
     if(${PKG_CONFIG_VERSION_STRING} VERSION_LESS 0.20)
         message(FATAL_ERROR "The current version of the pkg-config (${PKG_CONFIG_VERSION_STRING}) is less than 0.20. Try upgrade it first")
     endif()
-    message(STATUS "pkg-config found with version ${PKG_CONFIG_VERSION_STRING}")
+    message("pkg-config found with version ${PKG_CONFIG_VERSION_STRING}")
 else()
     message(FATAL_ERROR "Cannot find pkg-config tool. Try installing it first")
 endif()
@@ -81,7 +81,7 @@ if(ARIA2_STATIC)
     # list(APPEND ${PKG_CONFIG_ARGN} "--static")
 endif()
 
-pkg_check_modules(CPPUNIT REQUIRED "cppunit >= 1.10.2")
+pkg_check_modules(CPPUNIT "cppunit >= 1.10.2")
 if(NOT CPPUNIT_FOUND)
     message(WARNING "The cppunit package not found. Try install it first")
 endif()
@@ -93,16 +93,16 @@ include(CheckLibraryExists)
 if(libz)
     find_package(zlib 1.2.3 REQUIRED)
     if(ZLIB_FOUND)
-        message(STATUS "The libz found, with version ${ZLIB_VERSION}")
+        message("The libz found, with version ${ZLIB_VERSION}")
     else()
         message(WARNING "libz library is not installed. Try install it first")
     endif()
 endif()
 
 if(libuv)
-    pkg_check_modules(LIBUV REQUIRED "libuv >= 1.13")
+    pkg_check_modules(LIBUV "libuv >= 1.13")
     if(LIBUV_FOUND)
-        message(STATUS "The libuv found, with version ${LIBUV_VERSION}")
+        message("The libuv found, with version ${LIBUV_VERSION}")
     else()
         message(WARNING "libuv library is not installed. Try install it first")
     endif()
@@ -112,7 +112,7 @@ endif()
 if(libxml2)
     find_package(LibXml2 2.6.24 REQUIRED)
     if(LibXml2_FOUND)
-        message(STATUS "The libxml2 found, with version ${LibXml2_VERSION}")
+        message("The libxml2 found, with version ${LibXml2_VERSION}")
     else()
         message(WARNING "libxml2 library is not installd. Try install it first")
     endif()
@@ -122,8 +122,8 @@ endif()
 if(libexpat)
     find_package(EXPAT REQUIRED)
     if(EXPAT_FOUND)
-        message(STATUS "The EXPAT lib found, with version ${EXPAT_VERSION}")
-        message(STATUS "Define to 1 if you have libexpat")
+        message("The EXPAT lib found, with version ${EXPAT_VERSION}")
+        message("Define to 1 if you have libexpat")
         add_compile_definitions(HAVE_LIBEXPAT=1)
     else()
         message(WARNING "EXPAT library is not installd. Try install it first")
@@ -134,8 +134,8 @@ endif()
 if(sqlite3)
     find_package(SQLite3 REQUIRED)
     if(SQLite3_FOUND)
-        message(STATUS "The sqlite3 found, with version ${SQLite3_VERSION}")
-        message(STATUS "Define to 1 if you have sqlite3")
+        message("The sqlite3 found, with version ${SQLite3_VERSION}")
+        message("Define to 1 if you have sqlite3")
         add_compile_definitions(HAVE_SQLITE3=1)
         check_library_exists(${SQLite3_LIBRARIES} sqlite3_open_v2 "" sqlite3FuncFound)
         if(NOT sqlite3FuncFound)
@@ -277,7 +277,7 @@ set(have_openssl FALSE)
 if(openssl AND NOT have_ssl)
     find_package(OpenSSL 0.9.8 REQUIRED)
     if(OpenSSL_FOUND)
-        message(STATUS "The openssl library found, with version ${OpenSSL_VERSION}")
+        message("The openssl library found, with version ${OpenSSL_VERSION}")
         set(have_openssl TRUE)
     else()
         message(WARNING "The openssl library was not found. Try install it first")
@@ -285,14 +285,14 @@ if(openssl AND NOT have_ssl)
     if(have_openssl)
         set(have_ssl TRUE)
         add_compile_definitions(HAVE_OPENSSL=1)
-        message(STATUS "Define to 1 if you have openssl")
+        message("Define to 1 if you have openssl")
 
         # something here with the libs
 
         check_library_exists(${OPENSSL_LIBRARIES} EVP_DigestInit_ex "" have_digestinit_ex)
         if(NOT have_digestint_ex)
             add_compile_definitions(HAVE_OLD_OPENSSL=1)
-            message(STATUS "Define to 1 if you have old openssl")
+            message("Define to 1 if you have old openssl")
         endif()
 
         check_library_exists(${OPENSSL_LIBRARIES} EVP_sha224 "" have_evp_sha224)
@@ -314,8 +314,8 @@ if(NOT have_openssl)
     if(libnettle AND NOT nativetls)
         pkg_check_modules(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
         if(LIBNETTLE_FOUND)
-            add_compile_definitions(HAVE_LIBNETTLE=1)    
-            message(STATUS "Define to 1 if you have libnettle")
+            add_compile_definitions(HAVE_LIBNETTLE=1)
+            message("Define to 1 if you have libnettle")
         else()
             message(WARNING "ARIA2_DEP_NOT_MET")
         endif()
@@ -332,7 +332,7 @@ if(NOT have_openssl)
             #
             #
             add_compile_definitions(HAVE_LIBGMP=1)
-            message(STATUS "Define to 1 if you have libgmp")
+            message("Define to 1 if you have libgmp")
         else()
             message(WARNING "libgmp not found. Try install it first")
             message(WARNING "ARIA2_DEP_NOT_MET")
@@ -351,14 +351,14 @@ if(libssh2)
     if(LIBSSH2_FOUND)
         set(have_libssh2 TRUE)
         add_compile_definitions(HAVE_LIBSSH2=1)
-        message(STATUS "Define to 1 if you have libssh2.")
+        message("Define to 1 if you have libssh2.")
 
         # if(ARIA2_STATIC)
         #     set(LIBSSH2_CFLAGS "-DLIBSSH2_API")
         # endif()
     else()
         message(WARNING "The libssh2 library is missing")
-        
+
         if(LIBSSH2_REQUESTED)
             message(WARNING "ARIA2_DEP_NOT_MET([libssh2])")
         endif()
@@ -372,33 +372,60 @@ if(libcares)
     if(libcares2_FOUND)
         set(have_libcares TRUE)
         add_compile_definitions(HAVE_LIBCARES=1)
-        message(STATUS "Define to 1 if you have libcares")
+        message("Define to 1 if you have libcares")
     else()
         message(WARNING "libcares couldn't find in the system. Try install it first")
         message(WARNING "ARIA2_DEP_NOT_MET([libcares)")
     endif()
 endif()
 
+# here should be the size_t (DONE)
+include(CheckTypeSize)
+check_type_size(size_t SIZEOF_SIZE_T)
+if(HAVE_SIZEOF_SIZE_T)
+	message(WARNING "The size_t exists with size ${SIZEOF_SIZE_T}")
+endif()
+
+check_type_size(ssize_t SSIZEOF_SIZE_T)
+if(HAVE_SSIZEOF_SIZE_T)
+    message(WARNING "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
+endif()
+
+# after the size_t should be the alloca.h header
+check_include_file(alloca.h HAVE_ALLOCA_H)
+if(HAVE_ALLOCA_H)
+	message("The alloca.h exists")
+endif()
+
+include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
+
+# after the alloca.h header should be the alloca function
+check_symbol_exists(alloca "alloca.h" HAVE_ALLOCA_FUNC)
+if(HAVE_ALLOCA_FUNC)
+	message("The alloca() was found")
+endif()
+
 set(use_md "")
 if(have_appletls)
     set(use_md "apple")
     add_compile_definitions(USE_APPLE_MD=1)
-    message(STATUS "What message digest implementation to use")
+    message("What message digest implementation to use")
 elseif(have_libnettle)
     add_compile_definitions(USE_LIBNETTLE_MD=1)
-    message(STATUS "What message digest implementation to use")
+    message("What message digest implementation to use")
     set(use_md "libnettle")
 elseif(have_libcrypt)
     add_compile_definitions(USE_LIBCRYPT_MD=1)
-    message(STATUS "What message digest implementation to use")
+    message("What message digest implementation to use")
     set(use_md "libcrypt")
 elseif(have_openssl)
     add_compile_definitions(USE_OPENSSL_MD=1)
-    message(STATUS "What message digest implementation to use")
+    message("What message digest implementation to use")
     set(use_md "openssl")
 else()
     add_compile_definitions(USE_INTERNAL_MD=1)
-    message(STATUS "What message digest implementation to use")
+    message("What message digest implementation to use")
     set(use_md "internal")
 endif()
 
@@ -411,7 +438,7 @@ else()
     set(ENABLE_SSL false)
 endif()
 
-# this can be done more clearlyl with a list of the variables that I want to check if they
+# this can be done more clearly with a list of the variables that I want to check if they
 # are true or false.
 
 if(have_osx)
@@ -553,7 +580,7 @@ if(CMAKE_HOST_SOLARIS)
     #
 endif()
 
-check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h; netdb.h; netinet/in.h; netinet/tcp.h; poll.h; port.h; signal.h; stddef.h; stdint.h; stdio_ext.h; stdlib.h; string.h; 
+check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h; netdb.h; netinet/in.h; netinet/tcp.h; poll.h; port.h; signal.h; stddef.h; stdint.h; stdio_ext.h; stdlib.h; string.h;
                      strings.h; sys/ioctl.h; sys/param.h; sys/resource.h; sys/signal.h; sys/socket.h; sys/time.h; sys/types.h; sys/uio.h; sys/utsname.h; termios.h; unistd.h; utime.h; wchar.h; ifaddrs.h; pwd.h;"
                      HAVE_HEADER_FILES)
 
@@ -561,9 +588,7 @@ check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo
 
 # from line 720 of configure.ac file
 
-include(CheckTypeSize)
-
-# in order to be able to find the c struct, I have to enable C language
+# in order to be able to find the C struct, I have to enable C language
 # set(CMAKE_C_STANDARD 11)
 # set(CMAKE_C_STANDARD_REQUIRED TRUE)
 # now it will be able to find the c struct
@@ -582,11 +607,9 @@ endif()
 
 find_package(Gettext 0.19 REQUIRED)  # apt-get install gettext, if doesn't exist in the system
 if(Gettext_FOUND)
-    message(STATUS "The gettext was found")
+    message("The gettext was found")
 endif()
 
-include(CheckSymbolExists)
-include(CheckCXXSymbolExists)
 check_cxx_symbol_exists(error_at_line "error.h" HAVE_ERROR_AT_LINE)
 if(HAVE_ERROR_AT_LINE)
     message("The error_at_line function was found")
@@ -599,39 +622,39 @@ endif()
 
 check_cxx_symbol_exists(mktime "ctime" HAVE_MKTIME)
 if(HAVE_MKTIME)
-    message(STATUS "The mktime was found")
+    message("The mktime was found")
 endif()
 
 check_cxx_symbol_exists(stat "sys/stat.h" HAVE_STAT)
 if(HAVE_STAT)
-    message(STATUS "The stat was found")
+    message("The stat was found")
 endif()
 
 check_cxx_symbol_exists(strftime "ctime" HAVE_STRFTIME)
 if(HAVE_STRFTIME)
-    message(STATUS "The strftime was found")
+    message("The strftime was found")
 endif()
 
 check_cxx_symbol_exists(vprintf cstdio HAVE_VPRINTF )
 if(HAVE_VPRINTF)
-    message(STATUS "The vrpintf was found")
+    message("The vrpintf was found")
 endif()
 
 check_cxx_symbol_exists(fork unistd.h HAVE_FORK)
 if(HAVE_FORK)
-    message(STATUS "The fork has been found")
+    message("The fork has been found")
 endif()
 
 check_cxx_symbol_exists(strtod stdlib.h HAVE_STRTOD)
 if(HAVE_STRTOD)
-    message(STATUS "The strtod has been found")
+    message("The strtod has been found")
 endif()
 
 
 # From the line 772 AC_CHECK_FUNCS()
 check_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
 if(HAVE_ARGZ_COUNT)
-    message(STATUS "The argz_count function has been found")
+    message("The argz_count function has been found")
 endif()
 
 check_cxx_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
@@ -656,7 +679,7 @@ endif()
 
 check_cxx_symbol_exists(ftruncate unistd.h HAVE_FTRUNCATE)
 if(HAVE_FTRUNCATE)
-    message("the ftruncate has been found")
+    message("The ftruncate has been found")
 endif()
 
 check_cxx_symbol_exists(getcwd unistd.h HAVE_GETCWD)
@@ -898,7 +921,7 @@ if(epoll)
     check_symbol_exists(epoll_create "sys/epoll.h" have_epoll)
     if(have_epoll)
         add_compile_definitions(HAVE_EPOLL=1)
-        message(STATUS "Define to 1 if epoll is available")
+        message("Define to 1 if epoll is available")
     endif()
 endif()
 
@@ -909,7 +932,7 @@ endif()
 
 if(HAVE_POSIX_FALLOCATE OR HAVE_FALLOCATE OR HAVE_OSX OR WIN_BUILD)
    add_compile_definitions(HAVE_SOME_FALLOCATE=1)
-   message(STATUS "Define to 1 if *_fallocate is available")
+   message("Define to 1 if *_fallocate is available")
 endif()
 
 # need one more with the AM_CONDITIONAL line 890
@@ -926,12 +949,12 @@ endif()
 
 check_symbol_exists(getaddrinfo "netdb.h" HAVE_GETADDRINFO)
 if(HAVE_GETADDRINFO)
-   message("the getaddrinfo has been found")
+   message("The getaddrinfo has been found")
 endif()
 
 check_symbol_exists(gettimeofday "sys/time.h" HAVE_GETTIMEOFDAY)
 if(HAVE_GETTIMEOFDAY)
-   message("the gettimeofday is present")
+   message("The gettimeofday is present")
 endif()
 
 set(localStrptimeLocation ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -968,16 +991,17 @@ endif()
 
 #==========================#
 set(oldIncludeHeaders "${CMAKE_REQUIRED_INCLUDES}")
-
 set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")
+
 check_cxx_symbol_exists(kqueue "sys/event.h" HAVE_KQUEUE)
 if(HAVE_KQUEUE)
     message("The kqueue has been found.")
 else()
-    message("Try installing it with the command: sudo apt install libkqueue-dev")
-    message("Possible location where it might be located is: /usr/include/kqueue/sys/event.h")
-    message("and not at the /usr/include. So I have to include the /usr/include/kqueue/ path in")
-    message("in order to find the header  (event.h)")
+	message("The kqueue has NOT been found")
+#    message("Try installing it with the command: sudo apt install libkqueue-dev")
+#    message("Possible location where it might be located is: /usr/include/kqueue/sys/event.h")
+#    message("and not at the /usr/include. So I have to include the /usr/include/kqueue/ path in")
+#    message("in order to find the header  (event.h)")
 endif()
 
 
@@ -997,11 +1021,11 @@ set(keventCode [==[
 )
 
 if(HAVE_KQUEUE)
-    message(STATUS "Whether struct kevent.udata is intrptr_t")
+    message("Whether struct kevent.udata is intrptr_t")
     check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
     if(kevent_udata_intptr_t)
       add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
-        message(STATUS "Define to 1 if struct kevent.udata is intptr_t")
+        message("Define to 1 if struct kevent.udata is intptr_t")
     endif()
 endif()
 
@@ -1034,7 +1058,7 @@ if(HAVE_SIN6_LEN)
     message("Define to 1 if struct sockaddr_in6 has sin6_len member.")
 endif()
 
-message(STATUS "Whether struct option.name is assignable from const char*")
+message("Whether struct option.name is assignable from const char*")
 
 set(nameAssignableFromConst [==[
         #include <unistd.h>
@@ -1051,16 +1075,16 @@ set(nameAssignableFromConst [==[
 
 check_cxx_source_compiles("${nameAssignableFromConst}" have_option_const_name)
 if(have_option_const_name)
-    message(STATUS "The option.name is assignable from const char*")
+    message("The option.name is assignable from const char*")
     add_compile_definitions(HAVE_OPTION_CONST_NAME=1)
-    message(STATUS "Define 1 if struct option.name is const char*")
+    message("Define 1 if struct option.name is const char*")
 endif()
 
 
 if(websocket)
     add_subdirectory(deps/wslay)
     add_compile_definitions(ENABLE_WEBSOCKET=1)
-    message(STATUS "Define 1 if WebSocket support is enabled")
+    message("Define 1 if WebSocket support is enabled")
 
     set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     # TODO:  Should check in the future as currently this is not enabled.
@@ -1075,7 +1099,7 @@ if(libaria2)
     # set the ENABLE_LIBARIA2  with the configure_file() cmake command
 endif()
 
-# line 1051 
+# line 1051
 # AC_SUBST([bashcompletiondir]) check this again
 
 if(ARIA2_STATIC)
