@@ -109,10 +109,15 @@ void AnnounceList::announceSuccess()
   if (currentTrackerInitialized_) {
     (*currentTier_)->nextEvent();
     auto url = *currentTracker_;
-    (*currentTier_)->urls.erase(currentTracker_);
+    currentTracker_ = (*currentTier_)->urls.erase(currentTracker_);
     (*currentTier_)->urls.push_front(std::move(url));
-    currentTier_ = std::begin(tiers_);
-    currentTracker_ = std::begin((*currentTier_)->urls);
+    if (currentTracker_ == std::end((*currentTier_)->urls)) {
+      ++currentTier_;
+      if (currentTier_ == std::end(tiers_)) {
+        currentTier_ = std::begin(tiers_);
+      }
+      currentTracker_ = std::begin((*currentTier_)->urls);
+    }
   }
 }
 
