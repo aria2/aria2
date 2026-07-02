@@ -67,18 +67,67 @@ else()
 endif()
 
 # write a small test, to check if the compiler supports nullptr (akraio)
+include(CheckCXXSourceCompiles)
+message("Checking whether the C++ compiler supports nullptr")
+set(nullptrTest 
+    [==[ 
+        #include <iostream>
+
+        int main() {
+            int *a = nullptr;
+            return 0;
+        }
+    ]==]
+)
+check_cxx_source_compiles("${nullptrTest}" SUPPORTS_NULLPTR)
+if(SUPPORTS_NULLPTR)
+    message("C++ compiler supports nullptr keyword")
+else()
+    message(FATAL_ERROR "C++ compiler does not understand nullptr, perhaps C++ compiler is too old. Try again with new one (gcc >= 4.8.3 or clang >= 3.4)")
+endif()
 
 # write another small test, to check if the compiler supports `override` keyword
 # if yes, define a new keyword CXX11_OVERRIDE, that will have the value of the 'override'
 # if no, do nothing
+message("Checking whether C++ compiler supports 'override' keyword")
+set(overrideTest 
+    [==[ 
+        #include <iostream>
+
+        struct Base {
+            virtual void f() = 0;
+        };
+
+        struct Derived : Base {
+            virtual void f() override {}
+        };
+
+        int main() {
+            Derived x;
+            int a = 77;  // to make sure that it goes beyond the Derived x; line
+            return 0;
+        }
+    ]==]
+)
+
+check_cxx_source_compiles("${overrideTest}" SUPPORTS_OVERRIDE)
+if(SUPPORTS_OVERRIDE)
+    message("C++ compiler supports override keyword")
+    add_compile_definitions(CXX11_OVERRIDE=override)
+    message("Define `override` keyword if the compiler supports it")
+endif()
+
 
 if(ARIA2_STATIC)
     # check whether the platform is i686 or mingw
-    # if() ...
-    # endif()
+    if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw") # I have also to check for i686
+        set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_USE_32BIT_TIME_T")
+    endif()
 
     # set the pkg-config to produce static link libraries
-    # list(APPEND ${PKG_CONFIG_ARGN} "--static")
+    list(APPEND ${PKG_CONFIG_ARGN} "--static")
+else()
+    set(ARIA2_STATIC NO)
 endif()
 
 pkg_check_modules(CPPUNIT "cppunit >= 1.10.2")
@@ -91,35 +140,60 @@ include(CheckLibraryExists)
 
 # Check for libz first needs more than tha
 if(libz)
-    find_package(zlib 1.2.3 REQUIRED)
-    if(ZLIB_FOUND)
-        message("The libz found, with version ${ZLIB_VERSION}")
-    else()
+    pkg_check_modules(have_zlib "z >= 1.2.3")
+    if(NOT have_zlib)
         message(WARNING "libz library is not installed. Try install it first")
+        find_package(zlib 1.2.3)
+        if(ZLIB_FOUND)
+            message("The libz found, with version ${ZLIB_VERSION}")
+            set(ZLIB_CFLAGS "")
+            set(ZLIB_LIBS "-lz")
+            # use the configure_file() here to substitute the variables
+        else()
+            message(WARNING "ARIA2_DEP_NOT_MET(libz)")
+        endif()
     endif()
+    
+    if(have_zlib)
+        message("Define to 1 if you have zlib")
+        add_compile_definitions(HAVE_ZLIB=1)
+        set(save_CPPFLAGS "${CPPFLAGS}")
+        set(save_LIBS "${LIBS}")
+        set(CPPFLAGS "${CPPFLAGS} ${ZLIB_FLAGS}")
+        set(LIBS "${ZLIB_LIBS} ${LIBS}")
+
+        # TODO: cannot find the gzbuffer and gzsetparams with check_symbol_exists()
+        check_symbol_exists(gzbuffer )
+
 endif()
 
 if(libuv)
     pkg_check_modules(LIBUV "libuv >= 1.13")
     if(LIBUV_FOUND)
         message("The libuv found, with version ${LIBUV_VERSION}")
+        add_compile_definitions(HAVE_LIBUV=1)
     else()
-        message(WARNING "libuv library is not installed. Try install it first")
+        message(WARNING "ARIA2_DEP_NOT_MET([libuv])")
     endif()
 endif()
 
+# TODO: use the configure_file() command to set the below command from autotools
+#AM_CONDITIONAL([HAVE_LIBUV]...)
 
+set(have_libxml2 FALSE)
 if(libxml2)
-    find_package(LibXml2 2.6.24 REQUIRED)
+    find_package(LibXml2 2.6.24)
     if(LibXml2_FOUND)
         message("The libxml2 found, with version ${LibXml2_VERSION}")
+        message("Define to 1 if you have libxml2")
+        add_compile_definitions(HAVE_LIBXML2=1)
+        set(have_libxml2 TRUE)
     else()
-        message(WARNING "libxml2 library is not installd. Try install it first")
+        message(WARNING "ARIA2_DEP_NOT_MET([libxml2])")
     endif()
 endif()
 
-
-if(libexpat)
+if(libexpat AND NOT ${have_libxml2})
     find_package(EXPAT REQUIRED)
     if(EXPAT_FOUND)
         message("The EXPAT lib found, with version ${EXPAT_VERSION}")
@@ -139,26 +213,26 @@ if(sqlite3)
         add_compile_definitions(HAVE_SQLITE3=1)
         check_library_exists(${SQLite3_LIBRARIES} sqlite3_open_v2 "" sqlite3FuncFound)
         if(NOT sqlite3FuncFound)
-            message(WARNING "Cannot find the requested function for sqlite3")
+            message(WARNING "Cannot find the function: sqlite3_open_v2() from sqlite3")
         endif()
     else()
-        message(WARNING "Cannot find, the sqlite3 library")
+        message(WARNING "ARIA2_DEP_NOT_MET([sqlite3])")
     endif()
 endif()
 
 include(CheckIncludeFiles)
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-    set(osx YES)
+    set(have_osx YES)
 elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw")
-    check_include_files("windows.h" HAVE_WINDOWS_H)
-    check_include_files("winsock.2.h" HAVE_WINSOCK2_H)
     check_include_files("ws2tcpip.h" HAVE_WS2TCPIP_H)
-    check_include_files("mmsystem.h" HAVE_MMSYSTEM_H)
-    check_include_files("io.h" HAVE_IO_H)
-    check_include_files("iphlpapi.h" HAVE_IPHLPAPI_H)
-    check_include_files("winioctl.h" HAVE_WINIOCTL_H)
-    check_include_files("share.h" HAVE_SHARE_H)
+    check_include_files("winsock.2.h" HAVE_WINSOCK2_H)
+    check_include_files("windows.h" HAVE_WINDOWS_H)
+    # check_include_files("mmsystem.h" HAVE_MMSYSTEM_H)
+    # check_include_files("io.h" HAVE_IO_H)
+    # check_include_files("iphlpapi.h" HAVE_IPHLPAPI_H)
+    # check_include_files("winioctl.h" HAVE_WINIOCTL_H)
+    # check_include_files("share.h" HAVE_SHARE_H)
 endif()
 
 
@@ -178,17 +252,19 @@ set(have_nativetls FALSE)
 
 if(appletls)
     message("Whether to enable Mac OS X native SSL/TLS")
-    if(osx)
+    if(have_osx)
         message("Define to 1 if you have Apple TLS")
         add_compile_definitions(HAVE_APPLETLS=1)
         set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
-        # here somehow I have to pass this variable to the config.h.in file with @...@ symbols #
+        # TODO: should use the configure_file() command to perform the substitution
+        # AC_SUBST([APPLETLS_LDFLAGS])
+
         set(have_appletls TRUE)
         set(have_ssl TRUE)
         set(have_nativetls TRUE)
     else()
         if(appletls)
-            message("ARIA2_DEP_NOT_MET")
+            message("ARIA2_DEP_NOT_MET([appletls])")
         endif()
     endif()
 endif()
@@ -196,21 +272,24 @@ endif()
 include(CheckLibraryExists)
 
 set(have_wintls FALSE)
-if(wintls)  ## the build is about windows
+if(wintls)  #TODO (remove this comment): The build is about windows
     find_package(crypt32 REQUIRED)
     if(crypt32_FOUND)
-        check_library_exists(crypt32 main "" have_wintls_libs)
+        check_library_exists(crypt32 main "" have_crypt32)
     endif()
+    set(have_wintls_libs ${have_crypt32})
 
     find_package(secur32 REQUIRED)
     if(secur32_FOUND)
-        check_library_exists(secur32 main "" have_wintls_libs)
+        check_library_exists(secur32 main "" have_secur32)
     endif()
+    set(have_wintls_libs ${have_secur32})
 
     find_package(advapi32 REQUIRED)
     if(advapi32_FOUND)
-        check_library_exists(advapi32 main "" have_wintls_libs)
+        check_library_exists(advapi32 main "" have_advapi32)
     endif()
+    set(have_wintls_libs ${have_advapi32})
 
     include(CheckCSourceCompiles)
     check_c_source_compiles("
