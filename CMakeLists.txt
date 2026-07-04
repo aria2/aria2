@@ -13,7 +13,17 @@ set(EXTRALDFLAGS)
 set(EXTRALIBS)
 
 if(MSVC) # check if the host is about to run in windows with mingw compiler
-    # EXTRALIBS
+    set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi ${EXTRALIBS}")
+
+    # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r
+    # available from <time.h> even without (un)helpful interference
+    # from <pthread.h>, and also defines __USE_MINGW_ANSI_STDIO.
+    set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_POSIX_C_SOURCE=1")
+
+    # Build with ASLR (dynamicbase) and NX compatibility (nxcompat)
+    # Enable pie once upstream/binutils gets fixed to produce correct
+    # binaries with it.
+    set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat")
 endif()
 
 option(libuv "" TRUE)
@@ -272,24 +282,25 @@ endif()
 include(CheckLibraryExists)
 
 set(have_wintls FALSE)
-if(wintls)  #TODO (remove this comment): The build is about windows
+if(wintls)
     find_package(crypt32 REQUIRED)
     if(crypt32_FOUND)
         check_library_exists(crypt32 main "" have_crypt32)
     endif()
-    set(have_wintls_libs ${have_crypt32})
 
     find_package(secur32 REQUIRED)
     if(secur32_FOUND)
         check_library_exists(secur32 main "" have_secur32)
     endif()
-    set(have_wintls_libs ${have_secur32})
 
     find_package(advapi32 REQUIRED)
     if(advapi32_FOUND)
         check_library_exists(advapi32 main "" have_advapi32)
     endif()
-    set(have_wintls_libs ${have_advapi32})
+
+    if(${have_crypt32} AND ${have_secur32} AND ${have_advapi32})
+        set(have_wintls_libs TRUE)
+    endif()
 
     include(CheckCSourceCompiles)
     check_c_source_compiles("
@@ -302,13 +313,12 @@ if(wintls)  #TODO (remove this comment): The build is about windows
 
         #include <security.h>
 
-
         int main(void) {
             return 0;
         }
     " HAVE_WINTLS_HEADERS)
 
-    if(HAVE_WINTLS_HEADERS)
+    if(HAVE_WINTLS_HEADERS AND have_wintls_libs)
         set(have_wintls_headers YES)
     else()
         set(have_wintls_headers NO)
@@ -356,11 +366,11 @@ set(have_openssl FALSE)
 if(openssl AND NOT have_ssl)
     find_package(OpenSSL 0.9.8 REQUIRED)
     if(OpenSSL_FOUND)
-        message("The openssl library found, with version ${OpenSSL_VERSION}")
         set(have_openssl TRUE)
     else()
         message(WARNING "The openssl library was not found. Try install it first")
     endif()
+
     if(have_openssl)
         set(have_ssl TRUE)
         add_compile_definitions(HAVE_OPENSSL=1)
@@ -368,20 +378,21 @@ if(openssl AND NOT have_ssl)
 
         # something here with the libs
 
-        check_library_exists(${OPENSSL_LIBRARIES} EVP_DigestInit_ex "" have_digestinit_ex)
-        if(NOT have_digestint_ex)
+        check_library_exists("${OPENSSL_LIBRARIES}" EVP_DigestInit_ex "" have_digestinit_ex)
+        if(have_digestinit_ex)
             add_compile_definitions(HAVE_OLD_OPENSSL=1)
             message("Define to 1 if you have old openssl")
         endif()
 
-        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha224 "" have_evp_sha224)
-        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha256 "" have_evp_sha256)
-        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha384 "" have_evp_sha384)
-        check_library_exists(${OPENSSL_LIBRARIES} EVP_sha512 "" have_evp_sha512)
+        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha224 "" have_evp_sha224)
+        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha256 "" have_evp_sha256)
+        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha384 "" have_evp_sha384)
+        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha512 "" have_evp_sha512)
 
         # again something here with the libs
     else()
         message(WARNING "Cannot find openssl in the system. Try install it first")
+        message(WARNING "ARIA2_DEP_NOT_MET([openssl])")
     endif()
 endif()
 
@@ -390,37 +401,50 @@ set(have_libgmp FALSE)
 set(have_libcrypt FALSE)
 
 if(NOT have_openssl)
-    if(libnettle AND NOT nativetls)
+    if(libnettle AND NOT have_nativetls)
         pkg_check_modules(LIBNETTLE REQUIRED "libnettle8t64 > 1.1.1")  # den tha paiksei auto. Thelei allo tropo
         if(LIBNETTLE_FOUND)
             add_compile_definitions(HAVE_LIBNETTLE=1)
             message("Define to 1 if you have libnettle")
         else()
-            message(WARNING "ARIA2_DEP_NOT_MET")
+            message(WARNING "ARIA2_DEP_NOT_MET([libnettle8t64])")
         endif()
     endif()
 
-    if(libgmp AND (libnettle OR have_nativetls) AND bittorrent)  # native_tls has to be placed into some other places in the code
+    if(libgmp AND (libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
         find_package(gmp REQUIRED)
         if(gmp_FOUND)
             check_library_exists(gmp __gmpz_init "" have_libgmp)
         endif()
 
         if(have_libgmp)
-            # define here the LIBGMP_CFLAGS and etc
-            #
-            #
+            set(LIBGMP_CFLAGS)
+            set(LIBGMP_LIBS "-lgmp")
+            # TODO: the configure_file() command is missing
+
             add_compile_definitions(HAVE_LIBGMP=1)
             message("Define to 1 if you have libgmp")
+            set(save_LIBS "${LIBS}")
+            set(LIBS "${LIBGMP_LIBS} ${LIBS]}")
+            
+            check_library_exists(gmp __gmpz_powm_sec "" have_mpz_powm_sec)
+            
+            set(LIBS "${save_LIBS}")
+
+            if(have_mpz_powm_sec)
+                add_compile_definitions(HAVE_GMP_SEC=1)
+                message("Define to 1 if you have a GMP with sec functions.")
+            endif()
+
         else()
             message(WARNING "libgmp not found. Try install it first")
-            message(WARNING "ARIA2_DEP_NOT_MET")
+            message(WARNING "ARIA2_DEP_NOT_MET([libgmp])")
         endif()
     endif()
 
     if(libgcrypt AND NOT have_nativetls AND NOT have_libnettle)
-    #
-    #
+    # TODO: lines 507 - 517 from configure.ac file. 
+    # TODO: difficult one.
     endif()
 endif()
 
@@ -432,15 +456,12 @@ if(libssh2)
         add_compile_definitions(HAVE_LIBSSH2=1)
         message("Define to 1 if you have libssh2.")
 
-        # if(ARIA2_STATIC)
-        #     set(LIBSSH2_CFLAGS "-DLIBSSH2_API")
-        # endif()
+        if(ARIA2_STATIC)
+            set(LIBSSH2_CFLAGS "${LIBSSH2_CFLAGS} -DLIBSSH2_API")
+        endif()
     else()
         message(WARNING "The libssh2 library is missing")
-
-        if(LIBSSH2_REQUESTED)
-            message(WARNING "ARIA2_DEP_NOT_MET([libssh2])")
-        endif()
+        message(WARNING "ARIA2_DEP_NOT_MET([libssh2])")
     endif()
 endif()
 
@@ -456,33 +477,6 @@ if(libcares)
         message(WARNING "libcares couldn't find in the system. Try install it first")
         message(WARNING "ARIA2_DEP_NOT_MET([libcares)")
     endif()
-endif()
-
-# here should be the size_t (DONE)
-include(CheckTypeSize)
-check_type_size(size_t SIZEOF_SIZE_T)
-if(HAVE_SIZEOF_SIZE_T)
-	message(WARNING "The size_t exists with size ${SIZEOF_SIZE_T}")
-endif()
-
-check_type_size(ssize_t SSIZEOF_SIZE_T)
-if(HAVE_SSIZEOF_SIZE_T)
-    message(WARNING "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
-endif()
-
-# after the size_t should be the alloca.h header
-check_include_file(alloca.h HAVE_ALLOCA_H)
-if(HAVE_ALLOCA_H)
-	message("The alloca.h exists")
-endif()
-
-include(CheckSymbolExists)
-include(CheckCXXSymbolExists)
-
-# after the alloca.h header should be the alloca function
-check_symbol_exists(alloca "alloca.h" HAVE_ALLOCA_FUNC)
-if(HAVE_ALLOCA_FUNC)
-	message("The alloca() was found")
 endif()
 
 set(use_md "")
@@ -532,6 +526,8 @@ if(have_wintls)
     set(HAVE_WINTLS TRUE)
 endif()
 
+# TODO: this might be wrong, since at the configure.ac is uses AM_CONDITIONAL
+# which means it defines variables at the source code
 if(use_md STREQUAL "apple")
     set(USE_APPLE_MD TRUE)
 elseif(use_md STREQUAL "windows")
@@ -568,49 +564,52 @@ endif()
 
 
 if(have_libgmp OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_BIGNUM FALSE)
+    set(USE_INTERNAL_BIGNUM FALSE) # TODO: uses the AM_CONDITIONAL
 else()
     add_compile_definitions(USE_INTERNAL_BIGNUM=1)
     message("Define to 1 if the internal BIGNUM support is enabled")
-    set(USE_INTERNAL_BIGNUM TRUE)
+    set(USE_INTERNAL_BIGNUM TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libnettle OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_ARC4 FALSE)
+    set(USE_INTERNAL_ARC4 FALSE) # TODO: uses the AM_CONDITIONAL
 else()
     add_compile_definitions(USE_INTERNAL_ARC4=1)
-    set(USE_INTERNAL_ARC4 TRUE)
+    message("Define to 1 if internal ARC4 support is enabled")
+    set(USE_INTERNAL_ARC4 TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
-if(enable_bittorrent)
+if(bittorrent)
     add_compile_definitions(ENABLE_BITTORRENT=1)
     message("Define to 1 if BitTorrent support is enabled")
-    set(ENABLE_BITTORRENT TRUE)
+    set(ENABLE_BITTORRENT TRUE) # TODO: uses the AM_CONDITIONAL
 else()
     if(bittorrent)
-        message(WARNING "ARIA2_FET_NOT_SUPPORTED[bittorrent")
+        message(WARNING "ARIA2_FET_NOT_SUPPORTED([bittorrent])")
     endif()
-    set(enable_bittorrent FALSE)
-    set(ENABLE_BITTORRENT FALSE)
+
+    set(bittorrent FALSE)
+    set(ENABLE_BITTORRENT FALSE) # TODO: uses the AM_CONDITIONAL
 endif()
 
-if((have_libxml2 OR have_libexpat) AND enable_metalink)
+if((have_libxml2 OR have_libexpat) AND metalink)
     add_compile_definitions(ENABLE_METALINK=1)
     message("Define to 1 if Metalink support is enabled")
-    set(ENABLE_METALINK TRUE)
+    set(ENABLE_METALINK TRUE) # TODO: uses the AM_CONDITIONAL
 else()
     if(metalink)
-        message(WARNING "ARIA2_FET_NOT_SUPPORTED[metalink]")
+        message(WARNING "ARIA2_FET_NOT_SUPPORTED([metalink])")
     endif()
-    set(enable_metalink FALSE)
-    set(ENABLE_METALINK FALSE)
+    set(metalink FALSE)
+    set(ENABLE_METALINK FALSE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libxml2 OR have_libexpat)
-    set(HAVE_SOME_XMLLIB)
+    set(HAVE_SOME_XMLLIB) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libxml2 OR have_libexpat)
+    # This variable is not set from the options in the beggining, so the 'enable_' prefix is correct
     set(enable_xml_rpc TRUE)
 else()
     set(enable_xml_rpc FALSE)
@@ -622,50 +621,77 @@ if(enable_xml_rpc)
 endif()
 
 if(enable_xml_rpc)
-    set(ENABLE_XML_RPC TRUE)
+    set(ENABLE_XML_RPC TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libxml2)
-    set(HAVE_LIBXML2 TRUE)
+    set(HAVE_LIBXML2 TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libexpat)
-    set(HAVE_LIBEXPAT TRUE)
+    set(HAVE_LIBEXPAT TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libcares)
     add_compile_definitions(ENABLE_ASYNC_DNS=1)
     message("Define to 1 asynchronous DNS support is enabled")
-    set(ENABLE_ASYNC_DNS TRUE)
+    set(ENABLE_ASYNC_DNS TRUE) # TODO: uses the AM_CONDITIONAL
 else()
-    set(ENABLE_ASYNC_DNS FALSE)
+    set(ENABLE_ASYNC_DNS FALSE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_zlib)
-    set(HAVE_ZLIB TRUE)
+    set(HAVE_ZLIB TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_sqlite3)
-    set(HAVE_SQLITE3 TRUE)
+    set(HAVE_SQLITE3 TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libssh2)
-    set(HAVE_LIBSSH2 TRUE)
+    set(HAVE_LIBSSH2 TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(CMAKE_HOST_SOLARIS)
-    #
-    #
+    # TODO: lines from 683 - 691
+    # Should recheck that case
     #
 endif()
+
+
+
+include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
+
+check_include_file(alloca.h HAVE_ALLOCA_H)
+if(HAVE_ALLOCA_H)
+	message("The alloca.h exists")
+endif()
+
+# after the alloca.h header should be the alloca function
+check_symbol_exists(alloca "alloca.h" HAVE_ALLOCA_FUNC)
+if(HAVE_ALLOCA_FUNC)
+	message("The alloca() was found")
+endif()
+
+
 
 check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h; netdb.h; netinet/in.h; netinet/tcp.h; poll.h; port.h; signal.h; stddef.h; stdint.h; stdio_ext.h; stdlib.h; string.h;
                      strings.h; sys/ioctl.h; sys/param.h; sys/resource.h; sys/signal.h; sys/socket.h; sys/time.h; sys/types.h; sys/uio.h; sys/utsname.h; termios.h; unistd.h; utime.h; wchar.h; ifaddrs.h; pwd.h;"
                      HAVE_HEADER_FILES)
 
 
+# here should be the size_t (DONE)
+include(CheckTypeSize)
+check_type_size(size_t SIZEOF_SIZE_T)
+if(HAVE_SIZEOF_SIZE_T)
+	message(WARNING "The size_t exists with size ${SIZEOF_SIZE_T}")
+endif()
 
-# from line 720 of configure.ac file
+check_type_size(ssize_t SSIZEOF_SIZE_T)
+if(HAVE_SSIZEOF_SIZE_T)
+    message(WARNING "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
+endif()
 
 # in order to be able to find the C struct, I have to enable C language
 # set(CMAKE_C_STANDARD 11)
@@ -682,7 +708,6 @@ if(have_timespec)
     add_compile_definitions(HAVE_A2_STRUCT_TIMESPEC=1)
     message("Define to 1 if the system has the type 'struct timespec'")
 endif()
-
 
 find_package(Gettext 0.19 REQUIRED)  # apt-get install gettext, if doesn't exist in the system
 if(Gettext_FOUND)
@@ -730,7 +755,7 @@ if(HAVE_STRTOD)
 endif()
 
 
-# From the line 772 AC_CHECK_FUNCS()
+# TODO: the below 2 are the same
 check_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
 if(HAVE_ARGZ_COUNT)
     message("The argz_count function has been found")
@@ -740,6 +765,8 @@ check_cxx_symbol_exists(__argz_count "argz.h" HAVE_ARGZ_COUNT)
 if(HAVE_ARGZ_COUNT)
     message("The argz has been found")
 endif()
+# TODO: the above 2 are the same
+
 
 check_cxx_symbol_exists(__argz_next "argz.h" HAVE_ARGZ_NEXT)
 if(HAVE_ARGZ_NEXT)
@@ -967,12 +994,13 @@ if(tcmalloc)
     if(NOT TCMALLOC_FOUND)
         check_library_exists(tcmalloc_minimal malloc "" have_tcmalloc)
         if(have_tcmalloc)
-            # some commands here
-            # ...
-            # ...
+            set(TCMALLOC_CFLAGS)
+            set(TCMALLOC_LIBS "-ltcmalloc_minimal")
+            # TODO: AC_SUBST[] commands
+
         else()
-            if(have_tcmalloc)
-                message(WARNING "ARIA2_DEP_NOT_MET: tc_malloc_minimal")
+            if(tcmalloc)
+                message(WARNING "ARIA2_DEP_NOT_MET([tcmalloc_minimal])")
             endif()
         endif()
     endif()
@@ -984,12 +1012,13 @@ if(jemalloc)
     if(NOT JEMALLOC_FOUND)
         check_library_exists(jemalloc malloc "" have_jemalloc)
         if(have_jemalloc)
-            # some commands here
-            # ...
-            # ...
+            set(JEMALLOC_CFLAGS)
+            set(JEMALLOC_LIBS "-ljemalloc")
+            # TODO: AC_SUBST[] commands
+
         else()
             if(jemalloc)
-                message(WARNING "ARIA2_DEP_NOT_MET")
+                message(WARNING "ARIA2_DEP_NOT_MET([jemalloc (unprefixed)])")
             endif()
         endif()
     endif()
@@ -1003,18 +1032,24 @@ if(epoll)
         message("Define to 1 if epoll is available")
     endif()
 endif()
+# TODO: missing one AM_CONDITIONAL for HAVE_EPOLL
 
 check_symbol_exists(posix_fallocate "fcntl.h" HAVE_POSIX_FALLOCATE)
 if(HAVE_POSIX_FALLOCATE)
    message("The fallocate has been found")
 endif()
 
+# TODO: Not high priority - should again this condition.
 if(HAVE_POSIX_FALLOCATE OR HAVE_FALLOCATE OR HAVE_OSX OR WIN_BUILD)
    add_compile_definitions(HAVE_SOME_FALLOCATE=1)
    message("Define to 1 if *_fallocate is available")
 endif()
 
-# need one more with the AM_CONDITIONAL line 890
+# TODO: need one more with the AM_CONDITIONAL
+
+# TODO: there is a part where the mingw needs this
+# following code
+
 
 check_symbol_exists(basename libgen.h HAVE_BASENAME)
 if(HAVE_BASENAME)
