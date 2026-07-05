@@ -78,7 +78,7 @@ void HttpResponse::validateResponse() const
       // compare the received range against the requested range
       auto responseRange = httpHeader_->getRange();
       if (!httpRequest_->isRangeSatisfied(responseRange)) {
-        throw DL_ABORT_EX2(
+        throw DL_RETRY_EX2(
             fmt(EX_INVALID_RANGE_HEADER, httpRequest_->getStartByte(),
                 httpRequest_->getEndByte(), httpRequest_->getEntityLength(),
                 responseRange.startByte, responseRange.endByte,
