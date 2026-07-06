@@ -224,7 +224,7 @@ void HttpHeaderProcessorTest::testGetHttpResponseHeader_teAndCl()
   CPPUNIT_ASSERT_EQUAL(std::string("chunked"),
                        httpHeader->find(HttpHeader::TRANSFER_ENCODING));
   CPPUNIT_ASSERT(!httpHeader->defined(HttpHeader::CONTENT_LENGTH));
-  CPPUNIT_ASSERT(!httpHeader->defined(HttpHeader::CONTENT_RANGE));
+  CPPUNIT_ASSERT(httpHeader->defined(HttpHeader::CONTENT_RANGE));
 }
 
 void HttpHeaderProcessorTest::testBeyondLimit()

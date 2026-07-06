@@ -213,6 +213,9 @@ std::string HttpRequest::createRequest()
     }
     builtinHds.emplace_back("Range:", rangeHeader);
   }
+  else if (!segment_ && getMethod() == "GET") {
+    builtinHds.emplace_back("Range:", "bytes=0-");
+  }
   if (proxyRequest_) {
     if (request_->isKeepAliveEnabled() || request_->isPipeliningEnabled()) {
       builtinHds.emplace_back("Connection:", "Keep-Alive");
