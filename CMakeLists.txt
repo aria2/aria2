@@ -13,6 +13,7 @@ set(EXTRALDFLAGS)
 set(EXTRALIBS)
 
 if(MSVC) # check if the host is about to run in windows with mingw compiler
+    set(WIN_BUILD TRUE)
     set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi ${EXTRALIBS}")
 
     # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r
@@ -76,7 +77,6 @@ else()
     message(FATAL_ERROR "Cannot find pkg-config tool. Try installing it first")
 endif()
 
-# write a small test, to check if the compiler supports nullptr (akraio)
 include(CheckCXXSourceCompiles)
 message("Checking whether the C++ compiler supports nullptr")
 set(nullptrTest 
@@ -148,7 +148,6 @@ endif()
 # Check for libraries
 include(CheckLibraryExists)
 
-# Check for libz first needs more than tha
 if(libz)
     pkg_check_modules(have_zlib "z >= 1.2.3")
     if(NOT have_zlib)
@@ -167,14 +166,13 @@ if(libz)
     if(have_zlib)
         message("Define to 1 if you have zlib")
         add_compile_definitions(HAVE_ZLIB=1)
-        set(save_CPPFLAGS "${CPPFLAGS}")
-        set(save_LIBS "${LIBS}")
-        set(CPPFLAGS "${CPPFLAGS} ${ZLIB_FLAGS}")
-        set(LIBS "${ZLIB_LIBS} ${LIBS}")
-
-        # TODO: cannot find the gzbuffer and gzsetparams with check_symbol_exists()
-        check_symbol_exists(gzbuffer )
-
+        set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
+        set(CMAKE_REQUIRED_LIBRARIES "${ZLIB_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")
+        check_symbol_exists(gzbuffer "zlib.h" HAVE_GZBUFFER)
+        if(HAVE_GZBUFFER)
+            message("The gzbuffer found")
+        endif()
+        set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
 endif()
 
 if(libuv)
@@ -376,20 +374,22 @@ if(openssl AND NOT have_ssl)
         add_compile_definitions(HAVE_OPENSSL=1)
         message("Define to 1 if you have openssl")
 
-        # something here with the libs
-
-        check_library_exists("${OPENSSL_LIBRARIES}" EVP_DigestInit_ex "" have_digestinit_ex)
+        set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
+        set(CMAKE_REQUIRED_LIBRARIES "${OPENSSL_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")
+        
+        check_symbol_exists(EVP_DigestInit_ex "openssl/evp.h" have_digestinit_ex)
         if(have_digestinit_ex)
             add_compile_definitions(HAVE_OLD_OPENSSL=1)
             message("Define to 1 if you have old openssl")
         endif()
 
-        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha224 "" have_evp_sha224)
-        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha256 "" have_evp_sha256)
-        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha384 "" have_evp_sha384)
-        check_library_exists("${OPENSSL_LIBRARIES}" EVP_sha512 "" have_evp_sha512)
+        check_symbol_exists(EVP_sha224 "openssl/evp.h" have_evp_sha224)
+        check_symbol_exists(EVP_sha256 "openssl/evp.h" have_evp_sha256)
+        check_symbol_exists(EVP_sha384 "openssl/evp.h" have_evp_sha384)
+        check_symbol_exists(EVP_sha512 "openssl/evp.h" have_evp_sha512)
 
-        # again something here with the libs
+        set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
+
     else()
         message(WARNING "Cannot find openssl in the system. Try install it first")
         message(WARNING "ARIA2_DEP_NOT_MET([openssl])")
@@ -406,40 +406,34 @@ if(NOT have_openssl)
         if(LIBNETTLE_FOUND)
             add_compile_definitions(HAVE_LIBNETTLE=1)
             message("Define to 1 if you have libnettle")
+            set(have_libnettle TRUE)
         else()
             message(WARNING "ARIA2_DEP_NOT_MET([libnettle8t64])")
         endif()
     endif()
 
-    if(libgmp AND (libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
-        find_package(gmp REQUIRED)
-        if(gmp_FOUND)
-            check_library_exists(gmp __gmpz_init "" have_libgmp)
-        endif()
-
+    if(libgmp AND (have_libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
+        set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
+        set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} libgmp.so")
+       
+        check_symbol_exists(__gmpz_init "gmp.h" have_libgmp)
         if(have_libgmp)
-            set(LIBGMP_CFLAGS)
-            set(LIBGMP_LIBS "-lgmp")
+          
             # TODO: the configure_file() command is missing
-
             add_compile_definitions(HAVE_LIBGMP=1)
             message("Define to 1 if you have libgmp")
-            set(save_LIBS "${LIBS}")
-            set(LIBS "${LIBGMP_LIBS} ${LIBS]}")
-            
-            check_library_exists(gmp __gmpz_powm_sec "" have_mpz_powm_sec)
-            
-            set(LIBS "${save_LIBS}")
-
-            if(have_mpz_powm_sec)
+            check_symbol_exists(__gmpz_pown_sec "gmp.h" have_mpz_powm_sec)
+            if(have_mpz_powm_sec)            
                 add_compile_definitions(HAVE_GMP_SEC=1)
                 message("Define to 1 if you have a GMP with sec functions.")
             endif()
 
-        else()
-            message(WARNING "libgmp not found. Try install it first")
+            else()
+            message(WARNING "libgmp not found")
             message(WARNING "ARIA2_DEP_NOT_MET([libgmp])")
-        endif()
+            endif()
+
+        set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
     endif()
 
     if(libgcrypt AND NOT have_nativetls AND NOT have_libnettle)
@@ -450,7 +444,7 @@ endif()
 
 set(have_libssh2 FALSE)
 if(libssh2)
-    pkg_check_modules(LIBSSH2 REQUIRED "libssh2")
+    pkg_check_modules(LIBSSH2 "libssh2" REQUIRED)
     if(LIBSSH2_FOUND)
         set(have_libssh2 TRUE)
         add_compile_definitions(HAVE_LIBSSH2=1)
@@ -469,7 +463,7 @@ endif()
 set(have_libcares FALSE)
 if(libcares)
     pkg_check_modules(LIBCARES2 "libcares > 1.16.0")
-    if(libcares2_FOUND)
+    if(LIBCARES2_FOUND)
         set(have_libcares TRUE)
         add_compile_definitions(HAVE_LIBCARES=1)
         message("Define to 1 if you have libcares")
@@ -505,61 +499,60 @@ endif()
 if(have_ssl)
     add_compile_definitions(ENABLE_SSL=1)
     message("Define to 1 if ssl support is enabled")
-    set(ENABLE_SSL true)
-else()
+    # TODO: uses the AM_CONDITIONAL([ENABLE_SSL], true)
     set(have_ssl no)
-    set(ENABLE_SSL false)
+    # TODO: uses the AM_CONDITIONAL([ENABLE_SSL], false)
 endif()
 
 # this can be done more clearly with a list of the variables that I want to check if they
 # are true or false.
 
 if(have_osx)
-    set(HAVE_OSX TRUE)
+    set(HAVE_OSX TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_appletls)
-    set(HAVE_APPLETLS TRUE)
+    set(HAVE_APPLETLS TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_wintls)
-    set(HAVE_WINTLS TRUE)
+    set(HAVE_WINTLS TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 # TODO: this might be wrong, since at the configure.ac is uses AM_CONDITIONAL
 # which means it defines variables at the source code
 if(use_md STREQUAL "apple")
-    set(USE_APPLE_MD TRUE)
+    set(USE_APPLE_MD TRUE) # TODO: uses the AM_CONDITIONAL
 elseif(use_md STREQUAL "windows")
-    set(USE_WINDOWS_MD TRUE)
+    set(USE_WINDOWS_MD TRUE) # TODO: uses the AM_CONDITIONAL
 elseif(use_md STREQUAL "libnettle")
-    set(USE_LIBNETTLE_MD TRUE)
+    set(USE_LIBNETTLE_MD TRUE) # TODO: uses the AM_CONDITIONAL
 elseif(use_md STREQUAL "libgcrypt")
-    set(USE_LIBGCRYPT TRUE)
+    set(USE_LIBGCRYPT TRUE) # TODO: uses the AM_CONDITIONAL
 elseif(use_md STREQUAL "openssl")
-    set(USE_OPENSSL_MD TRUE)
+    set(USE_OPENSSL_MD TRUE) # TODO: uses the AM_CONDITIONAL
 elseif(use_md STREQUAL "internal")
-    set(USE_INTERNAL_MD TRUE)
+    set(USE_INTERNAL_MD TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libgnutls)
-    set(HAVE_LIBGNUTLS TRUE)
+    set(HAVE_LIBGNUTLS TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libnettle)
-    set(HAVE_LIBNETTLE TRUE)
+    set(HAVE_LIBNETTLE TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_libgmp)
-    set(HAVE_LIBGMP TRUE)
+    set(HAVE_LIBGMP TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(libgcrypt)
-    set(HAVE_LIBGCRYPT TRUE)
+    set(HAVE_LIBGCRYPT TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(have_openssl)
-    set(HAVE_OPENSSL TRUE)
+    set(HAVE_OPENSSL TRUE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 
@@ -653,6 +646,9 @@ if(have_libssh2)
 endif()
 
 if(CMAKE_HOST_SOLARIS)
+    
+    set(save_LIBS "${CMAKE_REQUIRED_LIBS}")
+
     # TODO: lines from 683 - 691
     # Should recheck that case
     #
@@ -694,8 +690,8 @@ if(HAVE_SSIZEOF_SIZE_T)
 endif()
 
 # in order to be able to find the C struct, I have to enable C language
-# set(CMAKE_C_STANDARD 11)
-# set(CMAKE_C_STANDARD_REQUIRED TRUE)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED TRUE)
 # now it will be able to find the c struct
 include(CheckStructHasMember)
 check_struct_has_member(
@@ -704,6 +700,7 @@ check_struct_has_member(
     time.h
     have_timespec
 )
+
 if(have_timespec)
     add_compile_definitions(HAVE_A2_STRUCT_TIMESPEC=1)
     message("Define to 1 if the system has the type 'struct timespec'")
@@ -1053,33 +1050,33 @@ endif()
 
 check_symbol_exists(basename libgen.h HAVE_BASENAME)
 if(HAVE_BASENAME)
-   message("The basename has been found")
+   message("The basename has been found") # TODO: uses the AM_CONDITIONAL
 endif()
 
 check_symbol_exists(gai_strerror "netdb.h" HAVE_GAI_STRERROR)
 if(HAVE_GAI_STRERROR)
-   message("The gai has been found")
+   message("The gai has been found") # TODO: uses the AM_CONDITIONAL
 endif()
 
 check_symbol_exists(getaddrinfo "netdb.h" HAVE_GETADDRINFO)
 if(HAVE_GETADDRINFO)
-   message("The getaddrinfo has been found")
+   message("The getaddrinfo has been found") # TODO: uses the AM_CONDITIONAL
 endif()
 
 check_symbol_exists(gettimeofday "sys/time.h" HAVE_GETTIMEOFDAY)
 if(HAVE_GETTIMEOFDAY)
-   message("The gettimeofday is present")
+   message("The gettimeofday is present") # TODO: uses the AM_CONDITIONAL
 endif()
 
 set(localStrptimeLocation ${CMAKE_CURRENT_SOURCE_DIR}/src)
 check_symbol_exists(strptime "${localStrptimeLocation}/strptime.h" HAVE_STRPTIME)
 if(HAVE_STRPTIME)
-   message("The strptime is present")
+   message("The strptime is present") # TODO: uses the AM_CONDITIONAL
 endif()
 
 check_symbol_exists(daemon unistd.h HAVE_DAEMON)
 if(HAVE_DAEMON)
-   message("The daemon is present")
+   message("The daemon is present") # TODO: uses the AM_CONDITIONAL
 endif()
 
 check_symbol_exists(poll "poll.h" have_poll)
@@ -1092,24 +1089,45 @@ if(MINGW)
     # set the AM_CONDITIONALS in the config.h.in
 endif()
 
-check_cxx_symbol_exists(timegm time.h HAVE_TIMEGM)
+check_cxx_symbol_exists(timegm "time.h" HAVE_TIMEGM)
 if(HAVE_TIMEGM)
-    message("The timegm has been found")
+    message("The timegm has been found") # TODO: uses the AM_CONDITIONAL
 endif()
 
 # TODO: this library cannot be found, yet
-check_cxx_symbol_exists(port_associate port.h HAVE_PORT_ASSOCIATE)
+check_cxx_symbol_exists(port_associate "port.h" HAVE_PORT_ASSOCIATE)
 if(HAVE_PORT_ASSOCIATE)
-    message("The port_associate has been found")
+    message("The port_associate has been found") # TODO: uses the AM_CONDITIONAL
 endif()
 
 #==========================#
-set(oldIncludeHeaders "${CMAKE_REQUIRED_INCLUDES}")
+set(save_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
 set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")
 
 check_cxx_symbol_exists(kqueue "sys/event.h" HAVE_KQUEUE)
 if(HAVE_KQUEUE)
-    message("The kqueue has been found.")
+    message("The kqueue has been found.") # TODO: uses the AM_CONDITIONAL
+
+    set(keventCode [==[
+            #include <sys/time.h>
+            #include <sys/types.h>
+            #include <sys/event.h>
+
+            struct kevent event;
+
+            int main() {
+                event.udata = reinterpret_cast<intptr_r>(&event);
+                return 0;
+            }
+        ]==]
+    )
+
+    message("Whether struct kevent.udata is intrptr_t")
+    check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
+    if(kevent_udata_intptr_t)
+      add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
+        message("Define to 1 if struct kevent.udata is intptr_t")
+    endif()
 else()
 	message("The kqueue has NOT been found")
 #    message("Try installing it with the command: sudo apt install libkqueue-dev")
@@ -1118,32 +1136,7 @@ else()
 #    message("in order to find the header  (event.h)")
 endif()
 
-
-include(CheckCXXSourceCompiles)
-set(keventCode [==[
-        #include <sys/time.h>
-        #include <sys/types.h>
-        #include <sys/event.h>
-
-        struct kevent event;
-
-        int main() {
-            event.udata = reinterpret_cast<intptr_r>(&event);
-            return 0;
-        }
-    ]==]
-)
-
-if(HAVE_KQUEUE)
-    message("Whether struct kevent.udata is intrptr_t")
-    check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
-    if(kevent_udata_intptr_t)
-      add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
-        message("Define to 1 if struct kevent.udata is intptr_t")
-    endif()
-endif()
-
-set(CMAKE_REQUIRED_INCLUDES "${oldIncludeHeaders}")
+set(CMAKE_REQUIRED_INCLUDES "${save_INCLUDES}")
 #==========================#
 
 check_struct_has_member(
@@ -1194,7 +1187,6 @@ if(have_option_const_name)
     message("Define 1 if struct option.name is const char*")
 endif()
 
-
 if(websocket)
     add_subdirectory(deps/wslay)
     add_compile_definitions(ENABLE_WEBSOCKET=1)
@@ -1203,18 +1195,21 @@ if(websocket)
     set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     # TODO:  Should check in the future as currently this is not enabled.
     set(WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")
+    # TODO: AC_SUBST([WSLAY_CFLAGS])
+    # TODO: AC_SUBST([WSLAY_LIBS])
 endif()
 
-if(websocket)
-    # set the ENABLED_WEBSOCKET with the configure_file() cmake command
+if(websocket) 
+    # TODO: uses the AM_CONDITIONAL
+    # set the ENABLE_WEBSOCKET with the configure_file() cmake command
 endif()
 
-if(libaria2)
+if(libaria2) 
+    # TODO: uses the AM_CONDITIONAL
     # set the ENABLE_LIBARIA2  with the configure_file() cmake command
 endif()
 
-# line 1051
-# AC_SUBST([bashcompletiondir]) check this again
+# AC_SUBST([bashcompletiondir]) # TODO: uses # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
 
 if(ARIA2_STATIC)
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
@@ -1237,7 +1232,7 @@ endif()
 # AC_SUBST([EXTRALDFLAGS])
 # AC_SUBST([EXTRALIBS])
 
-
+set(save_CXXFLAGS "${CXXFLAGS}")
 # I should check this, with foreach() loop, in the test project I have
 if(werror)
     include(CheckCompilerFlags)
@@ -1258,4 +1253,23 @@ if(werror)
     endif()
 
 endif()
+
+set(WARNCXXFLAGS "${CXXFLAGS}")
+set(CXXFLAGS "${save_CXXFLAGS}")
+
+# AC_SUBST([WARNCXXFLAGS])
+
+message(STATUS "Summary of build options")
+
+message("Host:    ${CMAKE_HOST_SYSTEM_NAME}\n
+
+        Target:   ${CMAKE_SYSTEM_NAME}\n
+
+        CXXFLAGS: ${CXXFLAGS}\n
+
+        CPPFLAGS: ${CPPFLAGS}\n
+
+        LibUV:    ${have_libuv}\n
+        SQLITE3:  ${have_sqlite3}\n
+")
 
