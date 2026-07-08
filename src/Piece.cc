@@ -347,8 +347,13 @@ void Piece::updateWrCache(WrDiskCache* diskCache, unsigned char* data,
   cell->len = len;
   cell->capacity = capacity;
   bool rv;
-  rv = wrCache_->cacheData(cell);
-  assert(rv);
+  try {
+    rv = wrCache_->cacheData(cell);
+    assert(rv);
+  } catch (RecoverableException& e) {
+    delete cell;
+    throw;
+  }
   rv = diskCache->update(wrCache_.get(), len);
   assert(rv);
 }
