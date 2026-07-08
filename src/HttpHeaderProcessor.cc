@@ -43,6 +43,7 @@
 #include "DlAbortEx.h"
 #include "A2STR.h"
 #include "error_code.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -362,7 +363,8 @@ bool HttpHeaderProcessor::parse(const unsigned char* data, size_t length)
 
     case FIELD_NAME:
       if (util::isLws(c) || util::isCRLF(c)) {
-        throw DL_ABORT_EX("Bad HTTP header: missing ':'");
+        A2_LOG_WARN("Bad HTTP header: missing ':'");
+        break;
       }
 
       if (c == ':') {
