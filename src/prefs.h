@@ -287,6 +287,10 @@ extern PrefPtr PREF_SHOW_CONSOLE_READOUT;
 extern PrefPtr PREF_STREAM_PIECE_SELECTOR;
 // value: true | false
 extern PrefPtr PREF_TRUNCATE_CONSOLE_READOUT;
+#ifdef _WIN32
+// value: true | false
+extern PrefPtr PREF_DISABLE_SLEEP;
+#endif // _WIN32
 // value: true | false
 extern PrefPtr PREF_PAUSE;
 // value: default | full | hide
