@@ -638,8 +638,8 @@ void OptimizeConcurrentDownloadsOptionHandler::parseArg(
     for (;;) {
       char* end;
       errno = 0;
-      strtod(sptr->c_str(), &end);
-      if (errno != 0 || sptr->c_str() + sptr->size() != end) {
+      double result = strtod(sptr->c_str(), &end);
+      if (errno == ERANGE || result == 0.0) {
         throw DL_ABORT_EX(fmt("Bad number '%s'", sptr->c_str()));
       }
       option.put(pref, *sptr);

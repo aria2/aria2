@@ -129,7 +129,7 @@ int cookieRowMapper(void* data, int columns, char** values, char** names)
       expiryTime,
       true, // persistent
       std::move(cookieDomain),
-      numericHost || (values[0] && values[0][0] != '.'), // hostOnly
+      numericHost || values[0][0] != '.', // hostOnly
       std::move(cookiePath), values[2] && strcmp(values[2], "1") == 0, // secure
       false,
       lastAccessTime // creation time. Set this later.
