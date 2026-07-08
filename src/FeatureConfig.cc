@@ -314,7 +314,15 @@ std::string getOperatingSystemInfo()
     rv << "Legacy, probably XP";
     return rv.str();
   }
-  switch (ovi.dwMinorVersion) {
+  else if (ovi.dwMajorVersion == 10) {
+    if (ovi.wProductType == VER_NT_WORKSTATION) {
+      rv << "10";
+    }
+    else {
+      rv << "Server 2016";
+    }
+  }
+  else switch (ovi.dwMinorVersion) {
   case 0:
     if (ovi.wProductType == VER_NT_WORKSTATION) {
       rv << "Vista";
@@ -333,9 +341,25 @@ std::string getOperatingSystemInfo()
     }
     break;
 
-  default:
-    // Windows above 6.2 does not actually say so. :p
+  case 2:
+    if (ovi.wProductType == VER_NT_WORKSTATION) {
+      rv << "8";
+    }
+    else {
+      rv << "Server 2012";
+    }
+    break;
 
+  case 3:
+    if (ovi.wProductType == VER_NT_WORKSTATION) {
+      rv << "8.1";
+    }
+    else {
+      rv << "Server 2012 R2";
+    }
+    break;
+
+  default:
     rv << ovi.dwMajorVersion;
     if (ovi.dwMinorVersion) {
       rv << "." << ovi.dwMinorVersion;
