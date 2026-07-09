@@ -37,29 +37,37 @@
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
+#include <vector>
 
 namespace aria2 {
 
 std::string fmt(const char* fmtTemplate, ...)
 {
+  // guess initial buffer size!
+  std::vector<char> buf(strlen(fmtTemplate) * 4);
   va_list ap;
-  va_start(ap, fmtTemplate);
-  char buf[2048];
-  int rv;
-  rv = vsnprintf(buf, sizeof(buf), fmtTemplate, ap);
+
+  while (1) {
+    va_start(ap, fmtTemplate);
+    int rv = vsnprintf(buf.data(), buf.size(), fmtTemplate, ap);
+    va_end(ap);
+
+    if (rv >= buf.size()) { // truncated
+      buf.resize(rv + 1);
+    }
+    else if (rv >= 0) { // success
+      return buf.data();
+    }
 #ifdef __MINGW32__
-  // MINGW32 vsnprintf returns -1 if output is truncated.
-  if (rv < 0 && rv != -1) {
-    // Reachable?
-    buf[0] = '\0';
+    else if (rv == -1 && buf.size() < 4096) { // truncated?
+      buf.resize(buf.size() * 4);
+    }
+#endif // __MINGW32__
+    else { // error
+      buf[0] = '\0';
+      return buf.data();
+    }
   }
-#else  // !__MINGW32__
-  if (rv < 0) {
-    buf[0] = '\0';
-  }
-#endif // !__MINGW32__
-  va_end(ap);
-  return buf;
 }
 
 } // namespace aria2
