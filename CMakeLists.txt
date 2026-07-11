@@ -180,13 +180,12 @@ if(libuv)
     if(LIBUV_FOUND)
         message("The libuv found, with version ${LIBUV_VERSION}")
         add_compile_definitions(HAVE_LIBUV=1)
+        set(HAVE_LIBUV TRUE CACHE BOOL "LibUV was found" FORCE)
     else()
         message(WARNING "ARIA2_DEP_NOT_MET([libuv])")
     endif()
 endif()
 
-# TODO: use the configure_file() command to set the below command from autotools
-#AM_CONDITIONAL([HAVE_LIBUV]...)
 
 set(have_libxml2 FALSE)
 if(libxml2)
@@ -499,110 +498,102 @@ endif()
 if(have_ssl)
     add_compile_definitions(ENABLE_SSL=1)
     message("Define to 1 if ssl support is enabled")
-    # TODO: uses the AM_CONDITIONAL([ENABLE_SSL], true)
+    set(ENABLE_SSL TRUE CACHE BOOL "ssh was found" FORCE)
+else()
     set(have_ssl no)
-    # TODO: uses the AM_CONDITIONAL([ENABLE_SSL], false)
+    set(ENABLE_SSL FALSE CACHE BOOL "ssh was not found" FORCE)
 endif()
 
 # this can be done more clearly with a list of the variables that I want to check if they
 # are true or false.
 
 if(have_osx)
-    set(HAVE_OSX TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_OSX TRUE CACHE BOOL "osx was found" FORCE)
 endif()
-
 if(have_appletls)
-    set(HAVE_APPLETLS TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_APPLETLS TRUE CACHE BOOL "appletls was found" FORCE)
 endif()
-
 if(have_wintls)
-    set(HAVE_WINTLS TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_WINTLS TRUE CACHE BOOL "wintls was found" FORCE)
 endif()
-
-# TODO: this might be wrong, since at the configure.ac is uses AM_CONDITIONAL
-# which means it defines variables at the source code
 if(use_md STREQUAL "apple")
-    set(USE_APPLE_MD TRUE) # TODO: uses the AM_CONDITIONAL
-elseif(use_md STREQUAL "windows")
-    set(USE_WINDOWS_MD TRUE) # TODO: uses the AM_CONDITIONAL
-elseif(use_md STREQUAL "libnettle")
-    set(USE_LIBNETTLE_MD TRUE) # TODO: uses the AM_CONDITIONAL
-elseif(use_md STREQUAL "libgcrypt")
-    set(USE_LIBGCRYPT TRUE) # TODO: uses the AM_CONDITIONAL
-elseif(use_md STREQUAL "openssl")
-    set(USE_OPENSSL_MD TRUE) # TODO: uses the AM_CONDITIONAL
-elseif(use_md STREQUAL "internal")
-    set(USE_INTERNAL_MD TRUE) # TODO: uses the AM_CONDITIONAL
+    set(USE_APPLE_MD TRUE CACHE BOOL "md is equal to apple" FORCE)
 endif()
-
+if(use_md STREQUAL "windows")
+    set(USE_WINDOWS_MD TRUE CACHE BOOL "md is equal to windows" FORCE)
+endif()
 if(have_libgnutls)
-    set(HAVE_LIBGNUTLS TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBGNUTLS TRUE CACHE BOOL "gnutls is enabled" FORCE)
 endif()
-
 if(have_libnettle)
-    set(HAVE_LIBNETTLE TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBNETTLE TRUE CACHE BOOL "libnettle is enabled" FORCE)
 endif()
-
+if(use_md STREQUAL "libnettle")
+    set(USE_LIBNETTLE_MD TRUE CACHE BOOL "md is equal to libnettle" FORCE)
+endif()
 if(have_libgmp)
-    set(HAVE_LIBGMP TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBGMP TRUE CACHE BOOL "libgmp was found" FORCE)
 endif()
-
 if(libgcrypt)
-    set(HAVE_LIBGCRYPT TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBGCRYPT TRUE CACHE BOOL "libgcrypt was found" FORCE)
 endif()
-
+if(use_md STREQUAL "libgcrypt")
+    set(USE_LIBGCRYPT_MD TRUE CACHE BOOL "md is equal to libgcrypt" FORCE)
+endif()
 if(have_openssl)
-    set(HAVE_OPENSSL TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_OPENSSL TRUE CACHE BOOL "openssl was found" FORCE)
+endif()
+if(use_md STREQUAL "openssl")
+    set(USE_OPENSSL_MD TRUE CACHE BOOL "md is equal to openssl" FORCE)
+endif()
+if(use_md STREQUAL "internal")
+    set(USE_INTERNAL_MD TRUE CACHE BOOL "md is equal to internal" FORCE)
 endif()
 
 
 if(have_libgmp OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_BIGNUM FALSE) # TODO: uses the AM_CONDITIONAL
+    set(USE_INTERNAL_BIGNUM FALSE CACHE BOOL "internal bignum set to FALSE" FORCE)
 else()
     add_compile_definitions(USE_INTERNAL_BIGNUM=1)
     message("Define to 1 if the internal BIGNUM support is enabled")
-    set(USE_INTERNAL_BIGNUM TRUE) # TODO: uses the AM_CONDITIONAL
+    set(USE_INTERNAL_BIGNUM TRUE CACHE BOOL "internal bignum set to TRUE" FORCE)
 endif()
 
 if(have_libnettle OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_ARC4 FALSE) # TODO: uses the AM_CONDITIONAL
+    set(USE_INTERNAL_ARC4 FALSE CACHE BOOL "internal arc4 set to FALSE" FORCE)
 else()
     add_compile_definitions(USE_INTERNAL_ARC4=1)
     message("Define to 1 if internal ARC4 support is enabled")
-    set(USE_INTERNAL_ARC4 TRUE) # TODO: uses the AM_CONDITIONAL
+    set(USE_INTERNAL_ARC4 TRUE CACHE BOOL "internal arc4 set to TRUE" FORCE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(bittorrent)
     add_compile_definitions(ENABLE_BITTORRENT=1)
     message("Define to 1 if BitTorrent support is enabled")
-    set(ENABLE_BITTORRENT TRUE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_BITTORRENT TRUE CACHE BOOL "bittorrent set to TRUE" FORCE)
 else()
     if(bittorrent)
         message(WARNING "ARIA2_FET_NOT_SUPPORTED([bittorrent])")
     endif()
-
     set(bittorrent FALSE)
-    set(ENABLE_BITTORRENT FALSE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_BITTORRENT FALSE CACHE BOOL "bittorrent set to FALSE" FORCE)
 endif()
 
 if((have_libxml2 OR have_libexpat) AND metalink)
     add_compile_definitions(ENABLE_METALINK=1)
     message("Define to 1 if Metalink support is enabled")
-    set(ENABLE_METALINK TRUE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_METALINK TRUE CACHE BOOL "metalink is enabled" FORCE)
 else()
     if(metalink)
         message(WARNING "ARIA2_FET_NOT_SUPPORTED([metalink])")
     endif()
     set(metalink FALSE)
-    set(ENABLE_METALINK FALSE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_METALINK FALSE CACHE BOOL "metalink is disabled" FORCE)
 endif()
 
 if(have_libxml2 OR have_libexpat)
-    set(HAVE_SOME_XMLLIB) # TODO: uses the AM_CONDITIONAL
-endif()
+    set(HAVE_SOME_XMLLIB TRUE CACHE BOOL "xml2 or expat exists" FORCE)
 
-if(have_libxml2 OR have_libexpat)
-    # This variable is not set from the options in the beggining, so the 'enable_' prefix is correct
     set(enable_xml_rpc TRUE)
 else()
     set(enable_xml_rpc FALSE)
@@ -614,35 +605,35 @@ if(enable_xml_rpc)
 endif()
 
 if(enable_xml_rpc)
-    set(ENABLE_XML_RPC TRUE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_XML_RPC TRUE CACHE BOOL "xml_rpc is enabled" FORCE)
 endif()
 
 if(have_libxml2)
-    set(HAVE_LIBXML2 TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBXML2 TRUE CACHE BOOL "xlm2 is enabled" FORCE)
 endif()
 
 if(have_libexpat)
-    set(HAVE_LIBEXPAT TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBEXPAT TRUE CACHE BOOL "expat is enabled" FORCE)
 endif()
 
 if(have_libcares)
     add_compile_definitions(ENABLE_ASYNC_DNS=1)
     message("Define to 1 asynchronous DNS support is enabled")
-    set(ENABLE_ASYNC_DNS TRUE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_ASYNC_DNS TRUE CACHE BOOL "c-ares was found" FORCE)
 else()
-    set(ENABLE_ASYNC_DNS FALSE) # TODO: uses the AM_CONDITIONAL
+    set(ENABLE_ASYNC_DNS FALSE CACHE BOOL "c-ares was not found" FORCE)
 endif()
 
 if(have_zlib)
-    set(HAVE_ZLIB TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_ZLIB TRUE CACHE BOOL "z-lib was found" FORCE)
 endif()
 
 if(have_sqlite3)
-    set(HAVE_SQLITE3 TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_SQLITE3 TRUE CACHE BOOL "sqlite3 was found" FORCE)
 endif()
 
 if(have_libssh2)
-    set(HAVE_LIBSSH2 TRUE) # TODO: uses the AM_CONDITIONAL
+    set(HAVE_LIBSSH2 TRUE CACHE BOOL "ssh2 was found" FORCE)
 endif()
 
 if(CMAKE_HOST_SOLARIS)
@@ -1030,6 +1021,11 @@ if(epoll)
     endif()
 endif()
 # TODO: missing one AM_CONDITIONAL for HAVE_EPOLL
+if(have_epoll)
+    set(HAVE_EPOLL TRUE CACHE BOOL "epoll exists" FORCE)
+else()
+    set(HAVE_EPOLL FALSE CACHE BOOL "epoll NOT exists" FORCE)
+endif()
 
 check_symbol_exists(posix_fallocate "fcntl.h" HAVE_POSIX_FALLOCATE)
 if(HAVE_POSIX_FALLOCATE)
@@ -1048,65 +1044,87 @@ endif()
 # following code
 
 
-check_symbol_exists(basename libgen.h HAVE_BASENAME)
-if(HAVE_BASENAME)
-   message("The basename has been found") # TODO: uses the AM_CONDITIONAL
+check_symbol_exists(basename libgen.h BASENAME_EXISTS)
+if(BASENAME_EXISTS)
+   set(HAVE_BASENAME TRUE CACHE BOOL "The basename has been found" FORCE)
+else()
+    set(HAVE_BASENAME FALSE CACHE BOOL "The basename has NOT been found" FORCE)
 endif()
 
-check_symbol_exists(gai_strerror "netdb.h" HAVE_GAI_STRERROR)
-if(HAVE_GAI_STRERROR)
-   message("The gai has been found") # TODO: uses the AM_CONDITIONAL
+check_symbol_exists(gai_strerror "netdb.h" GAI_STRERROR_EXISTS)
+if(GAI_STRERROR_EXISTS)
+   set(HAVE_GAI_STRERROR TRUE CACHE BOOL "The gai has been found" FORCE)
+else()
+    set(HAVE_GAI_STRERROR FALSE CACHE BOOL "The gai has NOT been found" FORCE)
 endif()
 
-check_symbol_exists(getaddrinfo "netdb.h" HAVE_GETADDRINFO)
-if(HAVE_GETADDRINFO)
-   message("The getaddrinfo has been found") # TODO: uses the AM_CONDITIONAL
+check_symbol_exists(getaddrinfo "netdb.h" GETADDRINFO_EXISTS)
+if(GETADDRINFO_EXISTS)
+   set(HAVE_GETADDRINFO TRUE CACHE BOOL "The getaddrinfo has been found" FORCE)
+else()
+    set(HAVE_GETADDRINFO FALSE CACHE BOOL "The getaddrinfo has NOT been found" FORCE)
 endif()
 
-check_symbol_exists(gettimeofday "sys/time.h" HAVE_GETTIMEOFDAY)
+check_symbol_exists(gettimeofday "sys/time.h" GETTIMEOFDAY_EXISTS)
 if(HAVE_GETTIMEOFDAY)
-   message("The gettimeofday is present") # TODO: uses the AM_CONDITIONAL
+   set(HAVE_GETTIMEOFDAY TRUE CACHE BOOL "The gettimeofday is present" FORCE)
+else()
+    set(HAVE_GETTIMEOFDAY FALSE CACHE BOOL "The gettimeofday is NOT present" FORCE)
 endif()
 
 set(localStrptimeLocation ${CMAKE_CURRENT_SOURCE_DIR}/src)
-check_symbol_exists(strptime "${localStrptimeLocation}/strptime.h" HAVE_STRPTIME)
-if(HAVE_STRPTIME)
-   message("The strptime is present") # TODO: uses the AM_CONDITIONAL
+check_symbol_exists(strptime "${localStrptimeLocation}/strptime.h" STRPTIME_EXISTS)
+if(STRPTIME_EXISTS)
+   set(HAVE_STRPTIME TRUE CACHE BOOL "The strptime is present" FORCE)
+else()
+    set(HAVE_STRPTIME FALSE CACHE BOOL "The strptime is NOT present" FORCE)
 endif()
 
-check_symbol_exists(daemon unistd.h HAVE_DAEMON)
-if(HAVE_DAEMON)
-   message("The daemon is present") # TODO: uses the AM_CONDITIONAL
+check_symbol_exists(daemon unistd.h DAEMON_EXISTS)
+if(DAEMON_EXISTS)
+   message("The daemon is present")
+   set(HAVE_DAEMON TRUE CACHE BOOL "The daemon is present" FORCE)
+else()
+    set(HAVE_DAEMON FALSE CACHE BOOL "The daemon is NOT present" FORCE)
 endif()
 
-check_symbol_exists(poll "poll.h" have_poll)
+check_symbol_exists(poll "poll.h" POLL_EXISTS)
 if(have_poll)
-    # write into the config.h.in file the HAVE_POLL=true
-    # the respective of AM_CONDITIONAL([HAVE_POLL], [test "x$have_poll" = "yes"])
+    set(HAVE_POLL TRUE CACHE BOOL "The poll is present" FORCE)
+else()
+    set(HAVE_POLL FALSE CACHE BOOL "The poll is NOT present" FORCE)
 endif()
 
 if(MINGW)
-    # set the AM_CONDITIONALS in the config.h.in
+    set(MINGW_BUILD TRUE CACHE BOOL "Build for Mingw" FORCE)
+    set(HAVE_GETADDRINFO TRUE CACHE BOOL "Enable getaddrinfo" FORCE)
+    set(HAVE_GAI_STRERROR FALSE CACHE BOOL "Disable getaddrinfo" FORCE)
+else()
+    set(MINGW_BUILD FALSE CACHE BOOL "Not build for Mingw" FORCE)
 endif()
 
-check_cxx_symbol_exists(timegm "time.h" HAVE_TIMEGM)
-if(HAVE_TIMEGM)
-    message("The timegm has been found") # TODO: uses the AM_CONDITIONAL
+check_cxx_symbol_exists(timegm "time.h" TIMEGM_EXISTS)
+if(TIMEGM_EXISTS)
+    set(HAVE_TIMEGM TRUE CACHE BOOL "The timegm has been found" FORCE)
+else()
+    set(HAVE_TIMEGM FALSE CACHE BOOL "The timegm has NOT been found" FORCE)
 endif()
 
 # TODO: this library cannot be found, yet
-check_cxx_symbol_exists(port_associate "port.h" HAVE_PORT_ASSOCIATE)
-if(HAVE_PORT_ASSOCIATE)
-    message("The port_associate has been found") # TODO: uses the AM_CONDITIONAL
+check_cxx_symbol_exists(port_associate "port.h" PORT_ASSOCIATE_EXISTS)
+if(PORT_ASSOCIATE_EXISTS)
+    set(HAVE_PORT_ASSOCIATE TRUE CACHE BOOL "The port_associate has been found" FORCE)
+else()
+    set(HAVE_PORT_ASSOCIATE FALSE CACHE BOOL "The port_associate has NOT been found" FORCE)
 endif()
 
 #==========================#
 set(save_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
 set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")
 
-check_cxx_symbol_exists(kqueue "sys/event.h" HAVE_KQUEUE)
-if(HAVE_KQUEUE)
-    message("The kqueue has been found.") # TODO: uses the AM_CONDITIONAL
+check_cxx_symbol_exists(kqueue "sys/event.h" KQUEUE_EXISTS)
+if(KQUEUE_EXISTS)
+    set(HAVE_KQUEUE TRUE CACHE BOOL "The kqueue has been found." FORCE)
 
     set(keventCode [==[
             #include <sys/time.h>
@@ -1199,14 +1217,12 @@ if(websocket)
     # TODO: AC_SUBST([WSLAY_LIBS])
 endif()
 
-if(websocket) 
-    # TODO: uses the AM_CONDITIONAL
-    # set the ENABLE_WEBSOCKET with the configure_file() cmake command
+if(websocket)
+    set(ENABLE_WEBSOCKET TRUE CACHE BOOL "Websocket is enabled" FORCE)
 endif()
 
-if(libaria2) 
-    # TODO: uses the AM_CONDITIONAL
-    # set the ENABLE_LIBARIA2  with the configure_file() cmake command
+if(libaria2)
+    set(ENABLE_LIBARIA2 TRUE CACHE BOOL "Libaria2 is enabled" FORCE)
 endif()
 
 # AC_SUBST([bashcompletiondir]) # TODO: uses # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
@@ -1257,7 +1273,7 @@ endif()
 set(WARNCXXFLAGS "${CXXFLAGS}")
 set(CXXFLAGS "${save_CXXFLAGS}")
 
-# AC_SUBST([WARNCXXFLAGS])
+# TODO: AC_SUBST([WARNCXXFLAGS])
 
 message(STATUS "Summary of build options")
 
