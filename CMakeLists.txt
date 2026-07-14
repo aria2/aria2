@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)  # AC_USE_SYSTEM_EXTENSIONS
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 set(EXTRACFLAGS)
 set(EXTRACXXFLAGS)
 set(EXTRACPPFLAGS)
@@ -157,7 +159,6 @@ if(libz)
             message("The libz found, with version ${ZLIB_VERSION}")
             set(ZLIB_CFLAGS "")
             set(ZLIB_LIBS "-lz")
-            # use the configure_file() here to substitute the variables
         else()
             message(WARNING "ARIA2_DEP_NOT_MET(libz)")
         endif()
@@ -175,9 +176,11 @@ if(libz)
         set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
 endif()
 
+set(have_libuv FALSE)
 if(libuv)
     pkg_check_modules(LIBUV "libuv >= 1.13")
     if(LIBUV_FOUND)
+        set(have_libuv TRUE)
         message("The libuv found, with version ${LIBUV_VERSION}")
         add_compile_definitions(HAVE_LIBUV=1)
         set(HAVE_LIBUV TRUE CACHE BOOL "LibUV was found" FORCE)
@@ -200,10 +203,11 @@ if(libxml2)
     endif()
 endif()
 
+set(have_libexpat FALSE)
 if(libexpat AND NOT ${have_libxml2})
     find_package(EXPAT REQUIRED)
     if(EXPAT_FOUND)
-        message("The EXPAT lib found, with version ${EXPAT_VERSION}")
+        set(have_libexpat TRUE)
         message("Define to 1 if you have libexpat")
         add_compile_definitions(HAVE_LIBEXPAT=1)
     else()
@@ -211,11 +215,11 @@ if(libexpat AND NOT ${have_libxml2})
     endif()
 endif()
 
-
+set(have_sqlite3 FALSE)
 if(sqlite3)
     find_package(SQLite3 REQUIRED)
     if(SQLite3_FOUND)
-        message("The sqlite3 found, with version ${SQLite3_VERSION}")
+        set(have_sqlite3 TRUE)
         message("Define to 1 if you have sqlite3")
         add_compile_definitions(HAVE_SQLITE3=1)
         check_library_exists(${SQLite3_LIBRARIES} sqlite3_open_v2 "" sqlite3FuncFound)
@@ -263,9 +267,6 @@ if(appletls)
         message("Define to 1 if you have Apple TLS")
         add_compile_definitions(HAVE_APPLETLS=1)
         set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
-        # TODO: should use the configure_file() command to perform the substitution
-        # AC_SUBST([APPLETLS_LDFLAGS])
-
         set(have_appletls TRUE)
         set(have_ssl TRUE)
         set(have_nativetls TRUE)
@@ -325,7 +326,7 @@ if(wintls)
         add_compile_definitions(SECURITY_WIN32=1)
         message("Use security.h in WIN32 mode")
         set(WINTLS_LIBS "-lcrypt32 -lsecur32 -ladvapi32")
-        # here somehow I have to pass this variable to the config.h.in file with @...@ symbols #
+
         set(have_wintls TRUE)
         set(have_ssl TRUE)
         set(have_nativetls TRUE)
@@ -417,8 +418,9 @@ if(NOT have_openssl)
        
         check_symbol_exists(__gmpz_init "gmp.h" have_libgmp)
         if(have_libgmp)
-          
-            # TODO: the configure_file() command is missing
+            set(LIBGMP_CFLAGS "")
+            set(LIBGMP_LIBS "-lgmp")  # TODO: probably there is a better way to do this in cmake
+
             add_compile_definitions(HAVE_LIBGMP=1)
             message("Define to 1 if you have libgmp")
             check_symbol_exists(__gmpz_pown_sec "gmp.h" have_mpz_powm_sec)
@@ -984,7 +986,6 @@ if(tcmalloc)
         if(have_tcmalloc)
             set(TCMALLOC_CFLAGS)
             set(TCMALLOC_LIBS "-ltcmalloc_minimal")
-            # TODO: AC_SUBST[] commands
 
         else()
             if(tcmalloc)
@@ -1002,7 +1003,6 @@ if(jemalloc)
         if(have_jemalloc)
             set(JEMALLOC_CFLAGS)
             set(JEMALLOC_LIBS "-ljemalloc")
-            # TODO: AC_SUBST[] commands
 
         else()
             if(jemalloc)
@@ -1213,8 +1213,6 @@ if(websocket)
     set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     # TODO:  Should check in the future as currently this is not enabled.
     set(WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")
-    # TODO: AC_SUBST([WSLAY_CFLAGS])
-    # TODO: AC_SUBST([WSLAY_LIBS])
 endif()
 
 if(websocket)
@@ -1238,8 +1236,6 @@ if(WIN_BUILD AND libaria2)
     # Creating dll needs this
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")
 endif()
-
-
 
 # TODO: the respective substitution should be done with cofigure_file() command
 # AC_SUBST([EXTRACFLAGS])
@@ -1277,15 +1273,25 @@ set(CXXFLAGS "${save_CXXFLAGS}")
 
 message(STATUS "Summary of build options")
 
-message("Host:    ${CMAKE_HOST_SYSTEM_NAME}\n
+include(Helpers)
 
-        Target:   ${CMAKE_SYSTEM_NAME}\n
+set(printKeys "
+Build;Host;Target;Install prefix;CC;CXX;CPP;CXXFLAGS;CFLAGS;CPPFLAGS;LDFLAGS;\
+LIBS;DEFS;CXX1XCXXFLAGS;EXTRACXXFLAGS;EXTRACFLAGS;EXTRACPPFLAGS;EXTRALDFLAGS;\
+EXTRALIBS;WARNCXXFLAGS;LibUV;SQLite3;SSL Support;AppleTLS;WinTLS;GnuTLS;OpenSSL;\
+CA Bundle;LibNettle;LibGmp;LibGcrypt;LibXML2;LibExpat;LibCares;Zlib;Libssh2;Tcmalloc;\
+Jemalloc;Epoll;Bittorrent;Metalink;XML-RPC;Message Digest;WebSocket;Libaria2;bash_completion;\
+Static Build"
+)
 
-        CXXFLAGS: ${CXXFLAGS}\n
+set(printValues "
+${CMAKE_BUILD_TYPE};${CMAKE_SYSTEM_NAME};${CMAKE_PREFIX_PATH};${CC};${CXX};${CPP};${CXXFLAGS};\
+${CFLAGS};${CPPFLAGS};${LDFLAGS};${LIBS};${DEFS};${CXX1XCXXFLAGS};${EXTRACXXFLAGS};${EXTRACFLAGS};\
+${EXTRACPPFLAGS};${EXTRALDFLAGS};${EXTRALIBS};${WARNCXXFLAGS};${have_libuv};${have_sqlite3};${have_ssl};\
+${have_appletls};${have_wintls};${have_libgnutls};${have_openssl};${ca_bundle};${have_libnettle};\
+${have_libgmp};${have_libgcrypt};${have_libxml2};${have_libexpat};${have_libcares};${have_zlib};${have_libssh2};\
+${have_tcmalloc};${have_jemalloc};${have_epoll};${enable_bittorrent};${enable_metalink};${enable_xml_rpc};${use_md};${enable_websocket};\
+${enable_libaria2};${bashcompletiondir};${ARIA2_STATIC}"
+)
 
-        CPPFLAGS: ${CPPFLAGS}\n
-
-        LibUV:    ${have_libuv}\n
-        SQLITE3:  ${have_sqlite3}\n
-")
-
+printBuildOptions(printKeys printValues)
