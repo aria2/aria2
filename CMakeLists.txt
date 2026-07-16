@@ -1271,6 +1271,8 @@ set(CXXFLAGS "${save_CXXFLAGS}")
 
 # TODO: AC_SUBST([WARNCXXFLAGS])
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
+
 message(STATUS "Summary of build options")
 
 include(Helpers)
