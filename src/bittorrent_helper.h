@@ -354,6 +354,7 @@ void print(Output& o, const std::shared_ptr<DownloadContext>& dctx)
     o.printf("Created By: %s\n", torrentAttrs->createdBy.c_str());
   }
   o.printf("Mode: %s\n", getModeString(torrentAttrs->mode));
+  o.printf("Private: %s\n", torrentAttrs->privateTorrent ? "yes" : "no");
   o.write("Announce:\n");
   for (std::vector<std::vector<std::string>>::const_iterator
            tierIter = torrentAttrs->announceList.begin(),
