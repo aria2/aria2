@@ -2097,6 +2097,9 @@ bool saveAs(const std::string& filename, const std::string& data,
 
 std::string applyDir(const std::string& dir, const std::string& relPath)
 {
+  if (!relPath.empty() && relPath[0] == '/') {
+    return relPath;
+  }
   std::string s;
   if (dir.empty()) {
     s = "./";
