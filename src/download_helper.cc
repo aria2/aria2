@@ -133,12 +133,19 @@ createRequestGroup(const std::shared_ptr<Option>& optionTemplate,
                    bool useOutOption = false)
 {
   auto option = util::copy(optionTemplate);
+  std::string outPath = A2STR::NIL;
+  if (useOutOption && !option->blank(PREF_OUT)) {
+    const auto& out = option->get(PREF_OUT);
+    if (!out.empty() && out[0] == '/') {
+      outPath = out;
+    }
+    else {
+      outPath = util::applyDir(option->get(PREF_DIR), out);
+    }
+  }
   auto rg = std::make_shared<RequestGroup>(getGID(option), option);
   auto dctx = std::make_shared<DownloadContext>(
-      option->getAsInt(PREF_PIECE_LENGTH), 0,
-      useOutOption && !option->blank(PREF_OUT)
-          ? util::applyDir(option->get(PREF_DIR), option->get(PREF_OUT))
-          : A2STR::NIL);
+      option->getAsInt(PREF_PIECE_LENGTH), 0, outPath);
   dctx->getFirstFileEntry()->setUris(uris);
   dctx->getFirstFileEntry()->setMaxConnectionPerServer(
       option->getAsInt(PREF_MAX_CONNECTION_PER_SERVER));
