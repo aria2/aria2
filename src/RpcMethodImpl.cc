@@ -1586,14 +1586,8 @@ void changeOption(const std::shared_ptr<RequestGroup>& group,
       auto& fileEntry = dctx->getFirstFileEntry();
 
       if (!grOption->blank(PREF_OUT)) {
-        const auto& out = grOption->get(PREF_OUT);
-        if (!out.empty() && out[0] == '/') {
-          fileEntry->setPath(out);
-        }
-        else {
-          fileEntry->setPath(
-              util::applyDir(grOption->get(PREF_DIR), out));
-        }
+        fileEntry->setPath(
+            util::applyDir(grOption->get(PREF_DIR), grOption->get(PREF_OUT)));
         fileEntry->setSuffixPath(A2STR::NIL);
       }
       else if (fileEntry->getSuffixPath().empty()) {

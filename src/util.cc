@@ -2099,7 +2099,12 @@ std::string applyDir(const std::string& dir, const std::string& relPath)
 {
   std::string s;
   if (dir.empty()) {
-    s = "./";
+    if (!relPath.empty() && relPath[0] == '/') {
+      s = "";
+    }
+    else {
+      s = "./";
+    }
     s += relPath;
   }
   else {
