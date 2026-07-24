@@ -1647,6 +1647,7 @@ Advanced Options
    :option:`--allow-overwrite=true, <--allow-overwrite>` download always starts from
    scratch. This will be useful for users behind proxy server which
    disables resume.
+   Default: ``false``
 
 .. option:: --save-session=<FILE>
 
