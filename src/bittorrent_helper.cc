@@ -495,6 +495,9 @@ void processRootDictionary(const std::shared_ptr<DownloadContext>& ctx,
   // retrieve file entries
   extractFileEntries(ctx, torrent.get(), infoDict, option, defaultName,
                      overrideName, urlList);
+  if (pieceLength == 0) {
+    throw DL_ABORT_EX("piece length must not be 0");
+  }
   if ((ctx->getTotalLength() + pieceLength - 1) / pieceLength != numPieces) {
     throw DL_ABORT_EX2("Too few/many piece hash.",
                        error_code::BITTORRENT_PARSE_ERROR);
