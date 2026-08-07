@@ -3,7 +3,7 @@ add_executable(aria2c main.cc)
 list(APPEND srcs A2STR.cc; AbstractAuthResolver.cc; AbstractCommand.cc; )
 list(APPEND heds A2STR.h;  AbstractAuthResolver.h;  AbstractCommand.h;  a2algo.h; a2io.h; a2iterator.h; a2netcompat.h; a2time.h; )
 
-list(APPEND srcs 
+list(APPEND srcs
     a2algo.h;
 	a2functional.h;
 	a2io.h;
@@ -408,7 +408,7 @@ if(HAVE_LIBNETTLE)
     list(APPEND srcs
         LibnettleARC4Encryptor.cc; LibnettleARC4Encryptor.h
     )
-    
+
     if(USE_LIBNETTLE_MD)
         list(APPEND srcs
             LibnettleMessageDigestImpl.cc
@@ -742,9 +742,9 @@ if(HAVE_PORT_ASSOCIATE)
 endif()
 
 if(HAVE_KQUEUE)
-    list(APPEND srcs
-        KqueueEventPoll.cc KqueueEventPoll.h
-    )
+	list(APPEND srcs
+		KqueueEventPoll.cc; KqueueEventPoll.include
+	)
 endif()
 
 if(HAVE_LIBUV)
@@ -753,16 +753,125 @@ if(HAVE_LIBUV)
     )
 endif()
 
-# TODOm: AR = @AR@
-
 if(ENABLE_LIBARIA2)
 
+	include(GNUInstallDirs)
 
+	list(APPEND srcs
+		ApiCallbackDownloadEventListener.cc; ApiCallbackDownloadEventListener.h;
+		aria2api.cc; aria2api.h;
+		KeepRunningCommand.cc; KeepRunningCommand.h;
+	)
+
+	install(TARGETS aria2c
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		RUNTIME DESTINATION ${CMAKE_INSTALl_BINDIR}
+	)
+
+	# set(pkgconfigdir "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+	# configure_file(libaria2.pc.in "${pkgconfigdir}/libaria2.pc" @ONLY)
+
+	# TODOm: recheck the below code, and instead keep the above one
+	configure_file(
+		libaria2.pc.in
+		${CMAKE_CURRENT_BINARY_DIR}/libaria2.pc
+		@ONLY
+	)
+
+	install(
+		FILES ${CMAKE_CURRENT_BINARY_DIR}/libaria2.pc
+		DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig
+	)
+# else()
+	# no installation will be perfomed, so nothing here
+endif()
+
+target_include_directories(aria2c PRIVATE
+	${PROJECT_SOURCE_DIR}/lib
+	${PROJECT_SOURCE_DIR}/intl
+	${CMAKE_CURRENT_LIST_DIR}../includes/
+	${PROJECT_BINARY_DIR}/includes
+)
+
+target_compile_definitions(aria2 PRIVATE
+	LOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
+)
+
+string(APPEND CMAKE_CXX_FLAGS
+	"${EXTRACPPFLAGS}
+	${ZLIB_CFLAGS}
+	${LIBUV_CFLAGS}
+	${LIBXML2_CFLAGS}
+	${EXPAT_CFLAGS}
+	${SQLITE3_CFLAGS}
+	${LIBGNUTLS_CFLAGS}
+	${OPENSSL_CFLAGS}
+	${LIBNETTLE_CFLAGS}
+	${LIBGMP_CFLAGS}
+	${LIBGCRYPT_CFLAGS}
+	${LIBSSH2_CFLAGS}
+	${LIBCARES_CFLAGS}
+	${WSLAY_CFLAGS}
+	${TCMALLOC_CFLAGS}
+	${JEMALLOC_CFLAGS}"
+)
+
+string(APPEND CMAKE_LD_FLAGS
+	"${EXTRALDFLAGS}
+	${APPLETLS_LDFLAGS}
+	"
+)
+
+string(APPEND EXTLDADD
+	"${ALLOCA}
+	${EXTRALIBS}
+	${ZLIB_LIBS}
+	${LIBXML2_LIBS}
+	${EXPAT_LIBS}
+	${SQLITE3_LIBS}
+	${WINTLS_LIBS}
+	${LIBGNUTLS_LIBS}
+	${OPENSSL_LIBS}
+	${LIBNETTLE_LIBS}
+	${LIBGMP_LIBS}
+	${LIBGCRYPT_LIBS}
+	${LIBSSH2_LIBS}
+	${LIBCARES_LIBS}
+	${WSLAY_LIBS}
+	${TCMALLOC_LIBS}
+	${JEMALLOC_LIBS}
+	${LTLIBINTL}
+	"
+)
+
+if(ENABLE_LIBARIA2)  # if the aria2 is shared library, first link all the libraries to libaria2
+	target_link_libraries(libaria2 PRIVATE
+		"${EXTLDADD}"
+	)
+	target_link_libraries(aria2c PRIVATE # and then link the libaria2, to the main library (aria2c)
+		"${libaria2}"
+	)
+
+else()  # Here that libs from the EXTLADADD, are linked directly to the main library (aria2)
+	target_link_libraries(aria2c PRIVATE
+		"${EXTLDADD}"
+	)
+endif()
+
+set(CMAKE_C_FLAGS "${EXTRACFLAGS}")
+
+string(APPEND CMAKE_CXX_FLAGS
+	"${WARNCXXFLAGS}
+	${CXX1XCXXFLAGS}
+	${EXTRACXXFLAGS}
+	"
+)
 
 target_sources(aria2c
     PUBLIC
         ${srcs}
-   
+
     PUBLIC
         FILE_SET aria2Headers
         TYPE HEADERS
