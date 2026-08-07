@@ -87,7 +87,7 @@ std::string IOFile::getLine()
   while (gets(buf.data(), buf.size())) {
     size_t len = strlen(buf.data());
     bool lineBreak = false;
-    if (buf[len - 1] == '\n') {
+    if (len > 0 && buf[len - 1] == '\n') {
       --len;
       lineBreak = true;
     }
