@@ -270,7 +270,7 @@ list(APPEND srcs
 	WrDiskCache.cc; WrDiskCache.h;
 	WrDiskCacheEntry.cc; WrDiskCacheEntry.h;
 	XmlRpcRequestParserController.cc; XmlRpcRequestParserController.h;
-	OpenedFileCounter.cc; OpenedFileCounter.;
+	OpenedFileCounter.cc; OpenedFileCounter.h;
 	SHA1IOFile.cc; SHA1IOFile.h;
 	EvictSocketPoolCommand.cc; EvictSocketPoolCommand.h;
 	libssl_compat.h
@@ -753,6 +753,7 @@ if(HAVE_LIBUV)
     )
 endif()
 
+
 if(ENABLE_LIBARIA2)
 
 	include(GNUInstallDirs)
@@ -769,9 +770,6 @@ if(ENABLE_LIBARIA2)
 		RUNTIME DESTINATION ${CMAKE_INSTALl_BINDIR}
 	)
 
-	# set(pkgconfigdir "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
-	# configure_file(libaria2.pc.in "${pkgconfigdir}/libaria2.pc" @ONLY)
-
 	# TODOm: recheck the below code, and instead keep the above one
 	configure_file(
 		libaria2.pc.in
@@ -783,18 +781,18 @@ if(ENABLE_LIBARIA2)
 		FILES ${CMAKE_CURRENT_BINARY_DIR}/libaria2.pc
 		DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig
 	)
-# else()
-	# no installation will be perfomed, so nothing here
 endif()
+
+
 
 target_include_directories(aria2c PRIVATE
 	${PROJECT_SOURCE_DIR}/lib
 	${PROJECT_SOURCE_DIR}/intl
-	${CMAKE_CURRENT_LIST_DIR}../includes/
+	${CMAKE_CURRENT_LIST_DIR}/../includes/
 	${PROJECT_BINARY_DIR}/includes
 )
 
-target_compile_definitions(aria2 PRIVATE
+target_compile_definitions(aria2c PRIVATE
 	LOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
 )
 
@@ -816,6 +814,7 @@ string(APPEND CMAKE_CXX_FLAGS
 	${TCMALLOC_CFLAGS}
 	${JEMALLOC_CFLAGS}"
 )
+
 
 string(APPEND CMAKE_LD_FLAGS
 	"${EXTRALDFLAGS}
@@ -845,12 +844,16 @@ string(APPEND EXTLDADD
 	"
 )
 
+string(STRIP ${EXTLDADD} EXTLDADD)
+
 if(ENABLE_LIBARIA2)  # if the aria2 is shared library, first link all the libraries to libaria2
-	target_link_libraries(libaria2 PRIVATE
+	add_library(libaria2 INTERFACE)
+
+	target_link_libraries(libaria2 INTERFACE
 		"${EXTLDADD}"
 	)
 	target_link_libraries(aria2c PRIVATE # and then link the libaria2, to the main library (aria2c)
-		"${libaria2}"
+		libaria2
 	)
 
 else()  # Here that libs from the EXTLADADD, are linked directly to the main library (aria2)

@@ -54,8 +54,11 @@ option(epoll "" FALSE)
 option(libaria2 "" FALSE)
 option(werror "" FALSE)
 
-option(ca-bundle "--with-ca-bundle=FILE, Use FILE as default CA bundle" OFF)
-option(disk-cache "--with-disk-cache=SIZE, Use SIZE as the default disk-cache size")
+#option(ca-bundle "-Dwith-ca-bundle=FILE, Use FILE as default CA bundle" OFF)
+
+set(ca_bundle "" CACHE FILEPATH "Set the path for the CA certificate")
+
+option(disk-cache "-Dwith-disk-cache=SIZE, Use SIZE as the default disk-cache size")
 option(bashcompletiondir "--with-bashcompletiondir=DIR, Directory to install bash_completion file" OFF)
 
 option(ARIA2_STATIC "Set 'yes' to build a statically linked aria2" OFF)
@@ -174,6 +177,7 @@ if(libz)
             message("The gzbuffer found")
         endif()
         set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
+	endif()
 endif()
 
 set(have_libuv FALSE)
@@ -232,6 +236,7 @@ if(sqlite3)
 endif()
 
 include(CheckIncludeFiles)
+include(CheckIncludeFile)
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
     set(have_osx YES)
@@ -1227,7 +1232,7 @@ endif()
 
 if(ARIA2_STATIC)
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
-    if(NOT MSVC OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Mingw" OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Darwin")
+	if(NOT MSVC AND NOT MINGW AND NOT APPLE)
         set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")
     endif()
 endif()
@@ -1271,29 +1276,26 @@ set(CXXFLAGS "${save_CXXFLAGS}")
 
 # TODO: AC_SUBST([WARNCXXFLAGS])
 
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/CMakeLists.txt)
-
-message(STATUS "Summary of build options")
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/)
+message("")
+message(STATUS "Summary of build options\n")
 
 include(Helpers)
 
-set(printKeys "
-Build;Host;Target;Install prefix;CC;CXX;CPP;CXXFLAGS;CFLAGS;CPPFLAGS;LDFLAGS;\
+set(printKeys "Build;Host;Target;Install prefix;CC;CXX;CPP;CXXFLAGS;CFLAGS;CPPFLAGS;LDFLAGS;\
 LIBS;DEFS;CXX1XCXXFLAGS;EXTRACXXFLAGS;EXTRACFLAGS;EXTRACPPFLAGS;EXTRALDFLAGS;\
 EXTRALIBS;WARNCXXFLAGS;LibUV;SQLite3;SSL Support;AppleTLS;WinTLS;GnuTLS;OpenSSL;\
 CA Bundle;LibNettle;LibGmp;LibGcrypt;LibXML2;LibExpat;LibCares;Zlib;Libssh2;Tcmalloc;\
 Jemalloc;Epoll;Bittorrent;Metalink;XML-RPC;Message Digest;WebSocket;Libaria2;bash_completion;\
-Static Build"
-)
+Static Build")
 
-set(printValues "
-${CMAKE_BUILD_TYPE};${CMAKE_SYSTEM_NAME};${CMAKE_PREFIX_PATH};${CC};${CXX};${CPP};${CXXFLAGS};\
+set(printValues "${CMAKE_HOST_SYSTEM_NAME};${CMAKE_SYSTEM_NAME};unknown_value;${CMAKE_INSTALL_PREFIX};${CC};${CXX};${CPP};${CXXFLAGS};\
 ${CFLAGS};${CPPFLAGS};${LDFLAGS};${LIBS};${DEFS};${CXX1XCXXFLAGS};${EXTRACXXFLAGS};${EXTRACFLAGS};\
 ${EXTRACPPFLAGS};${EXTRALDFLAGS};${EXTRALIBS};${WARNCXXFLAGS};${have_libuv};${have_sqlite3};${have_ssl};\
 ${have_appletls};${have_wintls};${have_libgnutls};${have_openssl};${ca_bundle};${have_libnettle};\
 ${have_libgmp};${have_libgcrypt};${have_libxml2};${have_libexpat};${have_libcares};${have_zlib};${have_libssh2};\
 ${have_tcmalloc};${have_jemalloc};${have_epoll};${enable_bittorrent};${enable_metalink};${enable_xml_rpc};${use_md};${enable_websocket};\
-${enable_libaria2};${bashcompletiondir};${ARIA2_STATIC}"
-)
+${ENABLE_LIBARIA2};${bashcompletiondir};${ARIA2_STATIC}")
 
 printBuildOptions(printKeys printValues)
+message("")
