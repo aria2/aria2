@@ -57,20 +57,27 @@ option(werror "" FALSE)
 #option(ca-bundle "-Dwith-ca-bundle=FILE, Use FILE as default CA bundle" OFF)
 
 set(ca_bundle "" CACHE FILEPATH "Set the path for the CA certificate")
+set(disk_cache "" CACHE STRING "Use SIZE as the default disk-cache size")
+set(bashcompletiondir "" CACHE PATH "Directory to install bash_completion file")
 
-option(disk-cache "-Dwith-disk-cache=SIZE, Use SIZE as the default disk-cache size")
-option(bashcompletiondir "--with-bashcompletiondir=DIR, Directory to install bash_completion file" OFF)
+option(ARIA2_STATIC "Set 'yes' to build a statically linked aria2" NO)
 
-option(ARIA2_STATIC "Set 'yes' to build a statically linked aria2" OFF)
-option(gnutls-system-crypto-policy "--enable-gnutls-system-crypto-policy, Enable gnutls system wide crypto policy")
+# not necessary, since we are using the "enable_gnutls_system_crypto_policy" option
+#option(gnutls-system-crypto-policy "--enable-gnutls-system-crypto-policy, Enable gnutls system wide crypto policy")
 
 option(enable_gnutls_system_crypto_policy "Define to 1 if using gnutls system wide crypto policy" FALSE)
 if(enable_gnutls_system_crypto_policy)
     add_compile_definitions(USE_GNUTLS_SYSTEM_CRYPTO_POLICY=1)
 endif()
 
+if(NOT CMAKE_AR)
+	message(FATAL_ERROR "ar is not found in the system.")
+endif()
 
-# should I include the module for the pkg-config here (?)
+# TODOm: check for sphinxbuild
+
+# TODOm: check for srt2html -> restructure text to html
+
 # include(pkg-config) # the 'pkg-config' is the name of the module, according to cmake doc
 include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)
@@ -84,8 +91,8 @@ endif()
 
 include(CheckCXXSourceCompiles)
 message("Checking whether the C++ compiler supports nullptr")
-set(nullptrTest 
-    [==[ 
+set(nullptrTest
+    [==[
         #include <iostream>
 
         int main() {
@@ -101,12 +108,9 @@ else()
     message(FATAL_ERROR "C++ compiler does not understand nullptr, perhaps C++ compiler is too old. Try again with new one (gcc >= 4.8.3 or clang >= 3.4)")
 endif()
 
-# write another small test, to check if the compiler supports `override` keyword
-# if yes, define a new keyword CXX11_OVERRIDE, that will have the value of the 'override'
-# if no, do nothing
 message("Checking whether C++ compiler supports 'override' keyword")
-set(overrideTest 
-    [==[ 
+set(overrideTest
+    [==[
         #include <iostream>
 
         struct Base {
@@ -135,12 +139,12 @@ endif()
 
 if(ARIA2_STATIC)
     # check whether the platform is i686 or mingw
-    if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw") # I have also to check for i686
+	if(MINGW AND CMAKE_SIZEOF_VOID_P EQUAL 4) # TODOm: equal to i686*mingw => searches for a 32-bit MinGW target - replaces i686*mingw from configure.ac file
         set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_USE_32BIT_TIME_T")
     endif()
 
     # set the pkg-config to produce static link libraries
-    list(APPEND ${PKG_CONFIG_ARGN} "--static")
+    string(APPEND ${PKG_CONFIG_ARGN} " --static")
 else()
     set(ARIA2_STATIC NO)
 endif()
@@ -644,7 +648,7 @@ if(have_libssh2)
 endif()
 
 if(CMAKE_HOST_SOLARIS)
-    
+
     set(save_LIBS "${CMAKE_REQUIRED_LIBS}")
 
     # TODO: lines from 683 - 691
@@ -679,12 +683,12 @@ check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo
 include(CheckTypeSize)
 check_type_size(size_t SIZEOF_SIZE_T)
 if(HAVE_SIZEOF_SIZE_T)
-	message(WARNING "The size_t exists with size ${SIZEOF_SIZE_T}")
+	message(STATUS "The size_t exists with size ${SIZEOF_SIZE_T}")
 endif()
 
 check_type_size(ssize_t SSIZEOF_SIZE_T)
 if(HAVE_SSIZEOF_SIZE_T)
-    message(WARNING "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
+    message(STATUS "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
 endif()
 
 # in order to be able to find the C struct, I have to enable C language
