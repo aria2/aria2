@@ -413,63 +413,71 @@ if(NOT have_openssl)
     endif()
 
     if(libgmp AND (have_libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
+        pkg_check_modules(GmpLib REQUIRED "gmp")  # apt-get install libgmp-dev OR libgmp3-dev
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
-        set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} libgmp.so")
-       
+        set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${GmpLib_LIBRARIES}")
         check_symbol_exists(__gmpz_init "gmp.h" have_libgmp)
         if(have_libgmp)
             set(LIBGMP_CFLAGS "")
-            set(LIBGMP_LIBS "-lgmp")  # TODOm: probably there is a better way to do this in cmake
+            set(LIBGMP_LIBS "-lgmp")
 
             add_compile_definitions(HAVE_LIBGMP=1)
-            set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${LIBGMP_LIBS}")
-            check_symbol_exists(__gmpz_pown_sec "gmp.h" have_mpz_powm_sec)
+            check_symbol_exists(__gmpz_powm_sec "gmp.h" have_mpz_powm_sec)
             if(have_mpz_powm_sec)            
                 add_compile_definitions(HAVE_GMP_SEC=1)
-                message("Define to 1 if you have a GMP with sec functions.")
             endif()
+
         else()
             message(WARNING "libgmp not found")
-            message(WARNING "ARIA2_DEP_NOT_MET([libgmp])")
+            message(WARNING "ARIA2_DEP_NOT_MET([libgmp]). Install it with: apt-get install libgmp-dev")
         endif()
-
         set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
     endif()
 
     if(libgcrypt AND NOT have_nativetls AND NOT have_libnettle)
     # TODO: lines 507 - 517 from configure.ac file. 
-    # TODO: difficult one.
+    # TODO: hard one.
+    # if test "x$with_libgcrypt" = "xyes" &&
+    #         test "x$have_nativetls" != "xyes" &&
+    #         test "x$have_libnettle" != "xyes"; then
+    #         m4_ifdef([AM_PATH_LIBGCRYPT], [AM_PATH_LIBGCRYPT([1.2.4], [have_libgcrypt=yes])], [
+    #         AC_MSG_WARN([configure was generated without libgcrypt detection.  libgcrypt detection is disabled])
+    #         LIBGCRYPT_CFLAGS=
+    #         LIBGCRYPT_LIBS=
+    #         AC_SUBST([LIBGCRYPT_CFLAGS])
+    #         AC_SUBST([LIBGCRYPT_LIBS])
+    #     ])
+    #     if test "x$have_libgcrypt" = "xyes"; then
+    #     AC_DEFINE([HAVE_LIBGCRYPT], [1], [Define to 1 if you have libgcrypt.])
+    #     fi
+    # fi
     endif()
 endif()
 
 set(have_libssh2 FALSE)
 if(libssh2)
-    pkg_check_modules(LIBSSH2 "libssh2" REQUIRED)
+    pkg_check_modules(LIBSSH2 REQUIRED "libssh2")  # sudo apt-get install libssh2-1-dev
     if(LIBSSH2_FOUND)
         set(have_libssh2 TRUE)
         add_compile_definitions(HAVE_LIBSSH2=1)
-        message("Define to 1 if you have libssh2.")
 
         if(ARIA2_STATIC)
             set(LIBSSH2_CFLAGS "${LIBSSH2_CFLAGS} -DLIBSSH2_API")
         endif()
     else()
-        message(WARNING "The libssh2 library is missing")
-        message(WARNING "ARIA2_DEP_NOT_MET([libssh2])")
+        message(WARNING "ARIA2_DEP_NOT_MET([libssh2]). Install it with: sudo apt-get install libssh2-1-dev")
     endif()
 endif()
 
 
 set(have_libcares FALSE)
 if(libcares)
-    pkg_check_modules(LIBCARES2 "libcares > 1.16.0")
-    if(LIBCARES2_FOUND)
-        set(have_libcares TRUE)
-        add_compile_definitions(HAVE_LIBCARES=1)
-        message("Define to 1 if you have libcares")
+    pkg_check_modules(LIBCARES "libcares >= 1.16.0")  # sudo apt-get install libc-ares-dev
+    if(LIBCARES_FOUND)
+            set(have_libcares TRUE)
+            add_compile_definitions(HAVE_LIBCARES=1)
     else()
-        message(WARNING "libcares couldn't find in the system. Try install it first")
-        message(WARNING "ARIA2_DEP_NOT_MET([libcares)")
+            message(WARNING "ARIA2_DEP_NOT_MET([libcares). Install it with: sudo apt-get install libc-ares-dev")
     endif()
 endif()
 
@@ -498,7 +506,6 @@ endif()
 
 if(have_ssl)
     add_compile_definitions(ENABLE_SSL=1)
-    message("Define to 1 if ssl support is enabled")
     set(ENABLE_SSL TRUE CACHE BOOL "ssh was found" FORCE)
 else()
     set(have_ssl no)
@@ -551,12 +558,10 @@ if(use_md STREQUAL "internal")
     set(USE_INTERNAL_MD TRUE CACHE BOOL "md is equal to internal" FORCE)
 endif()
 
-
 if(have_libgmp OR have_libgcrypt OR have_openssl)
     set(USE_INTERNAL_BIGNUM FALSE CACHE BOOL "internal bignum set to FALSE" FORCE)
 else()
     add_compile_definitions(USE_INTERNAL_BIGNUM=1)
-    message("Define to 1 if the internal BIGNUM support is enabled")
     set(USE_INTERNAL_BIGNUM TRUE CACHE BOOL "internal bignum set to TRUE" FORCE)
 endif()
 
@@ -564,13 +569,11 @@ if(have_libnettle OR have_libgcrypt OR have_openssl)
     set(USE_INTERNAL_ARC4 FALSE CACHE BOOL "internal arc4 set to FALSE" FORCE)
 else()
     add_compile_definitions(USE_INTERNAL_ARC4=1)
-    message("Define to 1 if internal ARC4 support is enabled")
     set(USE_INTERNAL_ARC4 TRUE CACHE BOOL "internal arc4 set to TRUE" FORCE) # TODO: uses the AM_CONDITIONAL
 endif()
 
 if(bittorrent)
     add_compile_definitions(ENABLE_BITTORRENT=1)
-    message("Define to 1 if BitTorrent support is enabled")
     set(ENABLE_BITTORRENT TRUE CACHE BOOL "bittorrent set to TRUE" FORCE)
 else()
     if(bittorrent)
@@ -582,7 +585,6 @@ endif()
 
 if((have_libxml2 OR have_libexpat) AND metalink)
     add_compile_definitions(ENABLE_METALINK=1)
-    message("Define to 1 if Metalink support is enabled")
     set(ENABLE_METALINK TRUE CACHE BOOL "metalink is enabled" FORCE)
 else()
     if(metalink)
@@ -594,7 +596,6 @@ endif()
 
 if(have_libxml2 OR have_libexpat)
     set(HAVE_SOME_XMLLIB TRUE CACHE BOOL "xml2 or expat exists" FORCE)
-
     set(enable_xml_rpc TRUE)
 else()
     set(enable_xml_rpc FALSE)
@@ -602,11 +603,8 @@ endif()
 
 if(enable_xml_rpc)
     add_compile_definitions(ENABLE_XML_RPC=1)
-    message("Define to 1 if XML-RPC support is enabled.")
-endif()
-
-if(enable_xml_rpc)
     set(ENABLE_XML_RPC TRUE CACHE BOOL "xml_rpc is enabled" FORCE)
+
 endif()
 
 if(have_libxml2)
@@ -619,7 +617,6 @@ endif()
 
 if(have_libcares)
     add_compile_definitions(ENABLE_ASYNC_DNS=1)
-    message("Define to 1 asynchronous DNS support is enabled")
     set(ENABLE_ASYNC_DNS TRUE CACHE BOOL "c-ares was found" FORCE)
 else()
     set(ENABLE_ASYNC_DNS FALSE CACHE BOOL "c-ares was not found" FORCE)
@@ -640,20 +637,26 @@ endif()
 if(CMAKE_HOST_SOLARIS)
 
     set(save_LIBS "${CMAKE_REQUIRED_LIBS}")
-
-    # TODO: lines from 683 - 691
-    # Should recheck that case
-    #
+        
+    # should recheck the below case that is for solaris OS
+    # case "$host" in
+    # *solaris*)
+    #     save_LIBS=$LIBS
+    #     LIBS=
+    #     AC_SEARCH_LIBS([getaddrinfo], [nsl socket], [], [$save_LIBS])
+    #     EXTRALIBS="$LIBS $EXTRALIBS"
+    #     LIBS=$save_LIBS
+    #     ;;
+    # esac
 endif()
-
-
 
 include(CheckSymbolExists)
 include(CheckCXXSymbolExists)
 
-check_include_file(alloca.h HAVE_ALLOCA_H)
-if(HAVE_ALLOCA_H)
+check_include_file(alloca.h HAVE_ALLOCA_HEADER)
+if(HAVE_ALLOCA_HEADER)
 	message("The alloca.h exists")
+    add_compile_definitions(HAVE_ALLOCA_H=1)
 endif()
 
 # after the alloca.h header should be the alloca function
@@ -663,13 +666,19 @@ if(HAVE_ALLOCA_FUNC)
 endif()
 
 
+list(APPEND HEADER_FILES argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h;
+                        netdb.h; netinet/in.h; netinet/tcp.h; poll.h; signal.h; stddef.h; stdint.h; stdio_ext.h;
+                        stdlib.h; string.h; strings.h; sys/ioctl.h; sys/param.h; sys/resource.h; sys/signal.h; sys/socket.h; sys/time.h; sys/types.h; sys/uio.h; sys/utsname.h;
+                        termios.h; unistd.h; utime.h; wchar.h; ifaddrs.h; pwd.h
+)
 
-check_include_files("argz.h; arpa/inet.h; fcntl.h; float.h; inttypes.h; langinfo.h; libintl.h; limits.h; locale.h; malloc.h; netdb.h; netinet/in.h; netinet/tcp.h; poll.h; port.h; signal.h; stddef.h; stdint.h; stdio_ext.h; stdlib.h; string.h;
-                     strings.h; sys/ioctl.h; sys/param.h; sys/resource.h; sys/signal.h; sys/socket.h; sys/time.h; sys/types.h; sys/uio.h; sys/utsname.h; termios.h; unistd.h; utime.h; wchar.h; ifaddrs.h; pwd.h;"
-                     HAVE_HEADER_FILES)
+check_include_files("${HEADER_FILES}" HAVE_HEADER_FILES)
 
+check_include_file(port.h HAVE_PORT_HEADER)
+if(HAVE_PORT_HEADER)
+    add_compile_definitions(HAVE_PORT_H=1)
+endif()
 
-# here should be the size_t (DONE)
 include(CheckTypeSize)
 check_type_size(size_t SIZEOF_SIZE_T)
 if(HAVE_SIZEOF_SIZE_T)
@@ -695,7 +704,6 @@ check_struct_has_member(
 
 if(have_timespec)
     add_compile_definitions(HAVE_A2_STRUCT_TIMESPEC=1)
-    message("Define to 1 if the system has the type 'struct timespec'")
 endif()
 
 find_package(Gettext 0.19 REQUIRED)  # apt-get install gettext, if doesn't exist in the system
@@ -1031,7 +1039,7 @@ if(HAVE_POSIX_FALLOCATE)
    message("The fallocate has been found")
 endif()
 
-# TODO: Not high priority - should again this condition.
+# TODO: Not high priority - should check again this condition.
 if(HAVE_POSIX_FALLOCATE OR HAVE_FALLOCATE OR HAVE_OSX OR WIN_BUILD)
    add_compile_definitions(HAVE_SOME_FALLOCATE=1)
    message("Define to 1 if *_fallocate is available")
@@ -1222,11 +1230,11 @@ if(libaria2)
     set(ENABLE_LIBARIA2 TRUE CACHE BOOL "Libaria2 is enabled" FORCE)
 endif()
 
-# AC_SUBST([bashcompletiondir]) # TODO: uses # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
+# AC_SUBST([bashcompletiondir]) # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
 
 if(ARIA2_STATIC)
     set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
-	if(NOT MSVC AND NOT MINGW AND NOT APPLE)
+    if(CMAKE_HOST_SYSTEM_NAME NOT MSVC OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Mingw" OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Darwin")
         set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")
     endif()
 endif()
@@ -1292,4 +1300,3 @@ ${have_tcmalloc};${have_jemalloc};${have_epoll};${enable_bittorrent};${enable_me
 ${ENABLE_LIBARIA2};${bashcompletiondir};${ARIA2_STATIC}")
 
 printBuildOptions(printKeys printValues)
-message("")
