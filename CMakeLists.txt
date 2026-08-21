@@ -15,18 +15,20 @@ set(EXTRALDFLAGS)
 set(EXTRALIBS)
 
 if(MSVC) # check if the host is about to run in windows with mingw compiler
-    set(WIN_BUILD TRUE)
+    set(win_build TRUE)
     set(EXTRALIBS "-lws2_32 -lwsock32 -lgdi32 -lwinmm -liphlpapi -lpsapi ${EXTRALIBS}")
 
     # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r
     # available from <time.h> even without (un)helpful interference
     # from <pthread.h>, and also defines __USE_MINGW_ANSI_STDIO.
-    set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_POSIX_C_SOURCE=1")
+    # set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_POSIX_C_SOURCE=1") # TODOm: remove this set()
+    string(APPEND EXTRACPPFLAGS " -D_POSIX_C_SOURCE=1")
 
     # Build with ASLR (dynamicbase) and NX compatibility (nxcompat)
     # Enable pie once upstream/binutils gets fixed to produce correct
     # binaries with it.
-    set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat")
+    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat") # TODOm: remove this set()
+    string(APPEND EXTRALDFLAGS " -Wl,--dynamicbase -Wl,--nxcompat")
 endif()
 
 option(libuv "" TRUE)
@@ -77,7 +79,6 @@ endif()
 # TODOm: check for sphinxbuild
 # TODOm: check for srt2html -> restructure text to html
 
-# include(pkg-config) # the 'pkg-config' is the name of the module, according to cmake doc
 include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)
     if(${PKG_CONFIG_VERSION_STRING} VERSION_LESS 0.20)
@@ -139,7 +140,8 @@ endif()
 if(ARIA2_STATIC)
     # check whether the platform is i686 or mingw
 	if(MINGW AND CMAKE_SIZEOF_VOID_P EQUAL 4) # TODOm: equal to i686*mingw => searches for a 32-bit MinGW target - replaces i686*mingw from configure.ac file
-        set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_USE_32BIT_TIME_T")
+        # set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_USE_32BIT_TIME_T") # TODOm: remove this set() command
+        string(APPEND EXTRACPPFLAGS " -D_USE_32BIT_TIME_T")
     endif()
 
     # set the pkg-config to produce static link libraries
@@ -171,7 +173,6 @@ if(libz)
             message(WARNING "ARIA2_DEP_NOT_MET(libz)")
         endif()
         set(CMAKE_REQUIRED_LIBRARIES "${save_LIBS}")
-
     endif()
 
     if(ZLIB_FOUND)
@@ -274,7 +275,9 @@ if(appletls)
     if(have_osx)
         message("Define to 1 if you have Apple TLS")
         add_compile_definitions(HAVE_APPLETLS=1)
-        set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
+        # set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")  # TODOm: remove this set() command
+        string(APPEND APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
+
         set(have_appletls TRUE)
         set(have_ssl TRUE)
         set(have_nativetls TRUE)
@@ -323,9 +326,9 @@ if(wintls)
     " HAVE_WINTLS_HEADERS)
 
     if(HAVE_WINTLS_HEADERS AND have_wintls_libs)
-        set(have_wintls_headers YES)
+        set(have_wintls_headers TRUE)
     else()
-        set(have_wintls_headers NO)
+        set(have_wintls_headers FALSE)
     endif()
 
     if(have_wintls_libs AND have_wintls_headers)
@@ -377,7 +380,8 @@ if(openssl AND NOT have_ssl)
         set(have_ssl TRUE)
         add_compile_definitions(HAVE_OPENSSL=1)
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
-        set(CMAKE_REQUIRED_LIBRARIES "${OpenSSL_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")
+        # set(CMAKE_REQUIRED_LIBRARIES "${OpenSSL_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")  #TODOm: remove this set() command
+        string(APPEND CMAKE_REQUIRED_LIBRARIES " ${OpenSSL_LIBRARIES}")
         
         check_symbol_exists(EVP_DigestInit_ex "openssl/evp.h" have_digestinit_ex)
         if(have_digestinit_ex)
@@ -415,7 +419,8 @@ if(NOT have_openssl)
     if(libgmp AND (have_libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
         pkg_check_modules(GmpLib REQUIRED "gmp")  # apt-get install libgmp-dev OR libgmp3-dev
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
-        set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${GmpLib_LIBRARIES}")
+        # set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${GmpLib_LIBRARIES}") #TODOm: remove this set() command
+        string(APPEND CMAKE_REQUIRED_LIBRARIES " ${GmpLib_LIBRARIES}")
         check_symbol_exists(__gmpz_init "gmp.h" have_libgmp)
         if(have_libgmp)
             set(LIBGMP_CFLAGS "")
@@ -462,7 +467,8 @@ if(libssh2)
         add_compile_definitions(HAVE_LIBSSH2=1)
 
         if(ARIA2_STATIC)
-            set(LIBSSH2_CFLAGS "${LIBSSH2_CFLAGS} -DLIBSSH2_API")
+            # set(LIBSSH2_CFLAGS "${LIBSSH2_CFLAGS} -DLIBSSH2_API")  #TODOm: remove this set() command
+            string(APPEND LIBSSH2_CFLAGS " -DLIBSSH2_API")
         endif()
     else()
         message(WARNING "ARIA2_DEP_NOT_MET([libssh2]). Install it with: sudo apt-get install libssh2-1-dev")
@@ -484,8 +490,8 @@ endif()
 set(use_md "")
 if(have_appletls)
     set(use_md "apple")
-    add_compile_definitions(USE_APPLE_MD=1)
     message("What message digest implementation to use")
+    add_compile_definitions(USE_APPLE_MD=1)
 elseif(have_libnettle)
     add_compile_definitions(USE_LIBNETTLE_MD=1)
     message("What message digest implementation to use")
@@ -638,7 +644,7 @@ if(CMAKE_HOST_SOLARIS)
 
     set(save_LIBS "${CMAKE_REQUIRED_LIBS}")
         
-    # should recheck the below case that is for solaris OS
+    # TODOm: should recheck the below case that is for solaris OS
     # case "$host" in
     # *solaris*)
     #     save_LIBS=$LIBS
@@ -750,17 +756,17 @@ if(NOT HAVE_STRFTIME)
     message(WARNING "strftime was NOT found")
 endif()
 
-check_cxx_symbol_exists(vprintf cstdio HAVE_VPRINTF )
+check_cxx_symbol_exists(vprintf "cstdio" HAVE_VPRINTF )
 if(NOT HAVE_VPRINTF)
     message(WARNING "vrpintf was NOT found")
 endif()
 
-check_cxx_symbol_exists(fork unistd.h HAVE_FORK)
+check_cxx_symbol_exists(fork "unistd.h" HAVE_FORK)
 if(NOT HAVE_FORK)
     message(WARNING "fork was NOT found")
 endif()
 
-check_cxx_symbol_exists(strtod stdlib.h HAVE_STRTOD)
+check_cxx_symbol_exists(strtod "stdlib.h" HAVE_STRTOD)
 if(NOT HAVE_STRTOD)
     message(WARNING "strtod was NOT found")
 endif()
@@ -780,62 +786,62 @@ if(NOT HAVE_STRINGIFY)
     message(WARNING "The __argz_stringify was NOT found")
 endif()
 
-check_cxx_symbol_exists(atexit stdlib.h HAVE_ATEXIT)
+check_cxx_symbol_exists(atexit "stdlib.h" HAVE_ATEXIT)
 if(NOT HAVE_ATEXIT)
     message(WARNING "The atexit was NOT found")
 endif()
 
-check_cxx_symbol_exists(ftruncate unistd.h HAVE_FTRUNCATE)
+check_cxx_symbol_exists(ftruncate "unistd.h" HAVE_FTRUNCATE)
 if(NOT HAVE_FTRUNCATE)
     message(WARNING "The ftruncate was NOT found")
 endif()
 
-check_cxx_symbol_exists(getcwd unistd.h HAVE_GETCWD)
-if(NOT HAVE_GETWD)
+check_cxx_symbol_exists(getcwd "unistd.h" HAVE_GETCWD)
+if(NOT HAVE_GETCWD)
     message(WARNING "The getcwd was NOT found")
 endif()
 
-check_cxx_symbol_exists(getentropy unistd.h HAVE_ENTROPY)
+check_cxx_symbol_exists(getentropy "unistd.h" HAVE_ENTROPY)
 if(NOT HAVE_ENTROPY)
     message(WARNING "The getentropy was NOT found")
 endif()
 
-check_cxx_symbol_exists(gethostbyaddr netdb.h HAVE_HOSTBYADDR)
+check_cxx_symbol_exists(gethostbyaddr "netdb.h" HAVE_HOSTBYADDR)
 if(NOT HAVE_HOSTBYADDR)
     message(WARNING "The gethostbyaddr was NOT found")
 endif()
 
-check_cxx_symbol_exists(gethostbyname netdb.h HAVE_HOSTBYNAME)
+check_cxx_symbol_exists(gethostbyname "netdb.h" HAVE_HOSTBYNAME)
 if(NOT HAVE_HOSTBYNAME)
     message(WARNING "The gethostbyname was NOT found")
 endif()
 
-check_cxx_symbol_exists(getifaddrs ifaddrs.h HAVE_IFADDRS)
+check_cxx_symbol_exists(getifaddrs "ifaddrs.h" HAVE_IFADDRS)
 if(NOT HAVE_IFADDRS)
     message(WARNING "The getifaddrs was NOT found")
 endif()
 
-check_cxx_symbol_exists(getpagesize unistd.h HAVE_PAGESIZE)
+check_cxx_symbol_exists(getpagesize "unistd.h" HAVE_PAGESIZE)
 if(NOT HAVE_PAGESIZE)
     message(WARNING "The getpagesize function was NOT found")
 endif()
 
-check_symbol_exists(memchr string.h HAVE_MEMCHR)
+check_symbol_exists(memchr "string.h" HAVE_MEMCHR)
 if(NOT HAVE_MEMCHR)
     message(WARNING "The memchr was NOT found")
 endif()
 
-check_cxx_symbol_exists(memmove string.h HAVE_MEMMOVE)
+check_cxx_symbol_exists(memmove "string.h" HAVE_MEMMOVE)
 if(NOT HAVE_MEMMOVE)
     message(WARNING "The memmove was NOT found")
 endif()
 
-check_cxx_symbol_exists(mempcpy string.h HAVE_MEMPCPY)
+check_cxx_symbol_exists(mempcpy "string.h" HAVE_MEMPCPY)
 if(NOT HAVE_MEMPCPY)
     message(WARNING "The mempcpy was NOT found")
 endif()
 
-check_cxx_symbol_exists(memset string.h HAVE_MEMSET)
+check_cxx_symbol_exists(memset "string.h" HAVE_MEMSET)
 if(NOT HAVE_MEMSET)
     message(WARNING "The memset was NOT found")
 endif()
@@ -855,17 +861,17 @@ if(NOT HAVE_MUNMAP)
     message(WARNING "The munmap was NOT found")
 endif()
 
-check_cxx_symbol_exists(nl_langinfo langinfo.h HAVE_LANGINFO)
+check_cxx_symbol_exists(nl_langinfo "langinfo.h" HAVE_LANGINFO)
 if(NOT HAVE_LANGINFO)
     message(WARNING "The nl_langinfo was NOT found")
 endif()
 
-check_cxx_symbol_exists(posix_fadvise fcntl.h HAVE_POSIXFADVISE)
+check_cxx_symbol_exists(posix_fadvise "fcntl.h" HAVE_POSIXFADVISE)
 if(NOT HAVE_POSIXFADVISE)
     message(WARNING "The posix_fadvise was NOT found")
 endif()
 
-check_cxx_symbol_exists(posix_memalign stdlib.h HAVE_POSIXMEMALIGN)
+check_cxx_symbol_exists(posix_memalign "stdlib.h" HAVE_POSIXMEMALIGN)
 if(NOT HAVE_POSIXMEMALIGN)
     message(WARNING "The posix_memalign was NOT found")
 endif()
@@ -875,12 +881,12 @@ if(NOT HAVE_POW)
     message(WARNING "The pow was NOT found")
 endif()
 
-check_cxx_symbol_exists(putenv stdlib.h HAVE_PUTENV)
+check_cxx_symbol_exists(putenv "stdlib.h" HAVE_PUTENV)
 if(NOT HAVE_PUTENV)
     message(WARNING "The putenv was NOT found")
 endif()
 
-check_cxx_symbol_exists(rmdir unistd.h HAVE_RMDIR)
+check_cxx_symbol_exists(rmdir "unistd.h" HAVE_RMDIR)
 if(NOT HAVE_RMDIR)
     message(WARNING "The rmdir was NOT found")
 endif()
@@ -890,17 +896,17 @@ if(NOT HAVE_SELECT)
     message(WARNING "The select was NOT found")
 endif()
 
-check_cxx_symbol_exists(setlocale locale.h HAVE_LOCALE)
+check_cxx_symbol_exists(setlocale "locale.h" HAVE_LOCALE)
 if(NOT HAVE_LOCALE)
     message(WARNING "The setlocale was NOT found")
 endif()
 
-check_cxx_symbol_exists(sigaction signal.h HAVE_SIGACTION)
+check_cxx_symbol_exists(sigaction "signal.h" HAVE_SIGACTION)
 if(NOT HAVE_SIGACTION)
     message(WARNING "The sigaction was NOT found")
 endif()
 
-check_cxx_symbol_exists(sleep unistd.h HAVE_SLEEP)
+check_cxx_symbol_exists(sleep "unistd.h" HAVE_SLEEP)
 if(NOT HAVE_SLEEP)
     message(WARNING "The sleep was NOT found")
 endif()
@@ -910,72 +916,72 @@ if(NOT HAVE_SOCKET)
     message(WARNING "The socket was NOT found")
 endif()
 
-check_cxx_symbol_exists(stpcpy string.h HAVE_STPCPY)
+check_cxx_symbol_exists(stpcpy "string.h" HAVE_STPCPY)
 if(NOT HAVE_STPCPY)
     message(WARNING "The stpcpy was NOT found")
 endif()
 
-check_cxx_symbol_exists(strcasecmp strings.h HAVE_STRCASECMP)
+check_cxx_symbol_exists(strcasecmp "strings.h" HAVE_STRCASECMP)
 if(NOT HAVE_STRCASECMP)
     message(WARNING "The strcasecmp was NOT found")
 endif()
 
-check_symbol_exists(strchr string.h HAVE_STRCHR)
+check_symbol_exists(strchr "string.h" HAVE_STRCHR)
 if(NOT HAVE_STRCHR)
     message(WARNING "The strchr was NOT found")
 endif()
 
-check_cxx_symbol_exists(strcspn string.h HAVE_STRCSPN)
+check_cxx_symbol_exists(strcspn "string.h" HAVE_STRCSPN)
 if(NOT HAVE_STRCSPN)
     message(WARNING "The strcspn was NOT found")
 endif()
 
-check_cxx_symbol_exists(strdup string.h HAVE_STRDUP)
+check_cxx_symbol_exists(strdup "string.h" HAVE_STRDUP)
 if(NOT HAVE_STRDUP)
     message(WARNING "The strdup was NOT found")
 endif()
 
-check_cxx_symbol_exists(strerror string.h HAVE_STRERROR)
+check_cxx_symbol_exists(strerror "string.h" HAVE_STRERROR)
 if(NOT HAVE_STRERROR)
     message(WARNING "The strerror was NOT found")
 endif()
 
-check_cxx_symbol_exists(strncasecmp strings.h HAVE_STRNCASECMP)
+check_cxx_symbol_exists(strncasecmp "strings.h" HAVE_STRNCASECMP)
 if(NOT HAVE_STRNCASECMP)
     message(WARNING "The strncasecmp was NOT found")
 endif()
 
-check_symbol_exists(strstr string.h HAVE_STRSTR)
+check_symbol_exists(strstr "string.h" HAVE_STRSTR)
 if(NOT HAVE_STRSTR)
     message(WARNING "The strstr was NOT found")
 endif()
 
-check_cxx_symbol_exists(strtol stdlib.h HAVE_STRTOL)
+check_cxx_symbol_exists(strtol "stdlib.h" HAVE_STRTOL)
 if(NOT HAVE_STRTOL)
     message(WARNING "The strtol was NOT found")
 endif()
 
-check_cxx_symbol_exists(strtoul stdlib.h HAVE_STRTOUL)
+check_cxx_symbol_exists(strtoul "stdlib.h" HAVE_STRTOUL)
 if(NOT HAVE_STRTOUL)
     message(WARNING "The strtoul was NOT found")
 endif()
 
-check_cxx_symbol_exists(tzset time.h HAVE_TZSET)
+check_cxx_symbol_exists(tzset "time.h" HAVE_TZSET)
 if(NOT HAVE_TZSET)
     message(WARNING "The tzset was NOT found")
 endif()
 
-check_cxx_symbol_exists(unsetenv stdlib.h HAVE_UNSETENV)
+check_cxx_symbol_exists(unsetenv "stdlib.h" HAVE_UNSETENV)
 if(NOT HAVE_UNSETENV)
     message(WARNING "The unsetenv was NOT found")
 endif()
 
-check_cxx_symbol_exists(usleep unistd.h HAVE_USLEEP)
+check_cxx_symbol_exists(usleep "unistd.h" HAVE_USLEEP)
 if(NOT HAVE_USLEEP)
     message(WARNING "The usleep was NOT found")
 endif()
 
-check_cxx_symbol_exists(utime utime.h HAVE_UTIME)
+check_cxx_symbol_exists(utime "utime.h" HAVE_UTIME)
 if(NOT HAVE_UTIME)
     message(WARNING "The utime was NOT found")
 endif()
@@ -992,17 +998,14 @@ endif()
 
 set(have_tcmalloc FALSE)
 if(tcmalloc)
-    pkg_check_modules(TCMALLOC libtcmalloc REQUIRED)
-    if(NOT TCMALLOC_FOUND)
+    pkg_check_modules(TCMALLOC REQUIRED "libtcmalloc_minimal")
+    if(TCMALLOC_FOUND)
         check_library_exists(tcmalloc_minimal malloc "" have_tcmalloc)
         if(have_tcmalloc)
             set(TCMALLOC_CFLAGS)
-            set(TCMALLOC_LIBS "-ltcmalloc_minimal")
-
+            set(TCMALLOC_LIBS "-l${TCMALLOC_LIBRARIES}")  # ${TCMALLOC_LIBRARIES} evaluates to tcmalloc_minimal
         else()
-            if(tcmalloc)
-                message(WARNING "ARIA2_DEP_NOT_MET([tcmalloc_minimal])")
-            endif()
+            message(WARNING "ARIA2_DEP_NOT_MET([tcmalloc_minimal]). Install it with: sudo apt get install libgoogle-perftools-dev")
         endif()
     endif()
 endif()
@@ -1014,12 +1017,9 @@ if(jemalloc)
         check_library_exists(jemalloc malloc "" have_jemalloc)
         if(have_jemalloc)
             set(JEMALLOC_CFLAGS)
-            set(JEMALLOC_LIBS "-ljemalloc")
-
+            set(JEMALLOC_LIBS "-l${JEMALLOC_LIBRARIES}")  # ${JEMALLOC_LIBRARIES} evaluates to jemalloc
         else()
-            if(jemalloc)
-                message(WARNING "ARIA2_DEP_NOT_MET([jemalloc (unprefixed)])")
-            endif()
+            message(WARNING "ARIA2_DEP_NOT_MET([jemalloc (unprefixed)]). Install it with: sudo apt-get install libjemalloc-dev")
         endif()
     endif()
 endif()
@@ -1029,34 +1029,89 @@ if(epoll)
     check_symbol_exists(epoll_create "sys/epoll.h" have_epoll)
     if(have_epoll)
         add_compile_definitions(HAVE_EPOLL=1)
-        message("Define to 1 if epoll is available")
     endif()
 endif()
-# TODO: missing one AM_CONDITIONAL for HAVE_EPOLL
+
 if(have_epoll)
     set(HAVE_EPOLL TRUE CACHE BOOL "epoll exists" FORCE)
 else()
     set(HAVE_EPOLL FALSE CACHE BOOL "epoll NOT exists" FORCE)
 endif()
 
-check_symbol_exists(posix_fallocate "fcntl.h" HAVE_POSIX_FALLOCATE)
-if(HAVE_POSIX_FALLOCATE)
-   message("The fallocate has been found")
+check_symbol_exists(posix_fallocate "fcntl.h" have_posix_fallocate)
+if(NOT have_posix_fallocate)
+   message(WARNING "posix_fallocate was NOT found")
 endif()
 
-# TODO: Not high priority - should check again this condition.
-if(HAVE_POSIX_FALLOCATE OR HAVE_FALLOCATE OR HAVE_OSX OR WIN_BUILD)
+include(CheckCSourceCompiles)
+check_c_source_compiles("
+    #include <fcntl.h>
+    int main() {
+        fallocate(2, 0, 0, 4096);
+        return 0;
+    }" have_fallocate
+)
+
+if(have_fallocate)
+    add_compile_definitions(HAVE_FALLOCATE=1)
+endif()
+
+if(have_posix_fallocate OR have_fallocate OR have_osx OR win_build)
    add_compile_definitions(HAVE_SOME_FALLOCATE=1)
-   message("Define to 1 if *_fallocate is available")
+   set(HAVE_SOME_FALLOCATE TRUE CACHE BOOL "*_fallocate exists" FORCE)
 endif()
 
-# TODO: need one more with the AM_CONDITIONAL
+# TODO: mingw needs this START
+set(save_CPPFLAGS "${CPPFLAGS}")
+# set(CPPFLAGS "${CPPFLAGS} ${EXTRACPPFLAGS}")  # TODOm: remove this set() command
+string(APPEND CPPFLAGS " ${EXTRACPPFLAGS}")
+message("Checking for asctime_r")
+check_cxx_source_compiles("
+    #include <time.h>
+    struct tm r;
+    char *c;
 
-# TODO: there is a part where the mingw needs this
-# following code
+    int main() {
+        char *res = asctime_r(&r, c);
+        return 0;
+    }" have_asctime_r
+)
+
+if(have_asctime_r)
+    message("Have asctime_r function")
+    add_compile_definitions(HAVE_ASCTIME_R=1)
+    set(HAVE_ASCTIME_R TRUE CACHE BOOL "Have asctime_r function")
+else()
+    message("NOT have asctime_r function")
+    set(HAVE_ASCTIME_R FALSE CACHE BOOL "NOT have asctime_r function")
+endif()
+
+message("Checking for localtime_r")
+
+check_cxx_source_compiles("
+    #include <time.h>
+    time_t t;
+    struct tm r;
+
+    int main() {
+        localtime_r(&t, &r);
+        return 0;
+    }" have_localtime_r)
 
 
-check_symbol_exists(basename libgen.h BASENAME_EXISTS)
+if(have_localtime_r)
+    message("Have localtime_r function")
+    add_compile_definitions(HAVE_LOCALTIME_R=1)
+    set(HAVE_LOCALTIME_R TRUE CACHE BOOL "Have localtime_r function")
+else()
+    message("NOT have localtime_r function")
+    set(HAVE_LOCALTIME_R FALSE CACHE BOOL "NOT have localtime_r function")
+endif()
+
+set(CPPFLAGS "${save_CPPFLAGS}")
+# TODO: mingw needs this END
+
+check_symbol_exists(basename "libgen.h" BASENAME_EXISTS)
 if(BASENAME_EXISTS)
    set(HAVE_BASENAME TRUE CACHE BOOL "The basename has been found" FORCE)
 else()
@@ -1100,8 +1155,8 @@ else()
     set(HAVE_DAEMON FALSE CACHE BOOL "The daemon is NOT present" FORCE)
 endif()
 
-check_symbol_exists(poll "poll.h" POLL_EXISTS)
-if(have_poll)
+check_symbol_exists(poll "poll.h" POLL_EXISTS)  # at configure.ac, the variable to hold the result is: have_poll
+if(POLL_EXISTS)
     set(HAVE_POLL TRUE CACHE BOOL "The poll is present" FORCE)
 else()
     set(HAVE_POLL FALSE CACHE BOOL "The poll is NOT present" FORCE)
@@ -1130,9 +1185,10 @@ else()
     set(HAVE_PORT_ASSOCIATE FALSE CACHE BOOL "The port_associate has NOT been found" FORCE)
 endif()
 
-#==========================#
+#==========================# TODOm: START check again, as it is not working
 set(save_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
-set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")
+# set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")  # TODOm: remove this set() command
+string(APPEND CMAKE_REQUIRED_INCLUDES " /usr/include/kqueue")
 
 check_cxx_symbol_exists(kqueue "sys/event.h" KQUEUE_EXISTS)
 if(KQUEUE_EXISTS)
@@ -1146,7 +1202,7 @@ if(KQUEUE_EXISTS)
             struct kevent event;
 
             int main() {
-                event.udata = reinterpret_cast<intptr_r>(&event);
+                event.udata = reinterpret_cast<intptr_t>(&event);
                 return 0;
             }
         ]==]
@@ -1155,11 +1211,11 @@ if(KQUEUE_EXISTS)
     message("Whether struct kevent.udata is intrptr_t")
     check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
     if(kevent_udata_intptr_t)
-      add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
+        add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
         message("Define to 1 if struct kevent.udata is intptr_t")
     endif()
 else()
-	message("The kqueue has NOT been found")
+	message(WARNING "The kqueue has NOT been found")
 #    message("Try installing it with the command: sudo apt install libkqueue-dev")
 #    message("Possible location where it might be located is: /usr/include/kqueue/sys/event.h")
 #    message("and not at the /usr/include. So I have to include the /usr/include/kqueue/ path in")
@@ -1167,7 +1223,6 @@ else()
 endif()
 
 set(CMAKE_REQUIRED_INCLUDES "${save_INCLUDES}")
-#==========================#
 
 check_struct_has_member(
     "struct sockaddr_in"
@@ -1180,6 +1235,8 @@ check_struct_has_member(
 if(HAVE_SIN_LEN)
     add_compile_definitions(HAVE_SOCKADDR_IN_SIN_LEN=1)
     message("Define to 1 if struct sockaddr_in has sin_len member.")
+else()
+    message(WARNING "sin_len NOT found")
 endif()
 
 check_struct_has_member(
@@ -1193,7 +1250,10 @@ check_struct_has_member(
 if(HAVE_SIN6_LEN)
     add_compile_definitions(HAVE_SOCKADDR_IN6_SIN6_LEN=1)
     message("Define to 1 if struct sockaddr_in6 has sin6_len member.")
+else()
+    message(WARNING "sin6_len NOT found")
 endif()
+#==========================# TODOm: END check again, as it is not working
 
 message("Whether struct option.name is assignable from const char*")
 
@@ -1222,8 +1282,9 @@ if(websocket)
     add_compile_definitions(ENABLE_WEBSOCKET=1)
     message("Define 1 if WebSocket support is enabled")
 
-    set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     # TODO:  Should check in the future as currently this is not enabled.
+    # also should use the string(APPEND ) format command
+    set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     set(WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")
 endif()
 
@@ -1238,15 +1299,18 @@ endif()
 # AC_SUBST([bashcompletiondir]) # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
 
 if(ARIA2_STATIC)
-    set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")
-    if(CMAKE_HOST_SYSTEM_NAME NOT MSVC OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Mingw" OR CMAKE_HOST_SYSTEM_NAME NOT STREQUAL "Darwin")
-        set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")
+    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")  # TODOm: remove this set() command
+    string(APPEND EXTRALDFLAGS " -all-static")
+    if(NOT CMAKE_HOST_SYSTEM_NAME STREQUAL MSVC OR NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw" OR NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+        # set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")  # TODOm: remove this set() command
+        string(APPEND EXTRALIBS " -lpthread -ldl -lrt")
     endif()
 endif()
 
-if(WIN_BUILD AND libaria2)
+if(win_build AND libaria2)
     # Creating dll needs this
-    set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")
+    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")  # TODOm: remove this set() command
+    string(APPEND EXTRALDFLAGS " -no-undefined")
 endif()
 
 # TODO: the respective substitution should be done with cofigure_file() command
@@ -1265,20 +1329,25 @@ if(werror)
     check_compiler_flag(CXX -Wformat-security HAVE_FORMAT_SECURITY)
 
     if(HAVE_WALL_FLAG)
-        set(CXXFLAGS "${CXXFLAGS} -Wall")
+        # set(CXXFLAGS "${CXXFLAGS} -Wall")  # TODOm: remove this set() command
+        string(APPEND CXXFLAGS " -Wall")
     endif()
 
     if(HAVE_WERROR_FLAG)
-        set(CXXFLAGS "${CXXFLAGS} -Werror")
+        # set(CXXFLAGS "${CXXFLAGS} -Werror")  # TODOm: remove this set() command
+        string(APPEND CXXFLAGS " -Werror")
     endif()
 
     if(HAVE_FORMAT_SECURITY)
-        set(CXXFLAGS "${CXXFLAGS} -Wformat-security")
+        # set(CXXFLAGS "${CXXFLAGS} -Wformat-security")  # TODOm: remove this set() command
+        string(APPEND CXXFLAGS " -Wformat-security")
     endif()
 
 endif()
 
-set(WARNCXXFLAGS "${CXXFLAGS}")
+# set(WARNCXXFLAGS "${CXXFLAGS}")  # TODOm: remove this set() command
+string(APPEND WARNCXXFLAGS " ${CXXFLAGS}")
+
 set(CXXFLAGS "${save_CXXFLAGS}")
 
 # TODO: AC_SUBST([WARNCXXFLAGS])
@@ -1305,3 +1374,8 @@ ${have_tcmalloc};${have_jemalloc};${have_epoll};${enable_bittorrent};${enable_me
 ${ENABLE_LIBARIA2};${bashcompletiondir};${ARIA2_STATIC}")
 
 printBuildOptions(printKeys printValues)
+
+# string(APPEND ...)
+# If multiple compiler flags need to be set, they need to be specified as a single string, not as a list.
+# CMake will not properly handle flag variables if their contents contain semicolons, which is what a
+# list would be turned into if specified by the project
