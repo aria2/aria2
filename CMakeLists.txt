@@ -21,13 +21,11 @@ if(MSVC) # check if the host is about to run in windows with mingw compiler
     # Define _POSIX_C_SOURCE to 1. This makes {asc,local}time_r
     # available from <time.h> even without (un)helpful interference
     # from <pthread.h>, and also defines __USE_MINGW_ANSI_STDIO.
-    # set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_POSIX_C_SOURCE=1") # TODOm: remove this set()
     string(APPEND EXTRACPPFLAGS " -D_POSIX_C_SOURCE=1")
 
     # Build with ASLR (dynamicbase) and NX compatibility (nxcompat)
     # Enable pie once upstream/binutils gets fixed to produce correct
     # binaries with it.
-    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -Wl,--dynamicbase -Wl,--nxcompat") # TODOm: remove this set()
     string(APPEND EXTRALDFLAGS " -Wl,--dynamicbase -Wl,--nxcompat")
 endif()
 
@@ -140,7 +138,6 @@ endif()
 if(ARIA2_STATIC)
     # check whether the platform is i686 or mingw
 	if(MINGW AND CMAKE_SIZEOF_VOID_P EQUAL 4) # TODOm: equal to i686*mingw => searches for a 32-bit MinGW target - replaces i686*mingw from configure.ac file
-        # set(EXTRACPPFLAGS "${EXTRACPPFLAGS} -D_USE_32BIT_TIME_T") # TODOm: remove this set() command
         string(APPEND EXTRACPPFLAGS " -D_USE_32BIT_TIME_T")
     endif()
 
@@ -275,7 +272,6 @@ if(appletls)
     if(have_osx)
         message("Define to 1 if you have Apple TLS")
         add_compile_definitions(HAVE_APPLETLS=1)
-        # set(APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")  # TODOm: remove this set() command
         string(APPEND APPLETLS_LDFLAGS "-framework CoreFoundation -framework Security")
 
         set(have_appletls TRUE)
@@ -380,7 +376,6 @@ if(openssl AND NOT have_ssl)
         set(have_ssl TRUE)
         add_compile_definitions(HAVE_OPENSSL=1)
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
-        # set(CMAKE_REQUIRED_LIBRARIES "${OpenSSL_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")  #TODOm: remove this set() command
         string(APPEND CMAKE_REQUIRED_LIBRARIES " ${OpenSSL_LIBRARIES}")
         
         check_symbol_exists(EVP_DigestInit_ex "openssl/evp.h" have_digestinit_ex)
@@ -419,7 +414,6 @@ if(NOT have_openssl)
     if(libgmp AND (have_libnettle OR have_nativetls) AND bittorrent)  # DONE: native_tls has to be placed into some other places in the code
         pkg_check_modules(GmpLib REQUIRED "gmp")  # apt-get install libgmp-dev OR libgmp3-dev
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
-        # set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${GmpLib_LIBRARIES}") #TODOm: remove this set() command
         string(APPEND CMAKE_REQUIRED_LIBRARIES " ${GmpLib_LIBRARIES}")
         check_symbol_exists(__gmpz_init "gmp.h" have_libgmp)
         if(have_libgmp)
@@ -467,7 +461,6 @@ if(libssh2)
         add_compile_definitions(HAVE_LIBSSH2=1)
 
         if(ARIA2_STATIC)
-            # set(LIBSSH2_CFLAGS "${LIBSSH2_CFLAGS} -DLIBSSH2_API")  #TODOm: remove this set() command
             string(APPEND LIBSSH2_CFLAGS " -DLIBSSH2_API")
         endif()
     else()
@@ -1012,7 +1005,7 @@ endif()
 
 set(have_jmalloc FALSE)
 if(jemalloc)
-    pkg_check_modules(JEMALLOC jemalloc REQUIRED)
+    pkg_check_modules(JEMALLOC REQUIRED jemalloc)
     if(NOT JEMALLOC_FOUND)
         check_library_exists(jemalloc malloc "" have_jemalloc)
         if(have_jemalloc)
@@ -1063,7 +1056,6 @@ endif()
 
 # TODO: mingw needs this START
 set(save_CPPFLAGS "${CPPFLAGS}")
-# set(CPPFLAGS "${CPPFLAGS} ${EXTRACPPFLAGS}")  # TODOm: remove this set() command
 string(APPEND CPPFLAGS " ${EXTRACPPFLAGS}")
 message("Checking for asctime_r")
 check_cxx_source_compiles("
@@ -1087,7 +1079,6 @@ else()
 endif()
 
 message("Checking for localtime_r")
-
 check_cxx_source_compiles("
     #include <time.h>
     time_t t;
@@ -1097,7 +1088,6 @@ check_cxx_source_compiles("
         localtime_r(&t, &r);
         return 0;
     }" have_localtime_r)
-
 
 if(have_localtime_r)
     message("Have localtime_r function")
@@ -1177,7 +1167,7 @@ else()
     set(HAVE_TIMEGM FALSE CACHE BOOL "The timegm has NOT been found" FORCE)
 endif()
 
-# TODO: this library cannot be found, yet
+# TODOm: this library cannot be found, yet
 check_cxx_symbol_exists(port_associate "port.h" PORT_ASSOCIATE_EXISTS)
 if(PORT_ASSOCIATE_EXISTS)
     set(HAVE_PORT_ASSOCIATE TRUE CACHE BOOL "The port_associate has been found" FORCE)
@@ -1185,15 +1175,26 @@ else()
     set(HAVE_PORT_ASSOCIATE FALSE CACHE BOOL "The port_associate has NOT been found" FORCE)
 endif()
 
-#==========================# TODOm: START check again, as it is not working
-set(save_INCLUDES "${CMAKE_REQUIRED_INCLUDES}")
-# set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} /usr/include/kqueue")  # TODOm: remove this set() command
-string(APPEND CMAKE_REQUIRED_INCLUDES " /usr/include/kqueue")
+set(save_CMAKE_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES}")
+set(save_CMAKE_INCLUDE_DIRS "${CMAKE_INCLUDE_DIRS}")
 
-check_cxx_symbol_exists(kqueue "sys/event.h" KQUEUE_EXISTS)
+pkg_check_modules(KQUEUE "libkqueue")
+string(APPEND CMAKE_REQUIRED_LIBRARIES " ${KQUEUE_LIBRARIES}")   # KQUEUE_LIBRARIES evaluates to: kqueue
+string(APPEND CMAKE_REQUIRED_INCLUDES " ${KQUEUE_INCLUDE_DIRS}") # KQUEUE_INCLUDE_DIRS evaluates to: /usr/include/kqueue
+
+check_symbol_exists(kqueue "sys/event.h" KQUEUE_EXISTS)
 if(KQUEUE_EXISTS)
-    set(HAVE_KQUEUE TRUE CACHE BOOL "The kqueue has been found." FORCE)
+    set(have_kqueue TRUE)
+else()
+    check_function_exists(kqueue KQUEUE_EXISTS_WITHOUT_DECL)
+    if(KQUEUE_EXISTS_WITHOUT_DECL)
+        message(WARNING "Function is availabe at kqueue library, but it's declaration is NOT provided into event.h header")
+        set(have_kqueue TRUE)
+    endif()
+endif()
 
+if(have_kqueue)
+    set(HAVE_KQUEUE TRUE CACHE BOOL "The kqueue has been found." FORCE)
     set(keventCode [==[
             #include <sys/time.h>
             #include <sys/types.h>
@@ -1208,7 +1209,7 @@ if(KQUEUE_EXISTS)
         ]==]
     )
 
-    message("Whether struct kevent.udata is intrptr_t")
+    message("Whether struct kevent.udata is intptr_t")
     check_cxx_source_compiles("${keventCode}" kevent_udata_intptr_t)
     if(kevent_udata_intptr_t)
         add_compile_definitions(KEVENT_UDATA_INTPTR_T=1)
@@ -1222,8 +1223,10 @@ else()
 #    message("in order to find the header  (event.h)")
 endif()
 
-set(CMAKE_REQUIRED_INCLUDES "${save_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${save_CMAKE_LIBRARIES}")
+set(CMAKE_INCLUDE_DIRS "${save_CMAKE_INCLUDE_DIRS}")
 
+# HINT: this is basically in BSD and macOS operating systems
 check_struct_has_member(
     "struct sockaddr_in"
     sin_len
@@ -1235,10 +1238,9 @@ check_struct_has_member(
 if(HAVE_SIN_LEN)
     add_compile_definitions(HAVE_SOCKADDR_IN_SIN_LEN=1)
     message("Define to 1 if struct sockaddr_in has sin_len member.")
-else()
-    message(WARNING "sin_len NOT found")
 endif()
 
+# HINT: this is basically in BSD and macOS operating systems
 check_struct_has_member(
     "struct sockaddr_in6"
     sin6_len
@@ -1250,13 +1252,9 @@ check_struct_has_member(
 if(HAVE_SIN6_LEN)
     add_compile_definitions(HAVE_SOCKADDR_IN6_SIN6_LEN=1)
     message("Define to 1 if struct sockaddr_in6 has sin6_len member.")
-else()
-    message(WARNING "sin6_len NOT found")
 endif()
-#==========================# TODOm: END check again, as it is not working
 
 message("Whether struct option.name is assignable from const char*")
-
 set(nameAssignableFromConst [==[
         #include <unistd.h>
         #include <getopt.h>
@@ -1272,7 +1270,6 @@ set(nameAssignableFromConst [==[
 
 check_cxx_source_compiles("${nameAssignableFromConst}" have_option_const_name)
 if(have_option_const_name)
-    message("The option.name is assignable from const char*")
     add_compile_definitions(HAVE_OPTION_CONST_NAME=1)
     message("Define 1 if struct option.name is const char*")
 endif()
@@ -1283,9 +1280,8 @@ if(websocket)
     message("Define 1 if WebSocket support is enabled")
 
     # TODO:  Should check in the future as currently this is not enabled.
-    # also should use the string(APPEND ) format command
-    set(WSLAY_CFLAGS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes" "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
-    set(WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")
+    string(APPEND WSLAY_CFLAGS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes ${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
+    string(APPEND WSLAY_LIBS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")  # TODOm: check if this is needed anyway
 endif()
 
 if(websocket)
@@ -1299,17 +1295,14 @@ endif()
 # AC_SUBST([bashcompletiondir]) # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
 
 if(ARIA2_STATIC)
-    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -all-static")  # TODOm: remove this set() command
     string(APPEND EXTRALDFLAGS " -all-static")
     if(NOT CMAKE_HOST_SYSTEM_NAME STREQUAL MSVC OR NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw" OR NOT CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
-        # set(EXTRALIBS "${EXTRALIBS} -lpthread -ldl -lrt")  # TODOm: remove this set() command
         string(APPEND EXTRALIBS " -lpthread -ldl -lrt")
     endif()
 endif()
 
 if(win_build AND libaria2)
     # Creating dll needs this
-    # set(EXTRALDFLAGS "${EXTRALDFLAGS} -no-undefined")  # TODOm: remove this set() command
     string(APPEND EXTRALDFLAGS " -no-undefined")
 endif()
 
@@ -1329,28 +1322,22 @@ if(werror)
     check_compiler_flag(CXX -Wformat-security HAVE_FORMAT_SECURITY)
 
     if(HAVE_WALL_FLAG)
-        # set(CXXFLAGS "${CXXFLAGS} -Wall")  # TODOm: remove this set() command
         string(APPEND CXXFLAGS " -Wall")
     endif()
 
     if(HAVE_WERROR_FLAG)
-        # set(CXXFLAGS "${CXXFLAGS} -Werror")  # TODOm: remove this set() command
         string(APPEND CXXFLAGS " -Werror")
     endif()
 
     if(HAVE_FORMAT_SECURITY)
-        # set(CXXFLAGS "${CXXFLAGS} -Wformat-security")  # TODOm: remove this set() command
         string(APPEND CXXFLAGS " -Wformat-security")
     endif()
 
 endif()
 
-# set(WARNCXXFLAGS "${CXXFLAGS}")  # TODOm: remove this set() command
 string(APPEND WARNCXXFLAGS " ${CXXFLAGS}")
 
 set(CXXFLAGS "${save_CXXFLAGS}")
-
-# TODO: AC_SUBST([WARNCXXFLAGS])
 
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/)
 message("")
