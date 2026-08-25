@@ -74,8 +74,22 @@ if(NOT CMAKE_AR)
 	message(FATAL_ERROR "ar is not found in the system.")
 endif()
 
-# TODOm: check for sphinxbuild
-# TODOm: check for srt2html -> restructure text to html
+find_program(SPHINXBUILD sphinx-build)  # sudo apt-get install sphinx
+if(SPHINXBUILD)
+    message(STATUS "Found Sphinx: ${SPHINXBUILD}")
+    set(HAVE_SPHINXBUILD TRUE CACHE BOOL "sphinx-build was found" FORCE)
+else()
+    message(WARNING "sphinx-build program not found. Install it with: sudo apt-get install sphinx")
+endif()
+
+find_program(RST2HTML NAMES rst2html rst2html.py)  # sudo pip install rst2html
+if(RST2HTML)
+    message(STATUS "Found Sphinx: ${RST2HTML}")
+    set(HAVE_RST2HTML TRUE CACHE BOOL "rst2html was found" FORCE)
+else()
+    message(STATUS "Sphinx not found")
+    message(WARNING "rst2html program was not found. Install it with: sudo pip install rst2html")
+endif()
 
 include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)
