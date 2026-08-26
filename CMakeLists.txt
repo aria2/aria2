@@ -8,6 +8,21 @@ set(CMAKE_CXX_EXTENSIONS ON)  # AC_USE_SYSTEM_EXTENSIONS
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+include(Helpers)
+include(FindPkgConfig)
+include(CheckCXXSourceCompiles)
+include(CheckLibraryExists)
+include(CheckIncludeFiles)
+include(CheckIncludeFile)
+include(CheckLibraryExists)
+include(CheckCSourceCompiles)
+include(CheckSymbolExists)
+include(CheckCXXSymbolExists)
+include(CheckTypeSize)
+include(CheckCSourceCompiles)
+include(CheckStructHasMember)
+
+
 set(EXTRACFLAGS)
 set(EXTRACXXFLAGS)
 set(EXTRACPPFLAGS)
@@ -54,11 +69,9 @@ option(epoll "" FALSE)
 option(libaria2 "" FALSE)
 option(werror "" FALSE)
 
-#option(ca-bundle "-Dwith-ca-bundle=FILE, Use FILE as default CA bundle" OFF)
-
-set(ca_bundle "" CACHE FILEPATH "Set the path for the CA certificate")
-set(disk_cache "" CACHE STRING "Use SIZE as the default disk-cache size")
-set(bashcompletiondir "" CACHE PATH "Directory to install bash_completion file")
+set(ca_bundle "" CACHE FILEPATH "Set the path for the CA certificate")  # -Dca_bundle=path/to/cacert.crt file
+set(disk_cache "" CACHE STRING "Use SIZE as the default disk-cache size")  # -Ddisk_cache=32
+set(bashcompletiondir "" CACHE PATH "Directory to install bash_completion file")  #-Dbashcompletiondir=/home/user/
 
 option(ARIA2_STATIC "Set 'yes' to build a statically linked aria2" NO)
 
@@ -91,7 +104,6 @@ else()
     message(WARNING "rst2html program was not found. Install it with: sudo pip install rst2html")
 endif()
 
-include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)
     if(${PKG_CONFIG_VERSION_STRING} VERSION_LESS 0.20)
         message(FATAL_ERROR "The current version of the pkg-config (${PKG_CONFIG_VERSION_STRING}) is less than 0.20. Try upgrade it first")
@@ -101,7 +113,6 @@ else()
     message(FATAL_ERROR "Cannot find pkg-config tool. Try installing it first")
 endif()
 
-include(CheckCXXSourceCompiles)
 message("Checking whether the C++ compiler supports nullptr")
 set(nullptrTest
     [==[
@@ -166,9 +177,7 @@ if(NOT CPPUNIT_FOUND)
     message(WARNING "The cppunit package not found. Try install it first")
 endif()
 
-# Check for libraries
-include(CheckLibraryExists)
-
+set(have_zlib FALSE)
 if(libz)
     pkg_check_modules(ZLIB "zlib >= 1.2.3")
     if(NOT ZLIB_FOUND)
@@ -187,7 +196,7 @@ if(libz)
     endif()
 
     if(ZLIB_FOUND)
-        message("Define to 1 if you have zlib")
+        set(have_zlib TRUE)
         add_compile_definitions(HAVE_ZLIB=1)
         set(save_LIBS "${CMAKE_REQUIRED_LIBRARIES}")
         set(CMAKE_REQUIRED_LIBRARIES "${ZLIB_LIBRARIES} ${CMAKE_REQUIRED_LIBRARIES}")
@@ -252,9 +261,6 @@ if(sqlite3)
     endif()
 endif()
 
-include(CheckIncludeFiles)
-include(CheckIncludeFile)
-
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
     set(have_osx YES)
 elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw")
@@ -296,8 +302,6 @@ if(appletls)
     endif()
 endif()
 
-include(CheckLibraryExists)
-
 set(have_wintls FALSE)
 if(wintls)
     find_package(crypt32 REQUIRED)
@@ -319,7 +323,6 @@ if(wintls)
         set(have_wintls_libs TRUE)
     endif()
 
-    include(CheckCSourceCompiles)
     check_c_source_compiles("
         #include <windows.h>
         #include <wincrypt.h>
@@ -663,9 +666,6 @@ if(CMAKE_HOST_SOLARIS)
     # esac
 endif()
 
-include(CheckSymbolExists)
-include(CheckCXXSymbolExists)
-
 check_include_file(alloca.h HAVE_ALLOCA_HEADER)
 if(HAVE_ALLOCA_HEADER)
 	message("The alloca.h exists")
@@ -692,7 +692,6 @@ if(HAVE_PORT_HEADER)
     add_compile_definitions(HAVE_PORT_H=1)
 endif()
 
-include(CheckTypeSize)
 check_type_size(size_t SIZEOF_SIZE_T)
 if(HAVE_SIZEOF_SIZE_T)
 	message(STATUS "The size_t exists with size ${SIZEOF_SIZE_T}")
@@ -712,7 +711,6 @@ endif()
 # set(CMAKE_C_STANDARD 11)
 # set(CMAKE_C_STANDARD_REQUIRED TRUE)
 # now it will be able to find the c struct
-include(CheckStructHasMember)
 check_struct_has_member(
     "struct timespec"
     tv_sec
@@ -1000,7 +998,7 @@ endif()
 
 
 if(tcmalloc AND jemalloc)
-    message(ERROR "Cannot use both, tcmalloc and jemalloc!")
+    message(FATAL_ERROR "Cannot use both, tcmalloc and jemalloc!")
 endif()
 
 set(have_tcmalloc FALSE)
@@ -1017,7 +1015,7 @@ if(tcmalloc)
     endif()
 endif()
 
-set(have_jmalloc FALSE)
+set(have_jemalloc FALSE)
 if(jemalloc)
     pkg_check_modules(JEMALLOC REQUIRED jemalloc)
     if(NOT JEMALLOC_FOUND)
@@ -1050,7 +1048,6 @@ if(NOT have_posix_fallocate)
    message(WARNING "posix_fallocate was NOT found")
 endif()
 
-include(CheckCSourceCompiles)
 check_c_source_compiles("
     #include <fcntl.h>
     int main() {
@@ -1068,7 +1065,6 @@ if(have_posix_fallocate OR have_fallocate OR have_osx OR win_build)
    set(HAVE_SOME_FALLOCATE TRUE CACHE BOOL "*_fallocate exists" FORCE)
 endif()
 
-# TODO: mingw needs this START
 set(save_CPPFLAGS "${CPPFLAGS}")
 string(APPEND CPPFLAGS " ${EXTRACPPFLAGS}")
 message("Checking for asctime_r")
@@ -1113,7 +1109,6 @@ else()
 endif()
 
 set(CPPFLAGS "${save_CPPFLAGS}")
-# TODO: mingw needs this END
 
 check_symbol_exists(basename "libgen.h" BASENAME_EXISTS)
 if(BASENAME_EXISTS)
@@ -1295,7 +1290,7 @@ if(websocket)
 
     # TODO:  Should check in the future as currently this is not enabled.
     string(APPEND WSLAY_CFLAGS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes ${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
-    string(APPEND WSLAY_LIBS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")  # TODOm: check if this is needed anyway
+    string(APPEND WSLAY_LIBS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")  # TODOm: check if this is needed anyway because it uses libwslay.la
 endif()
 
 if(websocket)
@@ -1319,7 +1314,6 @@ if(win_build AND libaria2)
     # Creating dll needs this
     string(APPEND EXTRALDFLAGS " -no-undefined")
 endif()
-
 # TODO: the respective substitution should be done with cofigure_file() command
 # AC_SUBST([EXTRACFLAGS])
 # AC_SUBST([EXTRACXXFLAGS])
@@ -1356,8 +1350,6 @@ set(CXXFLAGS "${save_CXXFLAGS}")
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/)
 message("")
 message(STATUS "Summary of build options\n")
-
-include(Helpers)
 
 set(printKeys "Build;Host;Target;Install prefix;CC;CXX;CPP;CXXFLAGS;CFLAGS;CPPFLAGS;LDFLAGS;\
 LIBS;DEFS;CXX1XCXXFLAGS;EXTRACXXFLAGS;EXTRACFLAGS;EXTRACPPFLAGS;EXTRALDFLAGS;\
