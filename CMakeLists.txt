@@ -3,10 +3,14 @@ cmake_minimum_required(VERSION 3.28 FATAL_ERROR)
 project(aria2 VERSION 1.37.0 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD 11)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 set(CMAKE_CXX_EXTENSIONS ON)  # AC_USE_SYSTEM_EXTENSIONS
 
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(Helpers)
 include(FindPkgConfig)
@@ -21,7 +25,7 @@ include(CheckCXXSymbolExists)
 include(CheckTypeSize)
 include(CheckCSourceCompiles)
 include(CheckStructHasMember)
-
+include(CheckFunctionExists)
 
 set(EXTRACFLAGS)
 set(EXTRACXXFLAGS)
@@ -214,7 +218,7 @@ if(libuv)
     if(LIBUV_FOUND)
         set(have_libuv TRUE)
         add_compile_definitions(HAVE_LIBUV=1)
-        set(HAVE_LIBUV TRUE CACHE BOOL "LibUV was found" FORCE)
+        set(HAVE_LIBUV TRUE)
     else()
         message(WARNING "ARIA2_DEP_NOT_MET([libuv])")
     endif()
@@ -275,7 +279,7 @@ elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Mingw")
 endif()
 
 
-if(NOT enable_ssl)
+if(NOT ssl)
     set(appletls NO)
     set(wintls NO)
     set(libnettle NO)
@@ -382,8 +386,9 @@ if(gnutls AND NOT have_ssl)
 endif()
 
 set(have_openssl FALSE)
-if(openssl AND NOT have_ssl)
+if(openssl)
     # find_package(OpenSSL 0.9.8 REQUIRED)
+    message(FATAL_ERROR "Inside the openssl")
     pkg_check_modules(OpenSSL REQUIRED "openssl >= 0.9.8")  # sudo apt-get install libssl-dev
     if(OpenSSL_FOUND)
         set(have_openssl TRUE)
@@ -522,96 +527,96 @@ endif()
 
 if(have_ssl)
     add_compile_definitions(ENABLE_SSL=1)
-    set(ENABLE_SSL TRUE CACHE BOOL "ssh was found" FORCE)
+    set(ENABLE_SSL TRUE)
 else()
     set(have_ssl no)
-    set(ENABLE_SSL FALSE CACHE BOOL "ssh was not found" FORCE)
+    set(ENABLE_SSL FALSE)
 endif()
 
 # this can be done more clearly with a list of the variables that I want to check if they
 # are true or false.
 
 if(have_osx)
-    set(HAVE_OSX TRUE CACHE BOOL "osx was found" FORCE)
+    set(HAVE_OSX TRUE)
 endif()
 if(have_appletls)
-    set(HAVE_APPLETLS TRUE CACHE BOOL "appletls was found" FORCE)
+    set(HAVE_APPLETLS TRUE)
 endif()
 if(have_wintls)
-    set(HAVE_WINTLS TRUE CACHE BOOL "wintls was found" FORCE)
+    set(HAVE_WINTLS TRUE)
 endif()
 if(use_md STREQUAL "apple")
-    set(USE_APPLE_MD TRUE CACHE BOOL "md is equal to apple" FORCE)
+    set(USE_APPLE_MD TRUE)
 endif()
 if(use_md STREQUAL "windows")
-    set(USE_WINDOWS_MD TRUE CACHE BOOL "md is equal to windows" FORCE)
+    set(USE_WINDOWS_MD TRUE)
 endif()
 if(have_libgnutls)
-    set(HAVE_LIBGNUTLS TRUE CACHE BOOL "gnutls is enabled" FORCE)
+    set(HAVE_LIBGNUTLS TRUE)
 endif()
 if(have_libnettle)
-    set(HAVE_LIBNETTLE TRUE CACHE BOOL "libnettle is enabled" FORCE)
+    set(HAVE_LIBNETTLE TRUE)
 endif()
 if(use_md STREQUAL "libnettle")
-    set(USE_LIBNETTLE_MD TRUE CACHE BOOL "md is equal to libnettle" FORCE)
+    set(USE_LIBNETTLE_MD TRUE)
 endif()
 if(have_libgmp)
-    set(HAVE_LIBGMP TRUE CACHE BOOL "libgmp was found" FORCE)
+    set(HAVE_LIBGMP TRUE)
 endif()
 if(libgcrypt)
-    set(HAVE_LIBGCRYPT TRUE CACHE BOOL "libgcrypt was found" FORCE)
+    set(HAVE_LIBGCRYPT TRUE)
 endif()
 if(use_md STREQUAL "libgcrypt")
-    set(USE_LIBGCRYPT_MD TRUE CACHE BOOL "md is equal to libgcrypt" FORCE)
+    set(USE_LIBGCRYPT_MD TRUE)
 endif()
 if(have_openssl)
-    set(HAVE_OPENSSL TRUE CACHE BOOL "openssl was found" FORCE)
+    set(HAVE_OPENSSL TRUE)
 endif()
 if(use_md STREQUAL "openssl")
-    set(USE_OPENSSL_MD TRUE CACHE BOOL "md is equal to openssl" FORCE)
+    set(USE_OPENSSL_MD TRUE)
 endif()
 if(use_md STREQUAL "internal")
-    set(USE_INTERNAL_MD TRUE CACHE BOOL "md is equal to internal" FORCE)
+    set(USE_INTERNAL_MD TRUE)
 endif()
 
 if(have_libgmp OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_BIGNUM FALSE CACHE BOOL "internal bignum set to FALSE" FORCE)
+    set(USE_INTERNAL_BIGNUM FALSE)
 else()
     add_compile_definitions(USE_INTERNAL_BIGNUM=1)
-    set(USE_INTERNAL_BIGNUM TRUE CACHE BOOL "internal bignum set to TRUE" FORCE)
+    set(USE_INTERNAL_BIGNUM TRUE)
 endif()
 
 if(have_libnettle OR have_libgcrypt OR have_openssl)
-    set(USE_INTERNAL_ARC4 FALSE CACHE BOOL "internal arc4 set to FALSE" FORCE)
+    set(USE_INTERNAL_ARC4 FALSE)
 else()
     add_compile_definitions(USE_INTERNAL_ARC4=1)
-    set(USE_INTERNAL_ARC4 TRUE CACHE BOOL "internal arc4 set to TRUE" FORCE) # TODO: uses the AM_CONDITIONAL
+    set(USE_INTERNAL_ARC4 TRUE)
 endif()
 
 if(bittorrent)
     add_compile_definitions(ENABLE_BITTORRENT=1)
-    set(ENABLE_BITTORRENT TRUE CACHE BOOL "bittorrent set to TRUE" FORCE)
+    set(ENABLE_BITTORRENT TRUE)
 else()
     if(bittorrent)
         message(WARNING "ARIA2_FET_NOT_SUPPORTED([bittorrent])")
     endif()
     set(bittorrent FALSE)
-    set(ENABLE_BITTORRENT FALSE CACHE BOOL "bittorrent set to FALSE" FORCE)
+    set(ENABLE_BITTORRENT FALSE)
 endif()
 
 if((have_libxml2 OR have_libexpat) AND metalink)
     add_compile_definitions(ENABLE_METALINK=1)
-    set(ENABLE_METALINK TRUE CACHE BOOL "metalink is enabled" FORCE)
+    set(ENABLE_METALINK TRUE)
 else()
     if(metalink)
         message(WARNING "ARIA2_FET_NOT_SUPPORTED([metalink])")
     endif()
     set(metalink FALSE)
-    set(ENABLE_METALINK FALSE CACHE BOOL "metalink is disabled" FORCE)
+    set(ENABLE_METALINK FALSE)
 endif()
 
 if(have_libxml2 OR have_libexpat)
-    set(HAVE_SOME_XMLLIB TRUE CACHE BOOL "xml2 or expat exists" FORCE)
+    set(HAVE_SOME_XMLLIB TRUE)
     set(enable_xml_rpc TRUE)
 else()
     set(enable_xml_rpc FALSE)
@@ -619,35 +624,35 @@ endif()
 
 if(enable_xml_rpc)
     add_compile_definitions(ENABLE_XML_RPC=1)
-    set(ENABLE_XML_RPC TRUE CACHE BOOL "xml_rpc is enabled" FORCE)
+    set(ENABLE_XML_RPC TRUE)
 
 endif()
 
 if(have_libxml2)
-    set(HAVE_LIBXML2 TRUE CACHE BOOL "xlm2 is enabled" FORCE)
+    set(HAVE_LIBXML2 TRUE)
 endif()
 
 if(have_libexpat)
-    set(HAVE_LIBEXPAT TRUE CACHE BOOL "expat is enabled" FORCE)
+    set(HAVE_LIBEXPAT TRUE)
 endif()
 
 if(have_libcares)
     add_compile_definitions(ENABLE_ASYNC_DNS=1)
-    set(ENABLE_ASYNC_DNS TRUE CACHE BOOL "c-ares was found" FORCE)
+    set(ENABLE_ASYNC_DNS TRUE)
 else()
-    set(ENABLE_ASYNC_DNS FALSE CACHE BOOL "c-ares was not found" FORCE)
+    set(ENABLE_ASYNC_DNS FALSE)
 endif()
 
 if(have_zlib)
-    set(HAVE_ZLIB TRUE CACHE BOOL "z-lib was found" FORCE)
+    set(HAVE_ZLIB TRUE)
 endif()
 
 if(have_sqlite3)
-    set(HAVE_SQLITE3 TRUE CACHE BOOL "sqlite3 was found" FORCE)
+    set(HAVE_SQLITE3 TRUE)
 endif()
 
 if(have_libssh2)
-    set(HAVE_LIBSSH2 TRUE CACHE BOOL "ssh2 was found" FORCE)
+    set(HAVE_LIBSSH2 TRUE)
 endif()
 
 if(CMAKE_HOST_SOLARIS)
@@ -698,7 +703,7 @@ if(HAVE_SIZEOF_SIZE_T)
 endif()
 
 check_type_size(ssize_t SSIZEOF_SIZE_T)
-if(HAVE_SSIZEOF_SIZE_T)
+if(SSIZEOF_SIZE_T)
     message(STATUS "The ssize_t exists with size: ${SSIZEOF_SIZE_T}")
 endif()
 
@@ -1038,9 +1043,9 @@ if(epoll)
 endif()
 
 if(have_epoll)
-    set(HAVE_EPOLL TRUE CACHE BOOL "epoll exists" FORCE)
+    set(HAVE_EPOLL TRUE)
 else()
-    set(HAVE_EPOLL FALSE CACHE BOOL "epoll NOT exists" FORCE)
+    set(HAVE_EPOLL FALSE)
 endif()
 
 check_symbol_exists(posix_fallocate "fcntl.h" have_posix_fallocate)
@@ -1062,7 +1067,7 @@ endif()
 
 if(have_posix_fallocate OR have_fallocate OR have_osx OR win_build)
    add_compile_definitions(HAVE_SOME_FALLOCATE=1)
-   set(HAVE_SOME_FALLOCATE TRUE CACHE BOOL "*_fallocate exists" FORCE)
+    set(HAVE_SOME_FALLOCATE TRUE)
 endif()
 
 set(save_CPPFLAGS "${CPPFLAGS}")
@@ -1082,10 +1087,10 @@ check_cxx_source_compiles("
 if(have_asctime_r)
     message("Have asctime_r function")
     add_compile_definitions(HAVE_ASCTIME_R=1)
-    set(HAVE_ASCTIME_R TRUE CACHE BOOL "Have asctime_r function")
+    set(HAVE_ASCTIME_R TRUE)
 else()
     message("NOT have asctime_r function")
-    set(HAVE_ASCTIME_R FALSE CACHE BOOL "NOT have asctime_r function")
+    set(HAVE_ASCTIME_R FALSE)
 endif()
 
 message("Checking for localtime_r")
@@ -1102,86 +1107,88 @@ check_cxx_source_compiles("
 if(have_localtime_r)
     message("Have localtime_r function")
     add_compile_definitions(HAVE_LOCALTIME_R=1)
-    set(HAVE_LOCALTIME_R TRUE CACHE BOOL "Have localtime_r function")
+    set(HAVE_LOCALTIME_R TRUE)
 else()
     message("NOT have localtime_r function")
-    set(HAVE_LOCALTIME_R FALSE CACHE BOOL "NOT have localtime_r function")
+    set(HAVE_LOCALTIME_R FALSE)
 endif()
 
 set(CPPFLAGS "${save_CPPFLAGS}")
 
 check_symbol_exists(basename "libgen.h" BASENAME_EXISTS)
 if(BASENAME_EXISTS)
-   set(HAVE_BASENAME TRUE CACHE BOOL "The basename has been found" FORCE)
+   set(HAVE_BASENAME TRUE)
 else()
-    set(HAVE_BASENAME FALSE CACHE BOOL "The basename has NOT been found" FORCE)
+    set(HAVE_BASENAME FALSE)
 endif()
 
 check_symbol_exists(gai_strerror "netdb.h" GAI_STRERROR_EXISTS)
 if(GAI_STRERROR_EXISTS)
-   set(HAVE_GAI_STRERROR TRUE CACHE BOOL "The gai has been found" FORCE)
+   set(HAVE_GAI_STRERROR TRUE)
 else()
-    set(HAVE_GAI_STRERROR FALSE CACHE BOOL "The gai has NOT been found" FORCE)
+    set(HAVE_GAI_STRERROR FALSE)
 endif()
 
 check_symbol_exists(getaddrinfo "netdb.h" GETADDRINFO_EXISTS)
 if(GETADDRINFO_EXISTS)
-   set(HAVE_GETADDRINFO TRUE CACHE BOOL "The getaddrinfo has been found" FORCE)
+   set(HAVE_GETADDRINFO TRUE)
 else()
-    set(HAVE_GETADDRINFO FALSE CACHE BOOL "The getaddrinfo has NOT been found" FORCE)
+    set(HAVE_GETADDRINFO FALSE)
 endif()
 
 check_symbol_exists(gettimeofday "sys/time.h" GETTIMEOFDAY_EXISTS)
-if(HAVE_GETTIMEOFDAY)
-   set(HAVE_GETTIMEOFDAY TRUE CACHE BOOL "The gettimeofday is present" FORCE)
+if(GETTIMEOFDAY_EXISTS)
+   set(HAVE_GETTIMEOFDAY TRUE)
 else()
-    set(HAVE_GETTIMEOFDAY FALSE CACHE BOOL "The gettimeofday is NOT present" FORCE)
+    set(HAVE_GETTIMEOFDAY FALSE)
 endif()
 
 set(localStrptimeLocation ${CMAKE_CURRENT_SOURCE_DIR}/src)
 check_symbol_exists(strptime "${localStrptimeLocation}/strptime.h" STRPTIME_EXISTS)
 if(STRPTIME_EXISTS)
-   set(HAVE_STRPTIME TRUE CACHE BOOL "The strptime is present" FORCE)
+   set(HAVE_STRPTIME TRUE)
 else()
-    set(HAVE_STRPTIME FALSE CACHE BOOL "The strptime is NOT present" FORCE)
+    set(HAVE_STRPTIME FALSE)
 endif()
 
 check_symbol_exists(daemon unistd.h DAEMON_EXISTS)
 if(DAEMON_EXISTS)
    message("The daemon is present")
-   set(HAVE_DAEMON TRUE CACHE BOOL "The daemon is present" FORCE)
+   set(HAVE_DAEMON TRUE)
 else()
-    set(HAVE_DAEMON FALSE CACHE BOOL "The daemon is NOT present" FORCE)
+    set(HAVE_DAEMON FALSE)
 endif()
 
 check_symbol_exists(poll "poll.h" POLL_EXISTS)  # at configure.ac, the variable to hold the result is: have_poll
 if(POLL_EXISTS)
-    set(HAVE_POLL TRUE CACHE BOOL "The poll is present" FORCE)
+    set(HAVE_POLL TRUE)
 else()
-    set(HAVE_POLL FALSE CACHE BOOL "The poll is NOT present" FORCE)
+    set(HAVE_POLL FALSE)
 endif()
 
 if(MINGW)
-    set(MINGW_BUILD TRUE CACHE BOOL "Build for Mingw" FORCE)
-    set(HAVE_GETADDRINFO TRUE CACHE BOOL "Enable getaddrinfo" FORCE)
-    set(HAVE_GAI_STRERROR FALSE CACHE BOOL "Disable getaddrinfo" FORCE)
+    set(MINGW_BUILD TRUE)
+
+    set(HAVE_GETADDRINFO TRUE)
+
+    set(HAVE_GAI_STRERROR FALSE)
 else()
-    set(MINGW_BUILD FALSE CACHE BOOL "Not build for Mingw" FORCE)
+    set(MINGW_BUILD FALSE)
 endif()
 
 check_cxx_symbol_exists(timegm "time.h" TIMEGM_EXISTS)
 if(TIMEGM_EXISTS)
-    set(HAVE_TIMEGM TRUE CACHE BOOL "The timegm has been found" FORCE)
+    set(HAVE_TIMEGM TRUE)
 else()
-    set(HAVE_TIMEGM FALSE CACHE BOOL "The timegm has NOT been found" FORCE)
+    set(HAVE_TIMEGM FALSE)
 endif()
 
 # TODOm: this library cannot be found, yet
 check_cxx_symbol_exists(port_associate "port.h" PORT_ASSOCIATE_EXISTS)
 if(PORT_ASSOCIATE_EXISTS)
-    set(HAVE_PORT_ASSOCIATE TRUE CACHE BOOL "The port_associate has been found" FORCE)
+    set(HAVE_PORT_ASSOCIATE TRUE)
 else()
-    set(HAVE_PORT_ASSOCIATE FALSE CACHE BOOL "The port_associate has NOT been found" FORCE)
+    set(HAVE_PORT_ASSOCIATE FALSE)
 endif()
 
 set(save_CMAKE_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES}")
@@ -1203,7 +1210,7 @@ else()
 endif()
 
 if(have_kqueue)
-    set(HAVE_KQUEUE TRUE CACHE BOOL "The kqueue has been found." FORCE)
+    set(HAVE_KQUEUE TRUE)
     set(keventCode [==[
             #include <sys/time.h>
             #include <sys/types.h>
@@ -1284,21 +1291,22 @@ if(have_option_const_name)
 endif()
 
 if(websocket)
-    add_subdirectory(deps/wslay)
     add_compile_definitions(ENABLE_WEBSOCKET=1)
     message("Define 1 if WebSocket support is enabled")
 
     # TODO:  Should check in the future as currently this is not enabled.
     string(APPEND WSLAY_CFLAGS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes ${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
     string(APPEND WSLAY_LIBS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")  # TODOm: check if this is needed anyway because it uses libwslay.la
+    
+    add_subdirectory(deps/wslay)
 endif()
 
 if(websocket)
-    set(ENABLE_WEBSOCKET TRUE CACHE BOOL "Websocket is enabled" FORCE)
+    set(ENABLE_WEBSOCKET TRUE)
 endif()
 
 if(libaria2)
-    set(ENABLE_LIBARIA2 TRUE CACHE BOOL "Libaria2 is enabled" FORCE)
+    set(ENABLE_LIBARIA2 TRUE)
 endif()
 
 # AC_SUBST([bashcompletiondir]) # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
@@ -1351,20 +1359,103 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/)
 message("")
 message(STATUS "Summary of build options\n")
 
-set(printKeys "Build;Host;Target;Install prefix;CC;CXX;CPP;CXXFLAGS;CFLAGS;CPPFLAGS;LDFLAGS;\
-LIBS;DEFS;CXX1XCXXFLAGS;EXTRACXXFLAGS;EXTRACFLAGS;EXTRACPPFLAGS;EXTRALDFLAGS;\
-EXTRALIBS;WARNCXXFLAGS;LibUV;SQLite3;SSL Support;AppleTLS;WinTLS;GnuTLS;OpenSSL;\
-CA Bundle;LibNettle;LibGmp;LibGcrypt;LibXML2;LibExpat;LibCares;Zlib;Libssh2;Tcmalloc;\
-Jemalloc;Epoll;Bittorrent;Metalink;XML-RPC;Message Digest;WebSocket;Libaria2;bash_completion;\
+string(APPEND printKeys "\
+Build;\
+Host;\
+Target;\
+Install prefix;\
+CC;\
+CXX;\
+CPP;\
+CXXFLAGS;\
+CFLAGS;\
+CPPFLAGS;\
+LDFLAGS;\
+LIBS;\
+DEFS;\
+CXX1XCXXFLAGS;\
+EXTRACXXFLAGS;\
+EXTRACFLAGS;\
+EXTRACPPFLAGS;\
+EXTRALDFLAGS;\
+WARNCXXFLAGS;\
+EXTRALIBS;\
+SQLite3;\
+LibUV;\
+AppleTLS;\
+SSL Support;\
+GnuTLS;\
+WinTLS;\
+CA Bundle;\
+OpenSSL;\
+LibGmp;\
+LibNettle;\
+LibXML2;\
+LibGcrypt;\
+LibCares;\
+LibExpat;\
+Libssh2;\
+Zlib;\
+Jemalloc;\
+Epoll;\
+Bittorrent;\
+Metalink;\
+XML-RPC;\
+Message Digest;\
+WebSocket;\
+Libaria2;\
+bash_completion;\
+Tcmalloc;\
 Static Build")
 
-set(printValues "${CMAKE_HOST_SYSTEM_NAME};${CMAKE_SYSTEM_NAME};unknown_value;${CMAKE_INSTALL_PREFIX};${CC};${CXX};${CPP};${CXXFLAGS};\
-${CFLAGS};${CPPFLAGS};${LDFLAGS};${LIBS};${DEFS};${CXX1XCXXFLAGS};${EXTRACXXFLAGS};${EXTRACFLAGS};\
-${EXTRACPPFLAGS};${EXTRALDFLAGS};${EXTRALIBS};${WARNCXXFLAGS};${have_libuv};${have_sqlite3};${have_ssl};\
-${have_appletls};${have_wintls} (LIBS=${WINTLS_LIBS});${have_libgnutls};${have_openssl};${ca_bundle};${have_libnettle};\
-${have_libgmp};${have_libgcrypt};${have_libxml2};${have_libexpat};${have_libcares};${have_zlib};${have_libssh2};\
-${have_tcmalloc};${have_jemalloc};${have_epoll};${enable_bittorrent};${enable_metalink};${enable_xml_rpc};${use_md};${enable_websocket};\
-${ENABLE_LIBARIA2};${bashcompletiondir};${ARIA2_STATIC}")
+string(APPEND printValues "\
+${CMAKE_HOST_SYSTEM_NAME};\
+${CMAKE_SYSTEM_NAME};\
+unknown_value;\
+${CMAKE_INSTALL_PREFIX};\
+${CC};\
+${CXX};\
+${CPP};\
+${CXXFLAGS};\
+${CFLAGS};\
+${CPPFLAGS};\
+${LDFLAGS};\
+${LIBS};\
+${DEFS};\
+${CXX1XCXXFLAGS};\
+${EXTRACXXFLAGS};\
+${EXTRACFLAGS};\
+${EXTRACPPFLAGS};\
+${EXTRALDFLAGS};\
+${WARNCXXFLAGS};\
+${EXTRALIBS};\
+${have_sqlite3};\
+${have_libuv};\
+${have_appletls};\
+${have_ssl};\
+${have_libgnutls};\
+${have_wintls} (LIBS=${WINTLS_LIBS});\
+${ca_bundle};\
+${have_openssl};\
+${have_libgmp};\
+${have_libnettle};\
+${have_libxml2};\
+${have_libgcrypt};\
+${have_libcares};\
+${have_libexpat};\
+${have_libssh2};\
+${have_zlib};\
+${have_jemalloc};\
+${have_epoll};\
+${enable_bittorrent};\
+${enable_metalink};\
+${enable_xml_rpc};\
+${use_md};\
+${enable_websocket};\
+${ENABLE_LIBARIA2};\
+${bashcompletiondir};\
+${have_tcmalloc};\
+${ARIA2_STATIC}")
 
 printBuildOptions(printKeys printValues)
 
