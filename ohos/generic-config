@@ -1,0 +1,28 @@
+#!/bin/sh -e
+
+: "${OHOS_NDK_HOME:?set OHOS_NDK_HOME to the OpenHarmony SDK directory}"
+: "${OHOS_DEPS_PREFIX:?set OHOS_DEPS_PREFIX to the dependency install prefix}"
+: "${OHOS_HOST:?set OHOS_HOST to the OpenHarmony target triple}"
+: "${OHOS_BUILD:?set OHOS_BUILD to the build system triple}"
+
+if [ -d "$OHOS_NDK_HOME/native" ]; then
+  NATIVE=$OHOS_NDK_HOME/native
+else
+  NATIVE=$OHOS_NDK_HOME
+fi
+TOOLCHAIN=$NATIVE/llvm/bin
+
+CC=$TOOLCHAIN/$OHOS_HOST-clang \
+CXX=$TOOLCHAIN/$OHOS_HOST-clang++ \
+AR=$TOOLCHAIN/llvm-ar \
+RANLIB=$TOOLCHAIN/llvm-ranlib \
+STRIP=$TOOLCHAIN/llvm-strip \
+PKG_CONFIG_LIBDIR=$OHOS_DEPS_PREFIX/lib/pkgconfig \
+PKG_CONFIG_PATH= \
+./configure \
+  --host="$OHOS_HOST" \
+  --build="$OHOS_BUILD" \
+  --prefix="$OHOS_DEPS_PREFIX" \
+  --disable-shared \
+  --enable-static \
+  "$@"

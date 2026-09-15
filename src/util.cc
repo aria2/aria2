@@ -40,9 +40,9 @@
 #    include <signal.h>
 #  endif // HAVE_SIGNAL_H
 #else    // !__sun
-#  ifdef HAVE_SYS_SIGNAL_H
+#  if defined(HAVE_SYS_SIGNAL_H) && !defined(__OHOS__)
 #    include <sys/signal.h>
-#  endif // HAVE_SYS_SIGNAL_H
+#  endif // HAVE_SYS_SIGNAL_H && !__OHOS__
 #  ifdef HAVE_SIGNAL_H
 #    include <signal.h>
 #  endif // HAVE_SIGNAL_H

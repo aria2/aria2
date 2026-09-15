@@ -1,0 +1,75 @@
+aria2 for OpenHarmony
+=====================
+
+This tree can cross-compile the ``aria2c`` command-line executable for:
+
+* ``arm64-v8a`` (``aarch64-unknown-linux-ohos``)
+* ``armeabi-v7a`` (``armv7-unknown-linux-ohos``)
+* ``x86_64`` (``x86_64-unknown-linux-ohos``)
+
+The build enables the same main features as the Android build: HTTP/HTTPS,
+FTP, BitTorrent, Metalink, XML-RPC, asynchronous DNS, SFTP, GZip and
+WebSocket. SQLite and NLS are disabled.
+
+Requirements
+------------
+
+* OpenHarmony native SDK (``OHOS_NDK_HOME``)
+* Autotools: autoconf, automake, libtool, gettext, pkg-config
+* Static OpenSSL 1.1, expat, zlib, c-ares and libssh2 libraries installed
+  under one prefix. OpenSSL 1.1 can be staged from the ``origin/111`` branch
+  of the local ``ohos-openssl`` repository.
+
+Like ``android-config``, ``ohos-config`` only configures aria2 and assumes its
+dependencies have already been built. The OpenHarmony SDK itself only
+provides zlib from this list. Use ``ohos/generic-config`` for Autoconf-based
+dependencies and ``ohos/zlib-config`` for zlib when preparing the prefix.
+
+Build
+-----
+
+::
+
+    export OHOS_NDK_HOME=/path/to/openharmony
+    export OHOS_DEPS_PREFIX=/path/to/ohos-dependencies/arm64-v8a
+    ./ohos-config aarch64
+
+Repeat with ``armv7`` or ``x86_64`` when those ABIs are needed. Artifacts
+are written to ``ohos-out/<abi>/aria2c``.
+
+Package one built ABI with::
+
+    ./ohos-release aarch64
+
+Docker
+------
+
+``Dockerfile.ohos`` builds the arm64 dependencies, aria2c and the release ZIP.
+It requires a Linux x86_64 OpenHarmony native SDK and the local
+``ohos-openssl`` repository as BuildKit contexts. The OpenSSL context must
+include its Git metadata and the ``origin/111`` ref::
+
+    docker buildx build --platform linux/amd64 \
+      --build-context ohos-sdk=/path/to/linux/openharmony \
+      --build-context ohos-openssl=/path/to/ohos-openssl \
+      --output type=local,dest=ohos-docker-out \
+      -f Dockerfile.ohos .
+
+The release ZIP is written to ``ohos-docker-out``.
+
+Run
+---
+
+Copy the matching binary to a device and run it from a shell::
+
+    hdc file send ohos-out/arm64-v8a/aria2c /data/local/tmp/aria2c
+    hdc shell chmod 755 /data/local/tmp/aria2c
+    hdc shell /data/local/tmp/aria2c -v
+
+Notes
+-----
+
+* HTTPS verification needs a CA bundle. Pass it with
+  ``--ca-certificate=FILE`` when the system has no default bundle.
+* c-ares is built in, while asynchronous DNS defaults to off as it does on
+  Android. Enable it explicitly with ``--async-dns=true`` when required.

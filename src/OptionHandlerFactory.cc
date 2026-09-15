@@ -87,11 +87,11 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
 #ifdef ENABLE_ASYNC_DNS
   {
     OptionHandler* op(new BooleanOptionHandler(PREF_ASYNC_DNS, TEXT_ASYNC_DNS,
-#  if defined(__ANDROID__) || defined(ANDROID)
+#  if defined(__ANDROID__) || defined(ANDROID) || defined(__OHOS__)
                                                A2_V_FALSE,
-#  else  // !__ANDROID__ && !ANDROID
+#  else  // !__ANDROID__ && !ANDROID && !__OHOS__
                                                A2_V_TRUE,
-#  endif // !__ANDROID__ && !ANDROID
+#  endif // !__ANDROID__ && !ANDROID && !__OHOS__
                                                OptionHandler::OPT_ARG));
     op->addTag(TAG_ADVANCED);
     op->setInitialOption(true);

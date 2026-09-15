@@ -1,0 +1,50 @@
+#!/bin/sh -e
+
+# Package one OpenHarmony aria2c artifact.
+
+ARCH=${1:-aarch64}
+case "$ARCH" in
+  aarch64|arm64|arm64-v8a)
+    ABI=arm64-v8a
+    LABEL=aarch64-linux-ohos
+    ;;
+  armv7|armv7a|armeabi-v7a)
+    ABI=armeabi-v7a
+    LABEL=armv7-linux-ohos
+    ;;
+  x86_64)
+    ABI=x86_64
+    LABEL=x86_64-linux-ohos
+    ;;
+  *)
+    echo "unsupported arch: $ARCH" >&2
+    exit 1
+    ;;
+esac
+
+cd "$(dirname "$0")"
+
+# Keep the BSD-sed compatibility local instead of changing script-helper.
+VERSION=$(sed -n 's/^AC_INIT(\[aria2\],\[\([^]]*\)\].*/\1/p' configure.ac)
+if [ -z "$VERSION" ]; then
+  echo "No version found" >&2
+  exit 1
+fi
+
+SOURCE=ohos-out/$ABI/aria2c
+if [ ! -f "$SOURCE" ]; then
+  echo "missing $SOURCE (run ./ohos-config $ARCH first)" >&2
+  exit 1
+fi
+
+BUILD_VER=${BUILD_VER:-1}
+DIST_DIR=aria2-${VERSION}-${LABEL}-build${BUILD_VER}
+
+mkdir "$DIST_DIR"
+cp AUTHORS COPYING ChangeLog LICENSE.OpenSSL NEWS README.ohos \
+  "$SOURCE" "$DIST_DIR"
+if [ -f README.html ]; then
+  cp README.html "$DIST_DIR"
+fi
+zip -9 -r "$DIST_DIR.zip" "$DIST_DIR"
+rm -rf "$DIST_DIR"

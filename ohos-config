@@ -1,0 +1,131 @@
+#!/bin/sh
+# Cross-compile aria2c for one OpenHarmony ABI.
+#
+# Usage:
+#   OHOS_NDK_HOME=... OHOS_DEPS_PREFIX=... \
+#     ./ohos-config [aarch64|armv7|x86_64]
+
+set -eu
+
+ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+cd "$ROOT"
+
+ARCH=${1:-aarch64}
+case "$ARCH" in
+  aarch64|arm64|arm64-v8a)
+    ABI=arm64-v8a
+    HOST=aarch64-unknown-linux-ohos
+    ;;
+  armv7|armv7a|armeabi-v7a)
+    ABI=armeabi-v7a
+    HOST=armv7-unknown-linux-ohos
+    ;;
+  x86_64)
+    ABI=x86_64
+    HOST=x86_64-unknown-linux-ohos
+    ;;
+  *)
+    echo "unsupported arch: $ARCH" >&2
+    exit 1
+    ;;
+esac
+
+: "${OHOS_NDK_HOME:?set OHOS_NDK_HOME to the OpenHarmony SDK directory}"
+: "${OHOS_DEPS_PREFIX:?set OHOS_DEPS_PREFIX to the static dependency prefix}"
+
+if [ -d "$OHOS_NDK_HOME/native" ]; then
+  NATIVE=$OHOS_NDK_HOME/native
+else
+  NATIVE=$OHOS_NDK_HOME
+fi
+TOOLCHAIN=$NATIVE/llvm/bin
+
+PREFIX=$OHOS_DEPS_PREFIX
+
+for file in \
+  "$TOOLCHAIN/$HOST-clang" \
+  "$TOOLCHAIN/$HOST-clang++" \
+  "$PREFIX/include/openssl/ssl.h" \
+  "$PREFIX/lib/libssl.a" \
+  "$PREFIX/lib/libcrypto.a" \
+  "$PREFIX/lib/libexpat.a" \
+  "$PREFIX/lib/libcares.a" \
+  "$PREFIX/lib/libz.a" \
+  "$PREFIX/lib/libssh2.a"
+do
+  if [ ! -e "$file" ]; then
+    echo "missing required file: $file" >&2
+    exit 1
+  fi
+done
+if ! grep -q 'OpenSSL 1\.1' "$PREFIX/include/openssl/opensslv.h"; then
+  echo "OpenSSL 1.1 is required in $PREFIX" >&2
+  exit 1
+fi
+if [ ! -x configure ] || [ ! -f config.sub ]; then
+  if command -v glibtoolize >/dev/null 2>&1; then
+    LIBTOOLIZE=${LIBTOOLIZE:-glibtoolize}
+    export LIBTOOLIZE
+  fi
+  autoreconf -fi
+fi
+if ! grep -q 'linux-ohos' config.sub; then
+  echo "config.sub does not support OpenHarmony; update automake and run autoreconf -fi" >&2
+  exit 1
+fi
+
+BUILD_DIR=$ROOT/ohos-build/$ABI
+OUT_DIR=$ROOT/ohos-out/$ABI
+rm -rf "$BUILD_DIR"
+mkdir -p "$BUILD_DIR" "$OUT_DIR"
+
+if command -v nproc >/dev/null 2>&1; then
+  JOBS=${JOBS:-$(nproc)}
+else
+  JOBS=${JOBS:-$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)}
+fi
+
+BUILD=$("$ROOT/config.guess")
+cd "$BUILD_DIR"
+
+CC=$TOOLCHAIN/$HOST-clang \
+CXX=$TOOLCHAIN/$HOST-clang++ \
+AR=$TOOLCHAIN/llvm-ar \
+NM=$TOOLCHAIN/llvm-nm \
+RANLIB=$TOOLCHAIN/llvm-ranlib \
+STRIP=$TOOLCHAIN/llvm-strip \
+OPENSSL_CFLAGS="-I$PREFIX/include" \
+OPENSSL_LIBS="$PREFIX/lib/libssl.a $PREFIX/lib/libcrypto.a" \
+LIBSSH2_CFLAGS="-I$PREFIX/include" \
+LIBSSH2_LIBS="$PREFIX/lib/libssh2.a $PREFIX/lib/libssl.a $PREFIX/lib/libcrypto.a" \
+PKG_CONFIG_LIBDIR=$PREFIX/lib/pkgconfig \
+PKG_CONFIG_PATH= \
+"$ROOT/configure" \
+  --host="$HOST" \
+  --build="$BUILD" \
+  --disable-nls \
+  --disable-shared \
+  --disable-libaria2 \
+  --without-gnutls \
+  --without-appletls \
+  --without-wintls \
+  --with-openssl \
+  --without-sqlite3 \
+  --without-libxml2 \
+  --with-libexpat \
+  --with-libcares \
+  --with-libssh2 \
+  --without-libuv \
+  --without-tcmalloc \
+  --without-jemalloc \
+  --with-libz \
+  CFLAGS="-Os -fPIE" \
+  CXXFLAGS="-Os -fPIE -stdlib=libc++" \
+  CPPFLAGS="-fPIE -I$PREFIX/include" \
+  LDFLAGS="-pie -L$PREFIX/lib"
+
+make -C deps -j"$JOBS"
+make -C src -j"$JOBS" aria2c
+cp src/aria2c "$OUT_DIR/aria2c"
+"$TOOLCHAIN/llvm-strip" -s "$OUT_DIR/aria2c"
+echo "built $OUT_DIR/aria2c"
