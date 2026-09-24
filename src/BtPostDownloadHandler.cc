@@ -70,10 +70,21 @@ void BtPostDownloadHandler::getNextRequestGroups(
                   requestGroup->getFirstFilePath().c_str()));
   std::unique_ptr<ValueBase> torrent;
   if (requestGroup->inMemoryDownload()) {
-    auto& dw = static_cast<AbstractSingleDiskAdaptor*>(
-                   requestGroup->getPieceStorage()->getDiskAdaptor().get())
-                   ->getDiskWriter();
-    auto bdw = static_cast<bittorrent::BencodeDiskWriter*>(dw.get());
+    auto diskAdaptor = requestGroup->getPieceStorage()->getDiskAdaptor().get();
+    auto singleDiskAdaptor =
+        dynamic_cast<AbstractSingleDiskAdaptor*>(diskAdaptor);
+    if (!singleDiskAdaptor) {
+      throw DL_ABORT_EX2("Could not finalize BitTorrent metainfo: "
+                         "unexpected DiskAdaptor type",
+                         error_code::BENCODE_PARSE_ERROR);
+    }
+    auto& dw = singleDiskAdaptor->getDiskWriter();
+    auto bdw = dynamic_cast<bittorrent::BencodeDiskWriter*>(dw.get());
+    if (!bdw) {
+      throw DL_ABORT_EX2("Could not finalize BitTorrent metainfo: "
+                         "unexpected DiskWriter type",
+                         error_code::BENCODE_PARSE_ERROR);
+    }
     int error = bdw->finalize();
     if (error == 0) {
       torrent = bdw->getResult();
