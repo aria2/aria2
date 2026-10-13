@@ -60,6 +60,7 @@
 #include "FtpNegotiationConnectChain.h"
 #include "FtpTunnelRequestConnectChain.h"
 #include "HttpRequestConnectChain.h"
+#include "FtpSocksProxyConnectChain.h"
 #ifdef HAVE_LIBSSH2
 #  include "SftpNegotiationConnectChain.h"
 #  include "SftpNegotiationCommand.h"
@@ -84,7 +85,11 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
 {
   std::string options;
   std::shared_ptr<SocketCore> pooledSocket;
-  std::string proxyMethod = resolveProxyMethod(getRequest()->getProtocol());
+  bool isSocksProxy =
+      SocksProxyCommand::isSocksProtocol(proxyRequest->getProtocol());
+  std::string proxyMethod = isSocksProxy
+                                ? V_TUNNEL
+                                : resolveProxyMethod(getRequest()->getProtocol());
 
   // sftp always use tunnel mode
   if (proxyMethod == V_GET) {
@@ -112,7 +117,10 @@ std::unique_ptr<Command> FtpInitiateConnectionCommand::createNextCommandProxied(
     auto c = make_unique<ConnectCommand>(getCuid(), getRequest(), proxyRequest,
                                          getFileEntry(), getRequestGroup(),
                                          getDownloadEngine(), getSocket());
-    if (proxyMethod == V_GET) {
+    if (isSocksProxy) {
+      c->setControlChain(std::make_shared<FtpSocksProxyConnectChain>());
+    }
+    else if (proxyMethod == V_GET) {
       // Use GET for FTP via HTTP proxy.
       getRequest()->setMethod(Request::METHOD_GET);
       c->setControlChain(std::make_shared<HttpRequestConnectChain>());

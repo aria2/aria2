@@ -74,6 +74,8 @@
 #include "CheckIntegrityEntry.h"
 #include "error_code.h"
 #include "SocketRecvBuffer.h"
+#include "Socks5Handshake.h"
+#include "SocksProxyCommand.h"
 #include "NullProgressInfoFile.h"
 #include "ChecksumCheckIntegrityEntry.h"
 
@@ -736,11 +738,51 @@ bool FtpNegotiationCommand::resolveProxy()
   dataSocket_->establishConnection(proxyAddr_, proxyReq->getPort());
   disableReadCheckSocket();
   setWriteCheckSocket(dataSocket_);
+  if (SocksProxyCommand::isSocksProtocol(proxyReq->getProtocol())) {
+    sequence_ = SEQ_SOCKS_HANDSHAKE;
+    return false;
+  }
   auto socketRecvBuffer = std::make_shared<SocketRecvBuffer>(dataSocket_);
   http_ = std::make_shared<HttpConnection>(getCuid(), dataSocket_,
                                            socketRecvBuffer);
   sequence_ = SEQ_SEND_TUNNEL_REQUEST;
   return false;
+}
+
+bool FtpNegotiationCommand::socksHandshake()
+{
+  if (!socksHandshake_) {
+    auto proxyReq = createProxyRequest();
+    const std::string& host = getRequest()->getHost();
+    std::string targetAddr;
+    if (proxyReq->getProtocol() == "socks5") {
+      // The control connection has already resolved the host locally
+      // and cached the result.
+      targetAddr = getDownloadEngine()->findCachedIPAddress(
+          host, getRequest()->getPort());
+      if (targetAddr.empty() && !util::isNumericHost(host)) {
+        throw DL_RETRY_EX(fmt("No resolved address of %s", host.c_str()));
+      }
+    }
+    socksHandshake_ = make_unique<Socks5Handshake>(proxyReq->getUsername(),
+                                                   proxyReq->getPassword(),
+                                                   host, targetAddr, pasvPort_);
+  }
+  switch (socksHandshake_->advance(*dataSocket_)) {
+  case Socks5Handshake::WANT_READ:
+    disableWriteCheckSocket();
+    setReadCheckSocket(dataSocket_);
+    return false;
+  case Socks5Handshake::WANT_WRITE:
+    disableReadCheckSocket();
+    setWriteCheckSocket(dataSocket_);
+    return false;
+  case Socks5Handshake::DONE:
+    break;
+  }
+  socksHandshake_.reset();
+  sequence_ = SEQ_SEND_REST_PASV;
+  return true;
 }
 
 bool FtpNegotiationCommand::sendTunnelRequest()
@@ -976,6 +1018,8 @@ bool FtpNegotiationCommand::processSequence(
     return sendTunnelRequest();
   case SEQ_RECV_TUNNEL_RESPONSE:
     return recvTunnelResponse();
+  case SEQ_SOCKS_HANDSHAKE:
+    return socksHandshake();
   case SEQ_SEND_REST_PASV:
     return sendRestPasv(segment);
   case SEQ_SEND_REST:
