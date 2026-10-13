@@ -27,6 +27,7 @@ aria2c_SOURCES = AllTest.cc\
 	NetrcAuthResolverTest.cc\
 	DefaultAuthResolverTest.cc\
 	OptionHandlerTest.cc\
+	Socks5HandshakeTest.cc\
 	SegmentManTest.cc\
 	BitfieldManTest.cc\
 	NetrcTest.cc\

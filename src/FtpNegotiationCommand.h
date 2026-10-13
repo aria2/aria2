@@ -44,6 +44,7 @@ namespace aria2 {
 class FtpConnection;
 class SocketCore;
 class HttpConnection;
+class Socks5Handshake;
 
 class FtpNegotiationCommand : public AbstractCommand {
 public:
@@ -79,6 +80,7 @@ public:
     SEQ_RESOLVE_PROXY,
     SEQ_SEND_TUNNEL_REQUEST,
     SEQ_RECV_TUNNEL_RESPONSE,
+    SEQ_SOCKS_HANDSHAKE,
     SEQ_SEND_REST_PASV,
     SEQ_SEND_REST,
     SEQ_RECV_REST,
@@ -126,6 +128,7 @@ private:
   bool resolveProxy();
   bool sendTunnelRequest();
   bool recvTunnelResponse();
+  bool socksHandshake();
   bool sendRest(const std::shared_ptr<Segment>& segment);
   bool sendRestPasv(const std::shared_ptr<Segment>& segment);
   bool recvRest(const std::shared_ptr<Segment>& segment);
@@ -148,6 +151,8 @@ private:
   std::shared_ptr<FtpConnection> ftp_;
   // For tunneling
   std::shared_ptr<HttpConnection> http_;
+  // For tunneling through a SOCKS5 proxy
+  std::unique_ptr<Socks5Handshake> socksHandshake_;
   // Port number in PASV/EPSV response
   uint16_t pasvPort_;
   // Resolved address for proxy

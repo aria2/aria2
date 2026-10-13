@@ -118,8 +118,19 @@ HTTP/FTP/SFTP Options
   proxy server for a particular protocol using :option:`--http-proxy`,
   :option:`--https-proxy` and :option:`--ftp-proxy` options.  This affects all
   downloads.
-  The format of PROXY is ``[http://][USER:PASSWORD@]HOST[:PORT]``.
+  The format of PROXY is ``[http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``.
   See also `ENVIRONMENT`_ section.
+
+  .. note::
+
+    ``socks5://`` and ``socks5h://`` select a SOCKS5 proxy, which tunnels
+    HTTP, HTTPS, FTP and SFTP downloads.  With ``socks5://``, aria2 resolves
+    the host name of the download URI itself and sends the resulting IP
+    address to the proxy.  With ``socks5h://``, aria2 sends the host name to
+    the proxy and the proxy resolves it.  Use ``socks5h://`` if the host
+    names must not be resolved locally.  The default port is 1080.  If a
+    user name is given, the username/password authentication is offered to
+    the proxy.
 
   .. note::
 
@@ -472,7 +483,7 @@ HTTP Specific Options
   Use a proxy server for HTTP.  To override a previously defined proxy,
   use "".
   See also the :option:`--all-proxy` option.  This affects all http downloads.
-  The format of PROXY is ``[http://][USER:PASSWORD@]HOST[:PORT]``
+  The format of PROXY is ``[http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
 
 .. option:: --http-proxy-passwd=<PASSWD>
 
@@ -487,7 +498,7 @@ HTTP Specific Options
   Use a proxy server for HTTPS. To override a previously defined proxy,
   use "".
   See also the :option:`--all-proxy` option.  This affects all https download.
-  The format of PROXY is ``[http://][USER:PASSWORD@]HOST[:PORT]``
+  The format of PROXY is ``[http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
 
 .. option:: --https-proxy-passwd=<PASSWD>
 
@@ -598,7 +609,7 @@ FTP/SFTP Specific Options
   Use a proxy server for FTP.  To override a previously defined proxy,
   use "".
   See also the :option:`--all-proxy` option.  This affects all ftp downloads.
-  The format of PROXY is ``[http://][USER:PASSWORD@]HOST[:PORT]``
+  The format of PROXY is ``[http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
 
 .. option:: --ftp-proxy-passwd=<PASSWD>
 
@@ -1940,22 +1951,22 @@ ENVIRONMENT
 -----------
 aria2 recognizes the following environment variables.
 
-``http_proxy [http://][USER:PASSWORD@]HOST[:PORT]``
+``http_proxy [http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
   Specify proxy server for use in HTTP.
   Overrides http-proxy value in configuration file.
   The command-line option :option:`--http-proxy` overrides this value.
 
-``https_proxy [http://][USER:PASSWORD@]HOST[:PORT]``
+``https_proxy [http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
   Specify proxy server for use in HTTPS.
   Overrides https-proxy value in configuration file.
   The command-line option :option:`--https-proxy` overrides this value.
 
-``ftp_proxy [http://][USER:PASSWORD@]HOST[:PORT]``
+``ftp_proxy [http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
   Specify proxy server for use in FTP.
   Overrides ftp-proxy value in configuration file.
   The command-line option :option:`--ftp-proxy` overrides this value.
 
-``all_proxy [http://][USER:PASSWORD@]HOST[:PORT]``
+``all_proxy [http://|socks5://|socks5h://][USER:PASSWORD@]HOST[:PORT]``
   Specify proxy server for use if no protocol-specific proxy is specified.
   Overrides all-proxy value in configuration file.
   The command-line option :option:`--all-proxy` overrides this value.
