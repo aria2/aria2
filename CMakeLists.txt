@@ -89,6 +89,7 @@ option(websocket "" FALSE)
 option(epoll "" FALSE)
 option(libaria2 "" FALSE)
 option(werror "" TRUE)
+option(doc "" TRUE)
 
 set(ca_bundle "0" CACHE FILEPATH "Set the path for the CA certificate")  # -Dca_bundle=path/to/cacert.crt file
 writeToConfigFile(CA_BUNDLE ${ca_bundle} "Define to choose default CA bundle.")
@@ -97,6 +98,9 @@ set(disk_cache "0" CACHE STRING "Use SIZE as the default disk-cache size")  # -D
 writeToConfigFile(DEFAULT_DISK_CACHE ${disk_cache} "Define to choose default disk-cache size")
 
 set(bashcompletiondir "0" CACHE PATH "Directory to install bash_completion file")  #-Dbashcompletiondir=/home/user/
+if(NOT bashcompletiondir)
+    set(bashcompletiondir "${CMAKE_INSTALL_DOCDIR}/bash_completion")  # evaluates to: share/doc/test/bash_completion
+endif()
 
 option(ARIA2_STATIC "Set 'yes' to build a statically linked aria2" FALSE)
 
@@ -1410,6 +1414,10 @@ if(libaria2)
     set(ENABLE_LIBARIA2 TRUE)
 else()
     set(ENABLE_LIBARIA2 FALSE)
+endif()
+
+if(doc)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/doc)
 endif()
 
 # AC_SUBST([bashcompletiondir]) # TODO: uses the AM_CONDITIONAL actually uses AC_SUBST but set it like this for searching purposes in order to be able to find it
