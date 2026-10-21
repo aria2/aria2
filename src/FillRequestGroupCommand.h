@@ -49,6 +49,20 @@ private:
   DownloadEngine* e_;
   Timer lastExecTime;
 
+  // True while this command is parked in commands_ waiting for input
+  // on a deferred UriListParser pipe instead of spinning the routine
+  // command loop.
+  bool watchingInput_{false};
+
+  int watchedFd_{-1};
+
+  // Register the pipe fd with the engine event poll so waitData() can
+  // block on it. Falls back to per-execute inputReady() checks when the
+  // fd cannot be registered.
+  void startWatchingInput(int fd);
+
+  void stopWatchingInput();
+
 public:
   FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e);
 

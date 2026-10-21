@@ -572,9 +572,16 @@ void createRequestGroupForUriList(
     const std::shared_ptr<Option>& option)
 {
   auto uriListParser = openUriListParser(option->get(PREF_INPUT_FILE));
-  while (createRequestGroupFromUriListParser(result, option.get(),
-                                             uriListParser.get()))
-    ;
+  // Non-deferred input consumes the whole list before the engine
+  // starts; when reading from a pipe wait for more data instead of
+  // treating a momentarily dry pipe as end of input.
+  while (!uriListParser->exhausted()) {
+    if (!createRequestGroupFromUriListParser(result, option.get(),
+                                           uriListParser.get()) &&
+        !uriListParser->exhausted()) {
+      uriListParser->waitForInput();
+    }
+  }
 }
 
 std::shared_ptr<MetadataInfo> createMetadataInfoFromFirstFileEntry(

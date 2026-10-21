@@ -49,9 +49,32 @@ namespace aria2 {
 
 class UriListParser {
 private:
+  // Detected stdin pipe fd (-1 when input is not a pipe/terminal).
+  // Declared first: fp_ construction depends on it because a
+  // GZipFile wrapper would dup(0)+close(0) and steal the fd.
+  int pollFd_{-1};
+
   std::unique_ptr<IOFile> fp_;
 
   std::string line_;
+
+  // State for non-blocking reads when the input is a pipe or terminal.
+  // For these inputs we bypass the stdio based IOFile and read the fd
+  // directly, accumulating bytes in pendingBuf_.
+  bool stdinPipe_{false};
+
+  std::string pendingBuf_;
+
+  bool pipeEof_{false};
+
+  // Drain all currently available bytes from the pipe into
+  // pendingBuf_. Sets pipeEof_ when the writer closed the pipe.
+  void pumpInput();
+
+  // Fetch the next complete line into line_. Returns false when no
+  // complete line is available (suspended pipe) or the input is
+  // exhausted; pipeEof_ distinguishes the two cases.
+  bool fetchPipeLine();
 
 public:
   UriListParser(const std::string& filename);
@@ -61,6 +84,24 @@ public:
   void parseNext(std::vector<std::string>& uris, Option& op);
 
   bool hasNext();
+
+  // Returns true if a line is ready to be read without blocking.
+  // Always true for regular files; for pipes/terminals uses poll()
+  // with the given timeout in milliseconds (0 = pure readiness test).
+  bool inputReady(int timeoutMs = 0) const;
+
+  // Blocks until pipe input becomes available or the writer closes
+  // the pipe. Used by the non-deferred input path which must consume
+  // the whole list before downloads start.
+  void waitForInput();
+
+  // True when the input reached its real end (EOF); a suspended pipe
+  // is not exhausted.
+  bool exhausted() const;
+
+  bool isPipeInput() const { return stdinPipe_; }
+
+  int inputFd() const { return pollFd_; }
 };
 
 } // namespace aria2

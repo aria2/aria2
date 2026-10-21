@@ -209,6 +209,8 @@ public:
     return requestGroupMan_;
   }
 
+  EventPoll* getEventPoll() const { return eventPoll_.get(); }
+
   void setRequestGroupMan(std::unique_ptr<RequestGroupMan> rgman);
 
   const std::unique_ptr<FileAllocationMan>& getFileAllocationMan() const

@@ -155,7 +155,9 @@ bool RequestGroupMan::downloadFinished()
   if (keepRunning_) {
     return false;
   }
-  return requestGroups_.empty() && reservedGroups_.empty();
+  // A live UriListParser may still produce more entries (deferred
+  // input from a pipe that has not reached EOF yet).
+  return requestGroups_.empty() && reservedGroups_.empty() && !uriListParser_;
 }
 
 void RequestGroupMan::addRequestGroup(
@@ -529,6 +531,11 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
 
   while (count < num && (uriListParser_ || !reservedGroups_.empty())) {
     if (uriListParser_ && reservedGroups_.empty()) {
+      // Avoid blocking the event loop when reading from a pipe/terminal
+      // and no data is available yet.
+      if (!uriListParser_->inputReady()) {
+        break;
+      }
       std::vector<std::shared_ptr<RequestGroup>> groups;
       // May throw exception
       bool ok = createRequestGroupFromUriListParser(groups, option_,
@@ -537,7 +544,11 @@ void RequestGroupMan::fillRequestGroupFromReserver(DownloadEngine* e)
         appendReservedGroup(reservedGroups_, groups.begin(), groups.end());
       }
       else {
-        uriListParser_.reset();
+        // Only discard the parser on real EOF; a suspended pipe stays
+        // registered so parsing can resume when more input arrives.
+        if (uriListParser_->exhausted()) {
+          uriListParser_.reset();
+        }
         if (reservedGroups_.empty()) {
           break;
         }

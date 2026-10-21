@@ -43,6 +43,8 @@
 #include "DownloadContext.h"
 #include "fmt.h"
 #include "wallclock.h"
+#include "UriListParser.h"
+#include "EventPoll.h"
 
 namespace aria2 {
 
@@ -52,7 +54,30 @@ FillRequestGroupCommand::FillRequestGroupCommand(cuid_t cuid, DownloadEngine* e)
   setStatusRealtime();
 }
 
-FillRequestGroupCommand::~FillRequestGroupCommand() = default;
+FillRequestGroupCommand::~FillRequestGroupCommand()
+{
+  stopWatchingInput();
+}
+
+void FillRequestGroupCommand::startWatchingInput(int fd)
+{
+  if (fd != -1 && e_->getEventPoll() &&
+      e_->getEventPoll()->addEvents(fd, this, EventPoll::EVENT_READ)) {
+    watchedFd_ = fd;
+  }
+  // Even when the fd cannot be registered, the parked command
+  // re-checks inputReady() on every pass.
+  watchingInput_ = true;
+}
+
+void FillRequestGroupCommand::stopWatchingInput()
+{
+  if (watchedFd_ != -1 && e_->getEventPoll()) {
+    e_->getEventPoll()->deleteEvents(watchedFd_, this, EventPoll::EVENT_READ);
+    watchedFd_ = -1;
+  }
+  watchingInput_ = false;
+}
 
 bool FillRequestGroupCommand::execute()
 {
@@ -60,6 +85,21 @@ bool FillRequestGroupCommand::execute()
     return true;
   }
   auto& rgman = e_->getRequestGroupMan();
+
+  if (watchingInput_) {
+    const auto& parser = rgman->getUriListParser();
+    if (readEventEnabled() || !parser || parser->inputReady()) {
+      stopWatchingInput();
+      rgman->requestQueueCheck();
+    }
+    else {
+      // Still no input; stay parked in commands_ so waitData() keeps
+      // blocking on the pipe fd instead of spinning the routine loop.
+      e_->addCommand(std::unique_ptr<Command>(this));
+      return false;
+    }
+  }
+
   if (rgman->queueCheckRequested()) {
     while (rgman->queueCheckRequested()) {
       try {
@@ -80,6 +120,22 @@ bool FillRequestGroupCommand::execute()
       return true;
     }
   }
+
+  const auto& parser = rgman->getUriListParser();
+  if (parser && parser->isPipeInput()) {
+    if (parser->inputReady()) {
+      // Data arrived between iterations; re-arm the fill path.
+      rgman->requestQueueCheck();
+    }
+    else {
+      // Pipe input ran dry: park in commands_ and watch the fd so the
+      // event loop can sleep until more input (or EOF) arrives.
+      startWatchingInput(parser->inputFd());
+      e_->addCommand(std::unique_ptr<Command>(this));
+      return false;
+    }
+  }
+
   e_->addRoutineCommand(std::unique_ptr<Command>(this));
 
   // let's make sure we come back here every second or so
