@@ -290,7 +290,7 @@ HTTP/FTP/SFTP Options
 .. option:: --retry-wait=<SEC>
 
   Set the seconds to wait between retries. When ``SEC > 0``, aria2 will
-  retry downloads when the HTTP server returns a 503 response. Default:
+  retry downloads when the HTTP server returns a 502 or 503 response. Default:
   ``0``
 
 .. option:: --server-stat-of=<FILE>
