@@ -63,7 +63,7 @@
 #define TEXT_RETRY_WAIT                                                 \
   _(" --retry-wait=SEC             Set the seconds to wait between retries. \n" \
     "                              With SEC > 0, aria2 will retry download when the\n" \
-    "                              HTTP server returns 503 response.")
+    "                              HTTP server returns 502 or 503 response.")
 #define TEXT_TIMEOUT                                            \
   _(" -t, --timeout=SEC            Set timeout in seconds.")
 #define TEXT_MAX_TRIES                                                  \
