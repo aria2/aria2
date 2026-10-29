@@ -1416,6 +1416,11 @@ else()
     set(ENABLE_LIBARIA2 FALSE)
 endif()
 
+set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
+set(PACKAGE_VERSION ${PROJECT_VERSION})
+
+configure_file(doc/manual-src/en/conf.py.in doc/manual-src/en/conf.py @ONLY)
+
 if(doc)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/doc)
 endif()
