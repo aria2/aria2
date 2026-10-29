@@ -1,24 +1,40 @@
 
 set(SPHINXOPTS "" CACHE STRING "Options for SPHINX")
 set(SPHINXBUILD "sphinx-build" CACHE STRING "sphinx-build command")
-set(PAPER "" CACHE STRING "Type of Paper")
+set(PAPER "a4" CACHE STRING "Type of Paper")
 set(BUILDDIR "_build" CACHE STRING "Build directory")
 
-set(PAPEROPT_a4 "-D latex_paper_size=a4")
-set(PAPEROPT_letter "-D latext_paper_size=letter")
-set(ALLSPHINXOPTS "-d ${CMAKE_CURRENT_BINARY_DIR}/doctrees ${PAPERPORT_${PAPER}} ${SPHINXOPTS} -c . ${CMAKE_CURRENT_SOURCE_DIR}")
+set(PAPEROPT_a4 "-D latex_elements.papersize=a4paper")
+set(PAPEROPT_letter "-D latex_elements.papersize=letterpaper")
 
-set(man_MANS "${CMAKE_CURRENT_BINARY_DIR}/man/aria2c.1")
+set(ALLSPHINXOPTS -d ${BUILDDIR}/doctrees ${PAPEROPT_${PAPER}} ${SPHINXOPTS} -c . ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(EXTRA_DIST "${man_MANS} aria2.rst libaria2.rst index.rst README.rst technical-notes.rst mkapiref.py")
+set(mandir ${DATAROOTDIR}/man/en)
+set(man_MANS "${BUILDDIR}/man/aria2c.1")
+# set(EXTRA_DIST "${man_MANS} aria2.rst index.rst")
+
+set(MAN_OUTPUT_DIR "${BUILDDIR}/man")
+set(MAN_PAGE "${MAN_OUTPUT_DIR}/aria2c.1")
 
 if(HAVE_SPHINXBUILD)
-    if(EXISTS aria2.rst)
-        ${CMAKE_MAKE_PROGRAM} man
-    endif()
+    add_custom_command(
+        OUTPUT ${MAN_PAGE}
+        COMMAND ${CMAKE_COMMAND} -E echo "Running the make man command"
+        COMMAND ${SPHINXBUILD} -b man ${ALLSPHINXOPTS} ${BUILDDIR}/man
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/aria2c.rst
+        COMMAND ${CMAKE_COMMAND} -E echo "Building aria2 man page with Sphinx"
+        VERBATIM
+    )
 else()
-
-endif()  # TODOm here, is incomplete
+    add_custom_command(
+        OUTPUT ${MAN_PAGE}
+        COMMAND ${CMAKE_COMMAND} -E echo "WARNING: Building only stub man pages. Please install sphinx-build: pip install sphinx"
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${MAN_OUTPUT_DIR}
+        COMMAND ${CMAKE_COMMAND} -E touch ${MAN_PAGE}
+        COMMENT "Creating stub man page"
+        VERBATIM
+    )
+endif()
 
 add_custom_target(customHelp
     COMMAND ${CMAKE_COMMAND} -E echo "Please use \\'make \\<target\\>\\' where \\<target\\> is one of:"
@@ -42,122 +58,168 @@ add_custom_target(customHelp
 )
 
 add_custom_target(docclean
-    COMMAND 
+    COMMAND
         rm libaria2api
-        rm -rf ${CMAKE_CURRENT_BINARY_DIR}/*
+        rm -rf ${BUILDDIR}/*
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+
+    VERBATIM
 )
 
 add_custom_target(html
     COMMAND
-        ${SPHINXBUILD} -b html ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/html
+        ${SPHINXBUILD} -b html ${ALLSPHINXOPTS} ${BUILDDIR}/html
 
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/html
-    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${CMAKE_CURRENT_BINARY_DIR}/html"
+    BYPRODUCTS ${BUILDDIR}/html
+    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${BUILDDIR}/html"
+    VERBATIM
 )
 
 add_custom_target(dirhtml
     COMMAND
-        ${SPHINXBUILD} -b dirhtml ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/dirhtml
-    
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/dirhtml
-    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${CMAKE_CURRENT_BINARY_DIR}/dirhtml"
+        ${SPHINXBUILD} -b dirhtml ${ALLSPHINXOPTS} ${BUILDDIR}/dirhtml
+
+    BYPRODUCTS ${BUILDDIR}/dirhtml
+    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${BUILDDIR}/dirhtml"
+    VERBATIM
 )
 
 add_custom_target(singlehtml
     COMMAND
-        ${SPHINXBUILD} -b singlehtml ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/singlehtml
-    
-    BYRPODUCTS ${CMAKE_CURRENT_BINARY_DIR}/singlehtml
-    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${CMAKE_CURRENT_BINARY_DIR}/singlehtml"
+        ${SPHINXBUILD} -b singlehtml ${ALLSPHINXOPTS} ${BUILDDIR}/singlehtml
+
+    BYPRODUCTS ${BUILDDIR}/singlehtml
+    COMMAND ${CMAKE_COMMAND} -E echo "Build finished. The HTML pages are in ${BUILDDIR}/singlehtml"
+    VERBATIM
 )
 
+# sudo apt-get install python3-sphinxcontrib.serializinghtml
 add_custom_target(pickle
     COMMAND
-        ${SPHINXBUILD} -b pickle ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/pickle
-    
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/pickle
+        ${SPHINXBUILD} -b pickle ${ALLSPHINXOPTS} ${BUILDDIR}/pickle
+
+    BYPRODUCTS ${BUILDDIR}/pickle
     COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can process the pickle files."
+    VERBATIM
 )
 
+# sudo apt-get install python3-sphinxcontrib.serializinghtml (same as above)
 add_custom_target(json
     COMMAND
-        ${SPHINXBUILD} -b json ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/json
-    
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/json
+        ${SPHINXBUILD} -b json ${ALLSPHINXOPTS} ${BUILDDIR}/json
+
+    BYPRODUCTS ${BUILDDIR}/json
     COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can process the JSON files."
+    VERBATIM
 )
 
+# sudo apt install python3-sphinxcontrib.htmlhelp
 add_custom_target(htmlhelp
     COMMAND
-        ${SPHINXBUILD} -b htmlhelp ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/htmlhelp
-    
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/htmlhelp
-    COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can run HTML Help Workshop with the .hhp project file in ${CMAKE_CURRENT_BINARY_DIR}/htmlhelp."
+        ${SPHINXBUILD} -b htmlhelp ${ALLSPHINXOPTS} ${BUILDDIR}/htmlhelp
+
+    BYPRODUCTS ${BUILDDIR}/htmlhelp
+    COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can run HTML Help Workshop with the .hhp project file in ${BUILDDIR}/htmlhelp."
+    VERBATIM
 )
 
+# sudo apt-get install  python3-sphinxcontrib.qthelp
 add_custom_target(qthelp
     COMMAND
-        ${SPHINXBUILD} -b qthelp ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/qthelp
-    
-    BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/qthelp
-    COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can run \"qcollectiongenerator\" with the
-             .qhcp project file in ${CMAKE_CURRENT_BINARY_DIR}/qthelp, like this:" \
-            "# qcollectiongenerator ${CMAKE_CURRENT_BINARY_DIR} /qthelp/aria2.qhcp"
+        ${SPHINXBUILD} -b qthelp ${ALLSPHINXOPTS} ${BUILDDIR}/qthelp
+
+    BYPRODUCTS ${BUILDDIR}/qthelp
+    COMMAND ${CMAKE_COMMAND} -E echo "Build finished; now you can run \"qcollectiongenerator\" with the"
+                ".qhcp project file in ${BUILDDIR}/qthelp, like this:"
+                "qcollectiongenerator ${BUILDDIR} /qthelp/aria2.qhcp"
+    VERBATIM
 )
 
+# sudo apt install python3-sphinxcontrib.devhelp
 add_custom_target(devhelp
     COMMAND
-        ${SPHINXBUILD} -b devhelp ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/devhelp
-        ${CMAKE_COMMAND} -E echo "Build finished"
-        ${CMAKE_COMMAND} -E echo "To view help file:"
-        ${CMAKE_COMMAND} -E echo "# mkdir -p $$HOME/.local/devhelp/aria2"
-        ${CMAKE_COMMAND} -E echo "# ls -s ${CMAKE_CURRENT_BINARY_DIR}/devhelp $$HOME/.local/share/devhelp/aria2"
-        ${CMAKE_COMMAND} -E echo "# devhelp"
+        ${SPHINXBUILD} -b devhelp ${ALLSPHINXOPTS} ${BUILDDIR}/devhelp
+
+    BYPRODUCTS ${BUILDDIR}/devhelp
+    ${CMAKE_COMMAND} -E echo "Build finished"
+    ${CMAKE_COMMAND} -E echo "To view help file:"
+    ${CMAKE_COMMAND} -E echo "  mkdir -p $$HOME/.local/devhelp/aria2"
+    ${CMAKE_COMMAND} -E echo "  ls -s ${BUILDDIR}/devhelp $$HOME/.local/share/devhelp/aria2"
+    ${CMAKE_COMMAND} -E echo "  devhelp"
+    VERBATIM
 )
 
 add_custom_target(epub
-    COMMAND:
-        ${SPHINXBUILD} -b epub ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/epub
-        ${CMAKE_COMMAND} -E echo "Build finished. The epub file is in ${CMAKE_CURRENT_BINARY_DIR}/epub"
+    COMMAND
+        ${SPHINXBUILD} -b epub ${ALLSPHINXOPTS} ${BUILDDIR}/epub
+
+    BYPRODUCTS ${BUILDDIR}/epub
+    ${CMAKE_COMMAND} -E echo "Build finished. The epub file is in ${BUILDDIR}/epub"
+    VERBATIM
 )
 
 add_custom_target(latex
     COMMAND
-        ${SPHINXBUILD} -b latex ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/latex
-        ${CMAKE_COMMAND} -E echo "Build finished. The LaTeX files are in ${CMAKE_CURRENT_BINARY_DIR}/latex"
-        ${CMAKE_COMMAND} -E echo "Run 'make' in that directory to run these through (pdf)latex" \
-            "(use 'make' latexpdf here to that automatically)"
+        ${SPHINXBUILD} -b latex ${ALLSPHINXOPTS} ${BUILDDIR}/latex
+
+    BYPRODUCTS ${BUILDDIR}/latex
+    ${CMAKE_COMMAND} -E echo "Build finished. The LaTeX files are in ${BUILDDIR}/latex"
+    ${CMAKE_COMMAND} -E echo "Run 'make' in that directory to run these through (pdf)latex (use 'make' latexpdf here to that automatically)"
+    VERBATIM
 )
 
 add_custom_target(latexpdf
     COMMAND
-        ${SPHINXBUILD} -b latex ${ALLSPHINXOPTS} ${CAMKE_CURRENT_BINARY_DIR}/latex
-        ${CMAKE_COMMAND} -E echo "Running LaTeX files through pdflatex..."
-        ${MAKE_COMMAND} -C ${CMAKE_CURRENT_BINARY_DIR}/latex all-pdf
-        ${CMAKE_COMMAND} -E echo "pdflatex finished. the PDF files are in ${CMAKE_CURRENT_BINARY_DIR}/latex"
+        ${SPHINXBUILD} -b latex ${ALLSPHINXOPTS} ${BUILDDIR}/latex
+
+    BYPRODUCTS ${BUILDDIR}/latex
+
+    ${CMAKE_COMMAND} -E echo "Running LaTeX files through pdflatex..."
+    ${CMAKE_MAKE_COMMAND} -C ${BUILDDIR}/latex all-pdf
+    ${CMAKE_COMMAND} -E echo "pdflatex finished. the PDF files are in ${BUILDDIR}/latex"
+
+    VERBATIM
 )
 
 add_custom_target(text
     COMMAND
         ${SPHINXBUILD} -b text ${ALLSPHINXOPTS} ${BUILDDIR}/text
-        ${CMAKE_COMMAND} -E echo "Build finished. The text files are in $(BUILDDIR)/text."
+
+    BYPRODUCTS ${BUILDDIR}/text
+    ${CMAKE_COMMAND} -E echo "Build finished. The text files are in ${BUILDDIR}/text."
+    VERBATIM
 )
 
+# man target, depends on the MAN_PAGE, which is output from a custom command.
+# When 'make man' is executed the custom command is triggered
+# To build it every time aria2c is built, add the ALL option
 add_custom_target(man
+    DEPENDS ${MAN_PAGE}
+)
+
+add_custom_target(changes
     COMMAND
-        ${SPHINXBUILD} -b man ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/man
-        ${CMAKE_COMMAND} -E echo "Build finished. The manual pages are in ${CMAKE_CURRENT_BINARY_DIR}/man."
+        ${SPHINXBUILD} -b changes ${ALLSPHINXOPTS} ${BUILDDIR}/changes
+
+    BYPRODUCTS ${BUILDDIR}/changes
+    ${CMAKE_COMMAND} -E echo "The overview file is in ${BUILDDIR}/changes."
+    VERBATIM
 )
 
 add_custom_target(linkcheck
     COMMAND
-        ${SPHINXBUILD} -b linkcheck ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/linkcheck
-        ${CMAKE_COMMAND} -E echo "Link check complete; look for any errors in the above output or in ${CMAKE_CURRENT_BINARY_DIR}/linkcheck/output.txt."
+        ${SPHINXBUILD} -b linkcheck ${ALLSPHINXOPTS} ${BUILDDIR}/linkcheck
+
+    BYPRODUCTS ${BUILDDIR}/linkcheck
+    ${CMAKE_COMMAND} -E echo "Link check complete; look for any errors in the above output or in ${CMAKE_CURRENT_BINARY_DIR}/linkcheck/output.txt."
+    VERBATIM
 )
 
 add_custom_target(doctest
     COMMAND
-        ${SPHINXBUILD} -b doctest ${ALLSPHINXOPTS} ${CMAKE_CURRENT_BINARY_DIR}/doctest
-        ${CMAKE_COMMAND} -E echo "Testing of doctests in the sources finished, look at the results in${CMAKE_CURRENT_BINARY_DIR}/doctest/output.txt"
+        ${SPHINXBUILD} -b doctest ${ALLSPHINXOPTS} ${BUILDDIR}/doctest
+
+    BYPRODUCTS ${BUILDDIR}/doctest
+    ${CMAKE_COMMAND} -E echo "Testing of doctests in the sources finished, look at the results in${CMAKE_CURRENT_BINARY_DIR}/doctest/output.txt"
+    VERBATIM
 )
