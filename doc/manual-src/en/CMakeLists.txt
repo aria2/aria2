@@ -1,4 +1,6 @@
 
+include(GNUInstallDirs)
+
 set(SPHINXOPTS "" CACHE STRING "Options for SPHINX")
 set(SPHINXBUILD "sphinx-build" CACHE STRING "sphinx-build command")
 set(PAPER "a4" CACHE STRING "Type of Paper")
@@ -8,10 +10,7 @@ set(PAPEROPT_a4 "-D latex_elements.papersize=a4paper")
 set(PAPEROPT_letter "-D latex_elements.papersize=letterpaper")
 
 set(ALLSPHINXOPTS -d ${BUILDDIR}/doctrees ${PAPEROPT_${PAPER}} ${SPHINXOPTS} -c . ${CMAKE_CURRENT_SOURCE_DIR})
-
-set(mandir ${DATAROOTDIR}/man/en)
-set(man_MANS "${BUILDDIR}/man/aria2c.1")
-# set(EXTRA_DIST "${man_MANS} aria2.rst index.rst")
+set(CMAKE_INSTALL_MANDIR ${CMAKE_INSTALL_PREFIX}/man)
 
 set(MAN_OUTPUT_DIR "${BUILDDIR}/man")
 set(MAN_PAGE "${MAN_OUTPUT_DIR}/aria2c.1")
@@ -222,4 +221,17 @@ add_custom_target(doctest
     BYPRODUCTS ${BUILDDIR}/doctest
     ${CMAKE_COMMAND} -E echo "Testing of doctests in the sources finished, look at the results in${CMAKE_CURRENT_BINARY_DIR}/doctest/output.txt"
     VERBATIM
+)
+
+install(
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${BUILDDIR}/
+    DESTINATION ${CMAKE_INSTALL_DOCDIR}
+
+    PATTERN "man" # man directory will be installed separately, see below
+        EXCLUDE
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${BUILDDIR}/man/aria2c.1
+    DESTINATION ${CMAKE_INSTALL_MANDIR}
 )
