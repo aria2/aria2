@@ -60,7 +60,7 @@ add_custom_target(docclean
     COMMAND
         rm libaria2api
         rm -rf ${BUILDDIR}/*
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 
     VERBATIM
 )
@@ -225,7 +225,7 @@ add_custom_target(doctest
 
 install(
     DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${BUILDDIR}/
-    DESTINATION ${CMAKE_INSTALL_DOCDIR}
+    DESTINATION ${CMAKE_INSTALL_DOCDIR}/en
 
     PATTERN "man" # man directory will be installed separately, see below
         EXCLUDE

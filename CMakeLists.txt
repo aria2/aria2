@@ -1420,6 +1420,8 @@ set(srcdir ${CMAKE_CURRENT_SOURCE_DIR})
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 
 configure_file(doc/manual-src/en/conf.py.in doc/manual-src/en/conf.py @ONLY)
+configure_file(doc/manual-src/pt/conf.py.in doc/manual-src/pt/conf.py @ONLY)
+configure_file(doc/manual-src/ru/conf.py.in doc/manual-src/ru/conf.py @ONLY)
 
 if(doc)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/doc)
