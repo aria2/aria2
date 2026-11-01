@@ -20,7 +20,7 @@ if(HAVE_SPHINXBUILD)
         OUTPUT ${MAN_PAGE}
         COMMAND ${CMAKE_COMMAND} -E echo "Running the make man command"
         COMMAND ${SPHINXBUILD} -b man ${ALLSPHINXOPTS} ${BUILDDIR}/man
-        COMMAND sed -i -e "1i .\\\" -*- mode: troff; coding: utf-8 -*-" "${BUILDDIR}/man/aria2c.1"
+        COMMAND sed -i -e "1i .\\\\\" -*- mode: troff; coding: utf-8 -*-" "${BUILDDIR}/man/aria2c.1"
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/aria2c.rst
         COMMAND ${CMAKE_COMMAND} -E echo "Building aria2 man page with Sphinx"
         VERBATIM
