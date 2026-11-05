@@ -29,6 +29,10 @@ how to use aria2.
 Features
 --------
 
+This fork also offers optional Chrome TLS/HTTP2 impersonation through
+libcurl-impersonate. See doc/impersonation.rst for build instructions,
+usage, and transport limitations.
+
 Here is a list of features:
 
 * Command-line interface

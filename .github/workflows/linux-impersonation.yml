@@ -1,0 +1,55 @@
+name: Linux Chrome impersonation
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v7
+    - name: Install build and test dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential autoconf automake libtool autopoint \
+          gettext pkg-config curl ca-certificates patchelf python3 openssl \
+          libssl-dev libexpat1-dev zlib1g-dev libcppunit-dev
+    - name: Build with Chrome impersonation
+      run: sh contrib/build-linux-impersonate.sh 4
+    - name: Run C++ tests
+      run: make -C .build/chrome-x86_64-linux-gnu -j4 check
+    - name: Test the relocated bundle
+      run: |
+        cp -a dist/linux-x86_64-linux-gnu "$RUNNER_TEMP/aria2-chrome"
+        rm -rf .deps/curl-impersonate
+        python3 test/impersonation_integration_test.py "$RUNNER_TEMP/aria2-chrome/bin/aria2c"
+
+  debian9:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v7
+    - name: Build and test with Debian 9 libraries and GCC 6
+      run: |
+        docker run --rm -v "$PWD:/src:ro" debian:stretch-slim sh -ec '
+          printf "%s\n" \
+            "deb http://archive.debian.org/debian stretch main" \
+            "deb http://archive.debian.org/debian-security stretch/updates main" \
+            > /etc/apt/sources.list
+          apt-get -o Acquire::Check-Valid-Until=false update
+          apt-get install -y --no-install-recommends build-essential \
+            autoconf automake libtool autopoint gettext pkg-config curl \
+            ca-certificates patchelf python3 openssl libssl-dev \
+            libexpat1-dev zlib1g-dev libcppunit-dev
+          cp -a /src /tmp/aria2
+          cd /tmp/aria2
+          sh contrib/build-linux-impersonate.sh 4
+          make -C .build/chrome-x86_64-linux-gnu -j4 check
+          cp -a dist/linux-x86_64-linux-gnu /tmp/aria2-chrome
+          rm -rf .deps/curl-impersonate
+          python3 test/impersonation_integration_test.py /tmp/aria2-chrome/bin/aria2c
+        '

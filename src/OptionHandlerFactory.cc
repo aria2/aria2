@@ -1223,6 +1223,23 @@ std::vector<OptionHandler*> OptionHandlerFactory::createOptionHandlers()
     op->setChangeOptionForReserved(true);
     handlers.push_back(op);
   }
+#ifdef HAVE_CURL_IMPERSONATE
+  {
+    OptionHandler* op(new DefaultOptionHandler(
+        PREF_IMPERSONATE,
+        _(" --impersonate=PROFILE        Use libcurl-impersonate for HTTP(S).\n"
+          "                              'none' uses the normal transport;\n"
+          "                              'chrome' selects Chrome 136. Explicit\n"
+          "                              Chrome profile names are also accepted."),
+        "none"));
+    op->addTag(TAG_HTTP);
+    op->addTag(TAG_ADVANCED);
+    op->setInitialOption(true);
+    op->setChangeGlobalOption(true);
+    op->setChangeOptionForReserved(true);
+    handlers.push_back(op);
+  }
+#endif
   // FTP Specific Options
   {
     OptionHandler* op(

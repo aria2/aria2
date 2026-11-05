@@ -245,6 +245,7 @@ aria2c_LDADD = \
 	../src/libaria2.la \
 	@LIBINTL@ \
 	@EXTRALIBS@ \
+	@CURL_IMPERSONATE_LIBS@ \
 	@ZLIB_LIBS@ \
 	@LIBUV_LIBS@ \
 	@LIBXML2_LIBS@ \
@@ -264,6 +265,7 @@ aria2c_LDADD = \
 	@JEMALLOC_LIBS@
 
 AM_CPPFLAGS = \
+	@CURL_IMPERSONATE_CFLAGS@ \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/includes -I$(top_builddir)/src/includes \
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl \
@@ -298,6 +300,7 @@ AM_CFLAGS = @EXTRACFLAGS@
 AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
 
 EXTRA_DIST = 4096chunk.txt\
+	impersonation_integration_test.py\
 	chunkChecksumTestFile250.txt\
 	cookies.sqlite\
 	chromium_cookies.sqlite\

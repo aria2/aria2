@@ -181,6 +181,53 @@ Derived x;
 AC_DEFINE_UNQUOTED([CXX11_OVERRIDE], [$cxx11_override],
                    [Define `override` keyword if the compiler supports it])
 
+AC_ARG_WITH([curl-impersonate],
+  AS_HELP_STRING([--with-curl-impersonate],
+                 [Enable optional Chrome TLS/HTTP2 impersonation (POSIX)]),
+  [], [with_curl_impersonate=no])
+AC_ARG_VAR([CURL_IMPERSONATE_CFLAGS], [Compiler flags for libcurl-impersonate])
+AC_ARG_VAR([CURL_IMPERSONATE_LIBS], [Linker flags for libcurl-impersonate])
+AS_IF([test "x$with_curl_impersonate" != "xno"], [
+  AS_IF([test "x$win_build" = "xyes"], [
+    AC_MSG_ERROR([The impersonation transport currently requires POSIX socketpair])
+  ])
+  AS_IF([test -z "$CURL_IMPERSONATE_LIBS"], [
+    CURL_IMPERSONATE_LIBS="-lcurl-impersonate"
+  ])
+  CURL_IMPERSONATE_CFLAGS="$CURL_IMPERSONATE_CFLAGS -pthread"
+  CURL_IMPERSONATE_LIBS="$CURL_IMPERSONATE_LIBS -pthread"
+  impersonate_save_CPPFLAGS=$CPPFLAGS
+  impersonate_save_LIBS=$LIBS
+  CPPFLAGS="$CPPFLAGS $CURL_IMPERSONATE_CFLAGS"
+  LIBS="$CURL_IMPERSONATE_LIBS $LIBS"
+  AC_LANG_PUSH([C++])
+  AC_MSG_CHECKING([for libcurl-impersonate and POSIX worker support])
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+    #include <curl/curl.h>
+    #include <thread>
+    #include <sys/socket.h>
+    extern "C" CURLcode curl_easy_impersonate(CURL*, const char*, int);
+  ]], [[
+    int fds[2];
+    socketpair(AF_UNIX, SOCK_STREAM, 0, fds);
+    std::thread worker([] {});
+    worker.join();
+    CURL* c = curl_easy_init();
+    curl_easy_impersonate(c, "chrome136", 1);
+    curl_easy_cleanup(c);
+  ]])], [AC_MSG_RESULT([yes])], [
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([Set CURL_IMPERSONATE_CFLAGS and CURL_IMPERSONATE_LIBS to a libcurl-impersonate installation; ordinary libcurl is insufficient])
+  ])
+  AC_LANG_POP([C++])
+  CPPFLAGS=$impersonate_save_CPPFLAGS
+  LIBS=$impersonate_save_LIBS
+  AC_DEFINE([HAVE_CURL_IMPERSONATE], [1],
+            [Define if building the libcurl-impersonate HTTP transport])
+])
+AM_CONDITIONAL([HAVE_CURL_IMPERSONATE],
+               [test "x$with_curl_impersonate" != "xno"])
+
 CXXFLAGS=$save_CXXFLAGS
 
 # Check static build is requested
@@ -1073,6 +1120,7 @@ Build:          $build
 Host:           $host
 Target:         $target
 Install prefix: $prefix
+Impersonation:  $with_curl_impersonate
 CC:             $CC
 CXX:            $CXX
 CPP:            $CPP

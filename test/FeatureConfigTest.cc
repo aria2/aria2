@@ -89,6 +89,10 @@ void FeatureConfigTest::testFeatureSummary()
 #ifdef HAVE_LIBSSH2
       "SFTP",
 #endif // HAVE_LIBSSH2
+
+#ifdef HAVE_CURL_IMPERSONATE
+      "HTTP Impersonation",
+#endif
   };
 
   std::string featuresString =

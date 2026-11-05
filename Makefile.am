@@ -4,6 +4,9 @@ ACLOCAL_AMFLAGS = -I m4 --install
 RST2HTML = @RST2HTML@
 
 EXTRA_DIST = config.rpath \
+             doc/impersonation.rst \
+             contrib/build-macos-impersonate.sh \
+             contrib/build-linux-impersonate.sh \
 	     script-helper \
 	     makerelease \
 	     mingw-config mingw-release mingw-build-memo \

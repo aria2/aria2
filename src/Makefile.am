@@ -679,6 +679,11 @@ endif # HAVE_LIBUV
 
 AR = @AR@
 
+if HAVE_CURL_IMPERSONATE
+SRCS += ImpersonateConnectionCommand.cc ImpersonateConnectionCommand.h \
+        ImpersonateTransport.cc ImpersonateTransport.h
+endif
+
 if ENABLE_LIBARIA2
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libaria2.pc
@@ -697,6 +702,7 @@ libaria2_la_SOURCES = $(SRCS)
 
 
 AM_CPPFLAGS = \
+	@CURL_IMPERSONATE_CFLAGS@ \
 	-I$(top_srcdir)/lib -I$(top_srcdir)/intl\
 	-I$(srcdir)/includes -I$(builddir)/includes\
 	-DLOCALEDIR=\"@localedir@\" @DEFS@ \
@@ -722,6 +728,7 @@ AM_LDFLAGS = \
 	@APPLETLS_LDFLAGS@
 
 EXTLDADD = @ALLOCA@ \
+	@CURL_IMPERSONATE_LIBS@ \
 	@EXTRALIBS@ \
 	@ZLIB_LIBS@ \
 	@LIBUV_LIBS@ \

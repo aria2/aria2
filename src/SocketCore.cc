@@ -33,6 +33,9 @@
  */
 /* copyright --> */
 #include "SocketCore.h"
+#ifdef HAVE_CURL_IMPERSONATE
+#  include "ImpersonateTransport.h"
+#endif
 
 #ifdef HAVE_IPHLPAPI_H
 #  include <iphlpapi.h>
@@ -633,6 +636,12 @@ void SocketCore::setBlockingMode()
 
 void SocketCore::closeConnection()
 {
+#ifdef HAVE_CURL_IMPERSONATE
+  if (impersonateTransport_) {
+    impersonateTransport_->cancel();
+    impersonateTransport_.reset();
+  }
+#endif
 #ifdef ENABLE_SSL
   if (tlsSession_) {
     tlsSession_->closeConnection();
@@ -897,6 +906,11 @@ void SocketCore::readData(void* data, size_t& len)
 #endif // ENABLE_SSL
     }
 
+#ifdef HAVE_CURL_IMPERSONATE
+  if (ret == 0 && !wantRead_ && impersonateTransport_) {
+    impersonateTransport_->checkError();
+  }
+#endif
   len = ret;
 }
 
@@ -909,6 +923,13 @@ bool SocketCore::tlsAccept()
 
 bool SocketCore::tlsConnect(const std::string& hostname)
 {
+#ifdef HAVE_CURL_IMPERSONATE
+  if (impersonateTransport_) {
+    // This is a private socketpair, not a connection to the origin.
+    // The transport performs and verifies the actual upstream TLS handshake.
+    return true;
+  }
+#endif
   return tlsHandshake(clTlsContext_.get(), hostname);
 }
 
