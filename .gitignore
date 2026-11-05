@@ -44,3 +44,7 @@ compile
 main.log
 main.trs
 test-suite.log
+.build/
+dist/
+autoreconf.log
+__pycache__/

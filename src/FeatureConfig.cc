@@ -36,6 +36,9 @@
 
 #include <sstream>
 #include <cstring>
+#ifdef HAVE_CURL_IMPERSONATE
+#  include <curl/curl.h>
+#endif
 
 #ifdef HAVE_ZLIB
 #  include <zlib.h>
@@ -159,6 +162,13 @@ const char* strSupportedFeature(int feature)
     return "Message Digest";
     break;
 
+  case (FEATURE_HTTP_IMPERSONATION):
+#ifdef HAVE_CURL_IMPERSONATE
+    return "HTTP Impersonation";
+#else
+    return nullptr;
+#endif
+
   case (FEATURE_METALINK):
 #ifdef ENABLE_METALINK
     return "Metalink";
@@ -191,6 +201,10 @@ const char* strSupportedFeature(int feature)
 std::string usedLibs()
 {
   std::string res;
+#ifdef HAVE_CURL_IMPERSONATE
+  res += std::string("libcurl-impersonate/") +
+         curl_version_info(CURLVERSION_NOW)->version + " ";
+#endif
 #ifdef HAVE_ZLIB
   res += "zlib/" ZLIB_VERSION " ";
 #endif // HAVE_ZLIB

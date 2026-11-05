@@ -351,6 +351,7 @@ extern PrefPtr PREF_HTTP_USER;
 extern PrefPtr PREF_HTTP_PASSWD;
 // values: string
 extern PrefPtr PREF_USER_AGENT;
+extern PrefPtr PREF_IMPERSONATE;
 // value: string that your file system recognizes as a file name.
 extern PrefPtr PREF_LOAD_COOKIES;
 // value: string that your file system recognizes as a file name.

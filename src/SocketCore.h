@@ -50,6 +50,10 @@
 
 namespace aria2 {
 
+#ifdef HAVE_CURL_IMPERSONATE
+class ImpersonateTransport;
+#endif
+
 #ifdef ENABLE_SSL
 class TLSContext;
 class TLSSession;
@@ -69,6 +73,9 @@ private:
   int sockType_;
   // socket endpoint descriptor
   sock_t sockfd_;
+#ifdef HAVE_CURL_IMPERSONATE
+  std::shared_ptr<ImpersonateTransport> impersonateTransport_;
+#endif
 
   static int protocolFamily_;
   static int ipDscp_;
@@ -122,6 +129,13 @@ public:
   SocketCore(sock_t sockfd, int sockType);
 
   ~SocketCore();
+
+#ifdef HAVE_CURL_IMPERSONATE
+  void setImpersonateTransport(std::shared_ptr<ImpersonateTransport> transport)
+  {
+    impersonateTransport_ = std::move(transport);
+  }
+#endif
 
   sock_t getSockfd() const { return sockfd_; }
 

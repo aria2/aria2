@@ -398,6 +398,7 @@ PrefPtr PREF_HTTP_USER = makePref("http-user");
 PrefPtr PREF_HTTP_PASSWD = makePref("http-passwd");
 // values: string
 PrefPtr PREF_USER_AGENT = makePref("user-agent");
+PrefPtr PREF_IMPERSONATE = makePref("impersonate");
 // value: string that your file system recognizes as a file name.
 PrefPtr PREF_LOAD_COOKIES = makePref("load-cookies");
 // value: string that your file system recognizes as a file name.

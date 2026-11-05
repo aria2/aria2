@@ -44,6 +44,9 @@
 #include "prefs.h"
 #include "SocketCore.h"
 #include "SocketRecvBuffer.h"
+#ifdef HAVE_CURL_IMPERSONATE
+#  include "ImpersonateConnectionCommand.h"
+#endif
 
 namespace aria2 {
 
@@ -60,6 +63,18 @@ InitiateConnectionCommandFactory::createInitiateConnectionCommand(
 #endif // ENABLE_SSL
   ) {
 
+#ifdef HAVE_CURL_IMPERSONATE
+    const auto& profile = requestGroup->getOption()->get(PREF_IMPERSONATE);
+    if (!profile.empty() && profile != "none") {
+      // Each local transport carries one response. Range splitting and
+      // retries remain managed by aria2, while libcurl owns the remote TLS
+      // and HTTP/2 connection.
+      req->setKeepAliveHint(false);
+      req->setPipeliningHint(false);
+      return make_unique<ImpersonateConnectionCommand>(
+          cuid, req, fileEntry, requestGroup, e);
+    }
+#endif
     if (requestGroup->getOption()->getAsBool(PREF_ENABLE_HTTP_KEEP_ALIVE)) {
       req->setKeepAliveHint(true);
     }
