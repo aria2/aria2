@@ -297,6 +297,7 @@ AM_CFLAGS = @EXTRACFLAGS@
 
 AM_CXXFLAGS = @WARNCXXFLAGS@ @CXX1XCXXFLAGS@ @EXTRACXXFLAGS@
 
+#dnl TODOm: EXTRA_DIST is not required to cmake for now, but have somehow to migrate it.
 EXTRA_DIST = 4096chunk.txt\
 	chunkChecksumTestFile250.txt\
 	cookies.sqlite\

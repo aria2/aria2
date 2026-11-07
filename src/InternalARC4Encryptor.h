@@ -47,7 +47,7 @@ private:
 public:
   void init(const unsigned char* key, size_t keyLength);
 
-  // Encrypts data in in buffer to out buffer. in and out can be the
+  // Encrypts data in buffer to out buffer. in and out can be the
   // same buffer.
   void encrypt(size_t len, unsigned char* out, const unsigned char* in);
 };
