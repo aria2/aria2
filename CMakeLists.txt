@@ -1396,11 +1396,8 @@ endif()
 
 if(websocket)
     writeToConfigFile(ENABLE_WEBSOCKET 1 "Define 1 if WebSocket support is enabled")
-
-    # TODO:  Should check in the future as currently this is not enabled.
-    string(APPEND WSLAY_CFLAGS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes ${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes")
-    string(APPEND WSLAY_LIBS " ${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.la")  # TODOm: check if this is needed anyway because it uses libwslay.la
-    
+    string(APPEND WSLAY_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/deps/wslay/lib/includes;${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/includes")
+    string(APPEND WSLAY_LIBS "${CMAKE_CURRENT_BINARY_DIR}/deps/wslay/lib/libwslay.so")
     add_subdirectory(deps/wslay)
 endif()
 

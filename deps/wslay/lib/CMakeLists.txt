@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-add_library(wslay STATIC)
-
-# add_subdirectory(includes)
-=======
 add_library(wslay SHARED)
->>>>>>> 794a3fc9 (migrate websocket library to CMake)
 
 target_compile_options(wslay PRIVATE
     -Wall
