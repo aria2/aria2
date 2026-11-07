@@ -102,7 +102,7 @@ if(HAVE_SOME_FALLOCATE)
 endif()
 
 if(HAVE_ZLIB)
-    list(APPEND srcs GZipDecoder.dcc GZipDecoder.h GZipDecoderTest.cc GZipEncoderTest.cc GZipDecodingStreamFilterTest.cc GZipFileTest.cc)
+    list(APPEND srcs GZipDecoder.cc GZipDecoder.h GZipDecoderTest.cc GZipEncoderTest.cc GZipDecodingStreamFilterTest.cc GZipFileTest.cc)
 endif()
 
 if(HAVE_SQLITE3)
@@ -294,15 +294,9 @@ target_compile_definitions (aria2c_test PUBLIC
 )
 
 string(APPEND CMAKE_C_FLAGS " ${CMAKE_C_FLAGS} ${EXTRACFLAGS}")
-string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} ${WARNCXXFLAGS} ${CXX1CXXFLAGS} ${EXTRACXXFLAGS}") 
+string(APPEND CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} ${WARNCXXFLAGS} ${CXX1CXXFLAGS} ${EXTRACXXFLAGS}")
 
-target_sources(aria2c_test 
+target_sources(aria2c_test
     PRIVATE
 		${srcs}
-    # PUBLIC:
-    #     FILE_SET HEADERS
-    #     BASE_DIRS ${CMAKE_CURRENT_LIST_DIR}
-    #     FILES
 )
-
-# add_custom_target(cleaner)
