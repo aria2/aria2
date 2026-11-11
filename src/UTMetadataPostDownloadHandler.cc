@@ -51,6 +51,10 @@
 #include "Option.h"
 #include "fmt.h"
 #include "RequestGroupMan.h"
+#include "TorrentAttribute.h"
+#include "FileEntry.h"
+#include "error_code.h"
+#include "ValueBaseBencodeParser.h"
 
 namespace aria2 {
 
@@ -83,6 +87,17 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
   auto attrs = bittorrent::getTorrentAttrs(dctx);
   std::string metadata =
       util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+
+  // Check metadata size limit to prevent memory exhaustion attacks
+  int64_t metadataMaxSize =
+      requestGroup->getOption()->getAsInt(PREF_BT_METADATA_MAX_SIZE);
+  if (metadataMaxSize > 0 &&
+      static_cast<int64_t>(metadata.size()) > metadataMaxSize) {
+    throw DL_ABORT_EX2(
+        fmt(MSG_DHT_METADATA_SIZE_LIMIT, metadata.size(), metadataMaxSize),
+        error_code::BITTORRENT_PARSE_ERROR);
+  }
+
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
 
   if (requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
@@ -97,12 +112,34 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
     }
   }
   if (!requestGroup->getOption()->getAsBool(PREF_BT_METADATA_ONLY)) {
+    // If web seeds from DHT metadata are disabled, remove them from the
+    // torrent data before creating the download. This is the default for
+    // security reasons because DHT metadata is untrusted.
+    std::string processedTorrent = torrent;
+    bool dhtWebSeedEnabled =
+        requestGroup->getOption()->getAsBool(PREF_BT_ENABLE_DHT_WEB_SEED);
+    if (!dhtWebSeedEnabled) {
+      // Parse the torrent and remove the url-list field
+      bittorrent::ValueBaseBencodeParser parser;
+      ssize_t error;
+      auto root = parser.parseFinal(processedTorrent.c_str(),
+                                    processedTorrent.size(), error);
+      if (root && error >= 0) {
+        Dict* rootDict = downcast<Dict>(root);
+        if (rootDict && rootDict->containsKey("url-list")) {
+          A2_LOG_NOTICE(MSG_DHT_WEB_SEED_IGNORED);
+          rootDict->removeKey("url-list");
+          processedTorrent = bencode2::encode(rootDict);
+        }
+      }
+    }
+
     std::vector<std::shared_ptr<RequestGroup>> newRgs;
     // Don't adjust announce URI because it has been done when
     // RequestGroup is created with magnet URI.
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                     std::vector<std::string>(), A2STR::NIL,
-                                    torrent, false);
+                                    processedTorrent, false);
     requestGroup->followedBy(newRgs.begin(), newRgs.end());
     for (auto& rg : newRgs) {
       rg->following(requestGroup->getGID());

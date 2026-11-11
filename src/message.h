@@ -206,6 +206,9 @@
 #define MSG_METADATA_NOT_SAVED _("Saving metadata as %s failed. Maybe file" \
                                  " already exists.")
 #define MSG_DIR_TRAVERSAL_DETECTED _("Detected directory traversal directive in %s")
+#define MSG_DHT_WEB_SEED_IGNORED _("Ignoring web seed from DHT metadata. Use --bt-enable-dht-web-seed=true to enable.")
+#define MSG_DHT_TRACKER_IGNORED _("Ignoring tracker from DHT metadata.")
+#define MSG_DHT_METADATA_SIZE_LIMIT _("DHT metadata size %" PRId64 " exceeds limit %" PRId64 ".")
 #define MSG_HASH_CHECK_NOT_DONE                                         \
   "File has already been downloaded but hash check has not been done yet."
 #define MSG_REMOVING_UNSELECTED_FILE _("GID#%s - Removing unselected file.")

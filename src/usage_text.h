@@ -1130,4 +1130,21 @@
     "                              successful, then skip downloading metadata from\n" \
     "                              DHT.")
 
+#define TEXT_BT_ENABLE_DHT_WEB_SEED \
+  _(" --bt-enable-dht-web-seed[=true|false]\n" \
+    "                              Accept web seed URLs from torrent metadata\n" \
+    "                              received from DHT. When a magnet link is used,\n" \
+    "                              the torrent metadata (including web seed URLs)\n" \
+    "                              comes from the DHT, which is untrusted. Enabling\n" \
+    "                              this option allows aria2 to fetch content from\n" \
+    "                              those web seed URLs. Default is false for\n" \
+    "                              security reasons.")
+
+#define TEXT_BT_METADATA_MAX_SIZE \
+  _(" --bt-metadata-max-size=SIZE  Set the maximum size of torrent metadata\n" \
+    "                              accepted from DHT. If the metadata size exceeds\n" \
+    "                              this limit, the metadata is rejected. This helps\n" \
+    "                              prevent memory exhaustion attacks. Default is 1M\n" \
+    "                              (1 MiB).")
+
 // clang-format on

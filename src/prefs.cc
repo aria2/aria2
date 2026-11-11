@@ -568,6 +568,10 @@ PrefPtr PREF_BT_ENABLE_HOOK_AFTER_HASH_CHECK =
     makePref("bt-enable-hook-after-hash-check");
 // values: true | false
 PrefPtr PREF_BT_LOAD_SAVED_METADATA = makePref("bt-load-saved-metadata");
+// values: true | false
+PrefPtr PREF_BT_ENABLE_DHT_WEB_SEED = makePref("bt-enable-dht-web-seed");
+// values: 1*digit
+PrefPtr PREF_BT_METADATA_MAX_SIZE = makePref("bt-metadata-max-size");
 
 /**
  * Metalink related preferences

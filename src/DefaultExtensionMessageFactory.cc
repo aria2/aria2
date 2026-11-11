@@ -54,6 +54,9 @@
 #include "UTMetadataRequestTracker.h"
 #include "RequestGroup.h"
 #include "bencode2.h"
+#include "prefs.h"
+#include "Option.h"
+#include "error_code.h"
 
 namespace aria2 {
 
@@ -142,6 +145,17 @@ DefaultExtensionMessageFactory::createMessage(const unsigned char* data,
         const Integer* totalSize = downcast<Integer>(dict->get("total_size"));
         if (!totalSize || totalSize->i() < 0) {
           throw DL_ABORT_EX("Bad ut_metadata data: total_size not found");
+        }
+        // Check metadata size limit to prevent memory exhaustion attacks
+        auto rg = dctx_->getOwnerRequestGroup();
+        if (rg) {
+          int64_t metadataMaxSize =
+              rg->getOption()->getAsInt(PREF_BT_METADATA_MAX_SIZE);
+          if (metadataMaxSize > 0 && totalSize->i() > metadataMaxSize) {
+            throw DL_ABORT_EX2(
+                fmt(MSG_DHT_METADATA_SIZE_LIMIT, totalSize->i(), metadataMaxSize),
+                error_code::BITTORRENT_PARSE_ERROR);
+          }
         }
         auto m =
             make_unique<UTMetadataDataExtensionMessage>(extensionMessageID);
