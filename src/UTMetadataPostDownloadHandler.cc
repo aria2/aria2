@@ -55,8 +55,53 @@
 #include "FileEntry.h"
 #include "error_code.h"
 #include "ValueBaseBencodeParser.h"
+#include "MetadataInfo.h"
+#include "util.h"
 
 namespace aria2 {
+
+namespace {
+
+// Check if a file extension is considered executable
+bool isExecutableExtension(const std::string& path) {
+  std::string lowerPath = path;
+  std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(),
+                 ::tolower);
+  
+  static const std::vector<std::string> executableExtensions = {
+    ".exe", ".sh", ".bat", ".cmd", ".com", ".scr", ".pif", ".vbs", ".js",
+    ".ps1", ".msi", ".dll", ".bin", ".app", ".command", ".csh", ".ksh",
+    ".zsh", ".bash", ".pl", ".py", ".rb", ".cgi"
+  };
+  
+  for (const auto& ext : executableExtensions) {
+    if (lowerPath.size() >= ext.size() &&
+        lowerPath.compare(lowerPath.size() - ext.size(), ext.size(), ext) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Extract filename from magnet link URI
+std::string extractFileNameFromUri(const std::string& uri) {
+  // Look for dn= parameter in magnet link
+  std::string dn = "dn=";
+  size_t pos = uri.find(dn);
+  if (pos != std::string::npos) {
+    pos += dn.size();
+    size_t end = uri.find('&', pos);
+    if (end == std::string::npos) {
+      end = uri.size();
+    }
+    std::string fileName = uri.substr(pos, end - pos);
+    // URL decode using percentDecode
+    return util::percentDecode(fileName.begin(), fileName.end());
+  }
+  return "";
+}
+
+} // namespace
 
 namespace {
 class Criteria : public RequestGroupCriteria {
@@ -118,19 +163,124 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
     std::string processedTorrent = torrent;
     bool dhtWebSeedEnabled =
         requestGroup->getOption()->getAsBool(PREF_BT_ENABLE_DHT_WEB_SEED);
-    if (!dhtWebSeedEnabled) {
-      // Parse the torrent and remove the url-list field
-      bittorrent::ValueBaseBencodeParser parser;
-      ssize_t error;
-      auto root = parser.parseFinal(processedTorrent.c_str(),
-                                    processedTorrent.size(), error);
-      if (root && error >= 0) {
-        Dict* rootDict = downcast<Dict>(root);
-        if (rootDict && rootDict->containsKey("url-list")) {
-          A2_LOG_NOTICE(MSG_DHT_WEB_SEED_IGNORED);
-          rootDict->removeKey("url-list");
-          processedTorrent = bencode2::encode(rootDict);
+    bool webSeedEnabled =
+        requestGroup->getOption()->getAsBool(PREF_BT_ENABLE_WEB_SEED);
+    
+    // Parse the torrent to apply security checks
+    bittorrent::ValueBaseBencodeParser parser;
+    ssize_t error;
+    auto root = parser.parseFinal(processedTorrent.c_str(),
+                                  processedTorrent.size(), error);
+    
+    if (root && error >= 0) {
+      Dict* rootDict = downcast<Dict>(root);
+      if (rootDict) {
+        // Check 1: Disable web seeds if --bt-enable-web-seed=false
+        if (!webSeedEnabled) {
+          if (rootDict->containsKey("url-list")) {
+            A2_LOG_NOTICE(MSG_WEB_SEED_DISABLED);
+            rootDict->removeKey("url-list");
+          }
         }
+        // Check 2: Strip DHT web seeds if --bt-enable-dht-web-seed=false
+        else if (!dhtWebSeedEnabled) {
+          if (rootDict->containsKey("url-list")) {
+            A2_LOG_NOTICE(MSG_DHT_WEB_SEED_IGNORED);
+            rootDict->removeKey("url-list");
+          }
+        }
+        
+        // Get expected filename from magnet link if available
+        std::string expectedFileName;
+        if (requestGroup->getMetadataInfo()) {
+          expectedFileName = extractFileNameFromUri(
+              requestGroup->getMetadataInfo()->getUri());
+        }
+        
+        // Check 3: Warn about executable files
+        if (requestGroup->getOption()->getAsBool(PREF_BT_WARN_EXECUTABLE_FILES)) {
+          if (rootDict->containsKey("info")) {
+            Dict* infoDict = downcast<Dict>(rootDict->get("info"));
+            if (infoDict) {
+              // Check single file torrents
+              if (infoDict->containsKey("name") && infoDict->containsKey("length")) {
+                ValueBase* nameVal = infoDict->get("name");
+                if (nameVal) {
+                  String* nameStr = downcast<String>(nameVal);
+                  if (nameStr) {
+                    std::string fileName = nameStr->s();
+                    if (isExecutableExtension(fileName)) {
+                      A2_LOG_NOTICE(fmt(MSG_WARN_EXECUTABLE_FILE, fileName.c_str()));
+                    }
+                  }
+                }
+              }
+              // Check multi-file torrents
+              else if (infoDict->containsKey("files")) {
+                List* filesList = downcast<List>(infoDict->get("files"));
+                if (filesList) {
+                  std::string dirName;
+                  if (infoDict->containsKey("name")) {
+                    ValueBase* nameVal = infoDict->get("name");
+                    if (nameVal) {
+                      String* nameStr = downcast<String>(nameVal);
+                      if (nameStr) {
+                        dirName = nameStr->s();
+                      }
+                    }
+                  }
+                  for (auto it = filesList->begin(); it != filesList->end(); ++it) {
+                    Dict* fileDict = downcast<Dict>((*it).get());
+                    if (fileDict && fileDict->containsKey("path")) {
+                      List* pathList = downcast<List>(fileDict->get("path"));
+                      if (pathList && !pathList->empty()) {
+                        // Get the last element of the path (filename)
+                        auto lastIt = std::prev(pathList->end());
+                        String* fileNameStr = downcast<String>(lastIt->get());
+                        if (fileNameStr) {
+                          std::string fileName = fileNameStr->s();
+                          if (isExecutableExtension(fileName)) {
+                            std::string fullPath = dirName.empty() ? fileName :
+                                                  dirName + "/" + fileName;
+                            A2_LOG_NOTICE(fmt(MSG_WARN_EXECUTABLE_FILE, 
+                                             fullPath.c_str()));
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        // Check 4: Warn about file count mismatch
+        if (requestGroup->getOption()->getAsBool(PREF_BT_WARN_FILE_COUNT)) {
+          if (!expectedFileName.empty()) {
+            Dict* infoDict = downcast<Dict>(rootDict->get("info"));
+            if (infoDict && infoDict->containsKey("files")) {
+              List* filesList = downcast<List>(infoDict->get("files"));
+              if (filesList && filesList->size() > 1) {
+                A2_LOG_NOTICE(fmt(MSG_WARN_FILE_COUNT, filesList->size()));
+              }
+            }
+          }
+        }
+        
+        // Check 5: Require single file if --bt-require-single-file=true
+        if (requestGroup->getOption()->getAsBool(PREF_BT_REQUIRE_SINGLE_FILE)) {
+          if (!expectedFileName.empty()) {
+            Dict* infoDict = downcast<Dict>(rootDict->get("info"));
+            if (infoDict && infoDict->containsKey("files")) {
+              throw DL_ABORT_EX2(MSG_ABORT_MULTI_FILE,
+                                error_code::BITTORRENT_PARSE_ERROR);
+            }
+          }
+        }
+        
+        // Re-encode the modified torrent
+        processedTorrent = bencode2::encode(rootDict);
       }
     }
 

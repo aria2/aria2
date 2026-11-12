@@ -209,6 +209,10 @@
 #define MSG_DHT_WEB_SEED_IGNORED _("Ignoring web seed from DHT metadata. Use --bt-enable-dht-web-seed=true to enable.")
 #define MSG_DHT_TRACKER_IGNORED _("Ignoring tracker from DHT metadata.")
 #define MSG_DHT_METADATA_SIZE_LIMIT _("DHT metadata size %" PRId64 " exceeds limit %" PRId64 ".")
+#define MSG_WEB_SEED_DISABLED _("Web seed disabled by --bt-enable-web-seed=false.")
+#define MSG_WARN_EXECUTABLE_FILE _("Warning: torrent contains executable file: %s")
+#define MSG_WARN_FILE_COUNT _("Warning: torrent contains %" PRId64 " files, but magnet link specified a single file.")
+#define MSG_ABORT_MULTI_FILE _("Aborted: torrent contains multiple files, but --bt-require-single-file=true.")
 #define MSG_HASH_CHECK_NOT_DONE                                         \
   "File has already been downloaded but hash check has not been done yet."
 #define MSG_REMOVING_UNSELECTED_FILE _("GID#%s - Removing unselected file.")

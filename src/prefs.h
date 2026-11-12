@@ -523,6 +523,14 @@ extern PrefPtr PREF_BT_LOAD_SAVED_METADATA;
 extern PrefPtr PREF_BT_ENABLE_DHT_WEB_SEED;
 // values: 1*digit
 extern PrefPtr PREF_BT_METADATA_MAX_SIZE;
+// values: true | false
+extern PrefPtr PREF_BT_ENABLE_WEB_SEED;
+// values: true | false
+extern PrefPtr PREF_BT_WARN_EXECUTABLE_FILES;
+// values: true | false
+extern PrefPtr PREF_BT_WARN_FILE_COUNT;
+// values: true | false
+extern PrefPtr PREF_BT_REQUIRE_SINGLE_FILE;
 
 /**
  * Metalink related preferences
