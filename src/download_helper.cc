@@ -67,6 +67,8 @@
 #  include "bittorrent_helper.h"
 #  include "BtConstants.h"
 #  include "ValueBaseBencodeParser.h"
+#  include "TorrentAttribute.h"
+#  include "error_code.h"
 #endif // ENABLE_BITTORRENT
 
 namespace aria2 {
@@ -195,6 +197,41 @@ createBtRequestGroup(const std::string& metaInfoUri,
   // may throw exception
   bittorrent::loadFromMemory(torrent, dctx, option, auxUris,
                              metaInfoUri.empty() ? "default" : metaInfoUri);
+
+  // Security checks for magnet links: warn about file count and enforce single file
+  if (!metaInfoUri.empty() && metaInfoUri.find("magnet:?") == 0) {
+    // Extract expected filename from magnet link dn= parameter
+    std::string expectedFileName;
+    {
+      std::string dn = "dn=";
+      size_t pos = metaInfoUri.find(dn);
+      if (pos != std::string::npos) {
+        pos += dn.size();
+        size_t end = metaInfoUri.find('&', pos);
+        if (end == std::string::npos) {
+          end = metaInfoUri.size();
+        }
+        expectedFileName = util::percentDecode(
+            metaInfoUri.begin() + pos, metaInfoUri.begin() + end);
+      }
+    }
+
+    if (!expectedFileName.empty()) {
+      auto torrentAttrs = bittorrent::getTorrentAttrs(dctx);
+      if (torrentAttrs->mode == BT_FILE_MODE_MULTI) {
+        // Warn about file count mismatch
+        if (option->getAsBool(PREF_BT_WARN_FILE_COUNT)) {
+          A2_LOG_NOTICE(fmt(MSG_WARN_FILE_COUNT, dctx->getFileEntries().size()));
+        }
+        // Require single file if --bt-require-single-file=true
+        if (option->getAsBool(PREF_BT_REQUIRE_SINGLE_FILE)) {
+          throw DL_ABORT_EX2(MSG_ABORT_MULTI_FILE,
+                            error_code::BITTORRENT_PARSE_ERROR);
+        }
+      }
+    }
+  }
+
   for (auto& fe : dctx->getFileEntries()) {
     auto& uris = fe->getRemainingUris();
     std::shuffle(std::begin(uris), std::end(uris),

@@ -62,6 +62,7 @@
 #include "array_fun.h"
 #include "DownloadFailureException.h"
 #include "ValueBaseBencodeParser.h"
+#include "LogFactory.h"
 
 namespace aria2 {
 
@@ -94,6 +95,84 @@ const char DEFAULT_PEER_AGENT[] = "aria2/" PACKAGE_VERSION;
 const std::string MULTI("multi");
 
 const std::string SINGLE("single");
+
+namespace {
+// Check if a file extension is considered executable
+bool isExecutableExtension(const std::string& path) {
+  std::string lowerPath = path;
+  std::transform(lowerPath.begin(), lowerPath.end(), lowerPath.begin(),
+                 ::tolower);
+
+  static const std::vector<std::string> executableExtensions = {
+    ".exe", ".sh", ".bat", ".cmd", ".com", ".scr", ".pif", ".vbs", ".js",
+    ".ps1", ".msi", ".dll", ".bin", ".app", ".command", ".csh", ".ksh",
+    ".zsh", ".bash", ".pl", ".py", ".rb", ".cgi"
+  };
+
+  for (const auto& ext : executableExtensions) {
+    if (lowerPath.size() >= ext.size() &&
+        lowerPath.compare(lowerPath.size() - ext.size(), ext.size(), ext) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Warn about executable files in torrent metadata
+void warnExecutableFiles(const Dict* infoDict) {
+  if (!infoDict) return;
+
+  // Check single file torrents
+  if (infoDict->containsKey(C_NAME) && infoDict->containsKey(C_LENGTH)) {
+    const String* nameVal = downcast<String>(infoDict->get(C_NAME));
+    if (!nameVal) {
+      nameVal = downcast<String>(infoDict->get(C_NAME_UTF8));
+    }
+    if (nameVal) {
+      std::string fileName = util::encodeNonUtf8(nameVal->s());
+      if (isExecutableExtension(fileName)) {
+        A2_LOG_NOTICE(fmt(MSG_WARN_EXECUTABLE_FILE, fileName.c_str()));
+      }
+    }
+  }
+  // Check multi-file torrents
+  else if (infoDict->containsKey(C_FILES)) {
+    const List* filesList = downcast<List>(infoDict->get(C_FILES));
+    if (filesList) {
+      std::string dirName;
+      const String* nameVal = downcast<String>(infoDict->get(C_NAME));
+      if (!nameVal) {
+        nameVal = downcast<String>(infoDict->get(C_NAME_UTF8));
+      }
+      if (nameVal) {
+        dirName = util::encodeNonUtf8(nameVal->s());
+      }
+      for (auto& f : *filesList) {
+        const Dict* fileDict = downcast<Dict>(f);
+        if (!fileDict) continue;
+
+        const char* pathKey = C_PATH;
+        if (fileDict->containsKey(C_PATH_UTF8)) {
+          pathKey = C_PATH_UTF8;
+        }
+        const List* pathList = downcast<List>(fileDict->get(pathKey));
+        if (pathList && !pathList->empty()) {
+          auto lastIt = std::prev(pathList->end());
+          const String* fileNameStr = downcast<String>(lastIt->get());
+          if (fileNameStr) {
+            std::string fileName = util::encodeNonUtf8(fileNameStr->s());
+            if (isExecutableExtension(fileName)) {
+              std::string fullPath = dirName.empty() ? fileName :
+                                    dirName + "/" + fileName;
+              A2_LOG_NOTICE(fmt(MSG_WARN_EXECUTABLE_FILE, fullPath.c_str()));
+            }
+          }
+        }
+      }
+    }
+  }
+}
+} // namespace
 
 namespace {
 void extractPieceHash(const std::shared_ptr<DownloadContext>& ctx,
@@ -491,6 +570,20 @@ void processRootDictionary(const std::shared_ptr<DownloadContext>& ctx,
   urlList.insert(urlList.end(), uris.begin(), uris.end());
   std::sort(urlList.begin(), urlList.end());
   urlList.erase(std::unique(urlList.begin(), urlList.end()), urlList.end());
+
+  // Security check: disable web seeds if --bt-enable-web-seed=false
+  if (!option->getAsBool(PREF_BT_ENABLE_WEB_SEED)) {
+    if (!urlList.empty()) {
+      A2_LOG_NOTICE(MSG_WEB_SEED_DISABLED);
+      urlList.clear();
+      torrent->urlList.clear();
+    }
+  }
+
+  // Security check: warn about executable files
+  if (option->getAsBool(PREF_BT_WARN_EXECUTABLE_FILES)) {
+    warnExecutableFiles(infoDict);
+  }
 
   // retrieve file entries
   extractFileEntries(ctx, torrent.get(), infoDict, option, defaultName,

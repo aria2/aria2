@@ -45,12 +45,15 @@
 #include "a2functional.h"
 #include "DiskAdaptor.h"
 #include "PieceStorage.h"
-#include "bencode2.h"
 #include "message.h"
 #include "prefs.h"
 #include "Option.h"
 #include "fmt.h"
 #include "RequestGroupMan.h"
+#include "TorrentAttribute.h"
+#include "FileEntry.h"
+#include "error_code.h"
+#include "MetadataInfo.h"
 
 namespace aria2 {
 
@@ -83,6 +86,17 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
   auto attrs = bittorrent::getTorrentAttrs(dctx);
   std::string metadata =
       util::toString(requestGroup->getPieceStorage()->getDiskAdaptor());
+
+  // Check metadata size limit to prevent memory exhaustion attacks
+  int64_t metadataMaxSize =
+      requestGroup->getOption()->getAsInt(PREF_BT_METADATA_MAX_SIZE);
+  if (metadataMaxSize > 0 &&
+      static_cast<int64_t>(metadata.size()) > metadataMaxSize) {
+    throw DL_ABORT_EX2(
+        fmt(MSG_DHT_METADATA_SIZE_LIMIT, metadata.size(), metadataMaxSize),
+        error_code::BITTORRENT_PARSE_ERROR);
+  }
+
   std::string torrent = bittorrent::metadata2Torrent(metadata, attrs);
 
   if (requestGroup->getOption()->getAsBool(PREF_BT_SAVE_METADATA)) {
@@ -100,6 +114,9 @@ void UTMetadataPostDownloadHandler::getNextRequestGroups(
     std::vector<std::shared_ptr<RequestGroup>> newRgs;
     // Don't adjust announce URI because it has been done when
     // RequestGroup is created with magnet URI.
+    // Security checks (web seed stripping, executable file warnings, file count
+    // checks) are now handled in bittorrent::processRootDictionary() and
+    // createBtRequestGroup(), which are called by createRequestGroupForBitTorrent().
     createRequestGroupForBitTorrent(newRgs, requestGroup->getOption(),
                                     std::vector<std::string>(), A2STR::NIL,
                                     torrent, false);

@@ -1130,4 +1130,56 @@
     "                              successful, then skip downloading metadata from\n" \
     "                              DHT.")
 
+#define TEXT_BT_ENABLE_DHT_WEB_SEED \
+  _(" --bt-enable-dht-web-seed[=true|false]\n" \
+    "                              Accept web seed URLs from torrent metadata\n" \
+    "                              received from DHT. When a magnet link is used,\n" \
+    "                              the torrent metadata (including web seed URLs)\n" \
+    "                              comes from the DHT, which is untrusted. Enabling\n" \
+    "                              this option allows aria2 to fetch content from\n" \
+    "                              those web seed URLs. Default is false for\n" \
+    "                              security reasons.")
+
+#define TEXT_BT_METADATA_MAX_SIZE \
+  _(" --bt-metadata-max-size=SIZE  Set the maximum size of torrent metadata\n" \
+    "                              accepted from DHT. If the metadata size exceeds\n" \
+    "                              this limit, the metadata is rejected. This helps\n" \
+    "                              prevent memory exhaustion attacks. Default is 1M\n" \
+    "                              (1 MiB).")
+
+#define TEXT_BT_ENABLE_WEB_SEED \
+  _(" --bt-enable-web-seed[=true|false]\n" \
+    "                              Enable web seed functionality for BitTorrent\n" \
+    "                              downloads. When disabled, web seed URLs from\n" \
+    "                              any source (DHT metadata, .torrent files, etc.)\n" \
+    "                              are ignored. This provides an additional layer\n" \
+    "                              of protection against torrent poisoning attacks.\n" \
+    "                              Default is true.")
+
+#define TEXT_BT_WARN_EXECUTABLE_FILES \
+  _(" --bt-warn-executable-files[=true|false]\n" \
+    "                              Warn when torrent metadata contains files with\n" \
+    "                              executable extensions (e.g., .exe, .sh, .bat,\n" \
+    "                              .cmd, .com, .scr, .pif, .vbs, .js). This helps\n" \
+    "                              identify potentially malicious torrents. Default\n" \
+    "                              is true.")
+
+#define TEXT_BT_WARN_FILE_COUNT \
+  _(" --bt-warn-file-count[=true|false]\n" \
+    "                              Warn when the number of files in the torrent\n" \
+    "                              metadata differs significantly from what was\n" \
+    "                              expected based on the magnet link. For example,\n" \
+    "                              if a magnet link specifies a single filename but\n" \
+    "                              the metadata contains multiple files. Default is\n" \
+    "                              true.")
+
+#define TEXT_BT_REQUIRE_SINGLE_FILE \
+  _(" --bt-require-single-file[=true|false]\n" \
+    "                              When a magnet link specifies a filename, require\n" \
+    "                              the torrent metadata to contain only that single\n" \
+    "                              file. If the metadata contains multiple files,\n" \
+    "                              the download will be aborted. This prevents\n" \
+    "                              attacks where the metadata contains unexpected\n" \
+    "                              files. Default is false.")
+
 // clang-format on
